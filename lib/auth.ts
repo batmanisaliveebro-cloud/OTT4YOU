@@ -1,11 +1,12 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
+import type { NextAuthConfig } from 'next-auth';
 import connectDB from './mongodb';
 import User from '@/models/User';
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(',').map((email: string) => email.trim()) || [];
 
-const handler = NextAuth({
+const config = {
     providers: [
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -57,7 +58,8 @@ const handler = NextAuth({
     session: {
         strategy: 'jwt' as const,
     },
-});
+} satisfies NextAuthConfig;
 
-export const { auth, signIn, signOut } = handler;
-export const { GET, POST } = handler.handlers;
+const { handlers, auth, signIn, signOut } = NextAuth(config);
+
+export { handlers, auth, signIn, signOut };
