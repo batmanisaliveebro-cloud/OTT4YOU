@@ -1,11 +1,11 @@
 'use server';
 
-import { signIn, signOut } from '@/lib/auth';
+import { signIn as nextAuthSignIn, signOut as nextAuthSignOut } from 'next-auth/react';
 
 export async function handleSignIn() {
-    await signIn('google', { redirectTo: '/' });
+    // This will be handled client-side
 }
 
 export async function handleSignOut() {
-    await signOut({ redirectTo: '/' });
+    // This will be handled client-side
 }

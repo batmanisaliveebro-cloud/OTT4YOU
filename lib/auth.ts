@@ -1,20 +1,19 @@
-import NextAuth from 'next-auth';
-import Google from 'next-auth/providers/google';
-import type { NextAuthConfig } from 'next-auth';
+import { NextAuthOptions, getServerSession } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
 import connectDB from './mongodb';
 import User from '@/models/User';
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(',').map((email: string) => email.trim()) || [];
 
-const config = {
+export const authOptions: NextAuthOptions = {
     providers: [
-        Google({
+        GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         }),
     ],
     callbacks: {
-        async signIn({ user }: any) {
+        async signIn({ user }) {
             if (!user.email) return false;
 
             await connectDB();
@@ -33,19 +32,19 @@ const config = {
 
             return true;
         },
-        async session({ session, token }: any) {
+        async session({ session, token }) {
             if (session.user && token.sub) {
                 await connectDB();
                 const dbUser = await User.findOne({ email: session.user.email });
 
                 if (dbUser) {
-                    session.user.id = dbUser._id.toString();
-                    session.user.role = dbUser.role;
+                    (session.user as any).id = dbUser._id.toString();
+                    (session.user as any).role = dbUser.role;
                 }
             }
             return session;
         },
-        async jwt({ token, user }: any) {
+        async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
             }
@@ -56,10 +55,9 @@ const config = {
         signIn: '/',
     },
     session: {
-        strategy: 'jwt' as const,
+        strategy: 'jwt',
     },
-} satisfies NextAuthConfig;
+    secret: process.env.NEXTAUTH_SECRET,
+};
 
-const { handlers, auth, signIn, signOut } = NextAuth(config);
-
-export { handlers, auth, signIn, signOut };
+export const auth = () => getServerSession(authOptions);
