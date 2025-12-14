@@ -15,19 +15,28 @@ export async function POST(request: Request) {
             );
         }
 
-        const { amount, productId, productName, duration } = await request.json();
+        const { amount, productId, productName, duration, isCart, items } = await request.json();
 
         // Create Razorpay order
+        const notes: any = {
+            userId: session.user.id,
+            type: isCart ? 'cart_checkout' : 'single_purchase',
+        };
+
+        if (isCart) {
+            notes.itemCount = items.length;
+            notes.summary = `Checkout of ${items.length} items`;
+        } else {
+            notes.productId = productId;
+            notes.productName = productName;
+            notes.duration = duration;
+        }
+
         const order = await razorpay.orders.create({
             amount: amount * 100, // Amount in paise
             currency: 'INR',
             receipt: `order_${Date.now()}`,
-            notes: {
-                productId,
-                productName,
-                duration,
-                userId: session.user.id,
-            },
+            notes,
         });
 
         return NextResponse.json({
