@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import QRCode from 'qrcode';
 
 declare global {
     interface Window {
@@ -39,8 +38,12 @@ export default function CheckoutPage() {
         if (totalAmount > 0) {
             const generateQR = async () => {
                 try {
+                    // Dynamic import to avoid SSR issues
+                    const QRCode = await import('qrcode');
+
                     // UPI URL Format: upi://pay?pa=<VPA>&pn=<NAME>&am=<AMOUNT>&cu=INR
                     const upiUrl = `upi://pay?pa=${UPI_VPA}&pn=${UPI_NAME}&am=${totalAmount}&cu=INR`;
+
                     const url = await QRCode.toDataURL(upiUrl, { width: 300, margin: 2 });
                     setQrCodeUrl(url);
                 } catch (err) {
