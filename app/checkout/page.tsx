@@ -145,7 +145,7 @@ export default function CheckoutPage() {
                 const rzp = new window.Razorpay(options);
                 rzp.open();
                 */
-                rzp.open();
+
             }
 
         } catch (error) {
