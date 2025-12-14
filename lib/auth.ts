@@ -1,11 +1,11 @@
-import NextAuth, { NextAuthConfig } from 'next-auth';
+import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import connectDB from './mongodb';
 import User from '@/models/User';
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(',').map(email => email.trim()) || [];
 
-export const authConfig: NextAuthConfig = {
+export const authConfig = {
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
