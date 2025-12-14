@@ -1224,6 +1224,10 @@ html {
   border: 2px solid var(--glass-border);
 }
 
+.platform-emoji {
+  font-size: 2.5rem;
+}
+
 .platform-logo-circle:hover {
   transform: scale(1.1);
   border-color: var(--primary-start);
