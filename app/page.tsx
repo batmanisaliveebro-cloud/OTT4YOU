@@ -45,38 +45,14 @@ export default function HomePage() {
         }
     };
 
-    // Platform data with accurate brand logos
+    // Platform data with emoji icons
     const platforms = [
-        {
-            name: 'Prime Video',
-            logo: 'https://cdn.simpleicons.org/primevideo/00A8E1',
-            color: '#00A8E1'
-        },
-        {
-            name: 'Spotify',
-            logo: 'https://cdn.simpleicons.org/spotify/1DB954',
-            color: '#1DB954'
-        },
-        {
-            name: 'YouTube',
-            logo: 'https://cdn.simpleicons.org/youtube/FF0000',
-            color: '#FF0000'
-        },
-        {
-            name: 'Hotstar',
-            logo: 'https://cdn.simpleicons.org/hotstar/1F80E0',
-            color: '#1F80E0'
-        },
-        {
-            name: 'JioSaavn',
-            logo: 'https://cdn.simpleicons.org/jiosaavn/2BC5B4',
-            color: '#2BC5B4'
-        },
-        {
-            name: 'SonyLIV',
-            logo: 'https://cdn.simpleicons.org/sony/000000',
-            color: '#E50914'
-        },
+        { name: 'Prime Video', emoji: '🎬', color: '#00A8E1' },
+        { name: 'Spotify', emoji: '🎵', color: '#1DB954' },
+        { name: 'YouTube', emoji: '📺', color: '#FF0000' },
+        { name: 'Hotstar', emoji: '⭐', color: '#1F80E0' },
+        { name: 'JioSaavn', emoji: '🎧', color: '#2BC5B4' },
+        { name: 'SonyLIV', emoji: '🎥', color: '#E50914' },
     ];
 
     return (
@@ -195,14 +171,8 @@ export default function HomePage() {
                             <div className="explore-logos">
                                 {platforms.map((platform, index) => (
                                     <Link href="/products" key={index} className="platform-logo-wrapper" title={platform.name}>
-                                        <div className="platform-logo-circle" style={{ background: `${platform.color}20` }}>
-                                            <Image
-                                                src={platform.logo}
-                                                alt={platform.name}
-                                                width={50}
-                                                height={50}
-                                                style={{ objectFit: 'contain' }}
-                                            />
+                                        <div className="platform-logo-circle" style={{ background: `${platform.color}30`, borderColor: platform.color }}>
+                                            <span className="platform-emoji">{platform.emoji}</span>
                                         </div>
                                         <span className="platform-label">{platform.name}</span>
                                     </Link>
