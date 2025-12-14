@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { IProduct } from '@/models/Product';
 import { useState } from 'react';
+import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
     product: IProduct;
@@ -11,6 +12,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onPurchase }: ProductCardProps) {
     const [selectedDuration, setSelectedDuration] = useState(0);
+    const { addToCart } = useCart();
 
     const handlePurchase = () => {
         if (onPurchase && product.durations[selectedDuration]) {
@@ -19,6 +21,19 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
                 product.durations[selectedDuration].months,
                 product.durations[selectedDuration].price
             );
+        }
+    };
+
+    const handleAddToCart = () => {
+        if (product.durations[selectedDuration]) {
+            addToCart({
+                productId: product._id,
+                productName: product.name,
+                platform: product.platform,
+                logo: product.logo,
+                duration: product.durations[selectedDuration].months,
+                price: product.durations[selectedDuration].price
+            });
         }
     };
 
@@ -104,8 +119,8 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
                                 padding: '0.75rem',
                                 borderRadius: 'var(--radius-md)',
                                 border: `2px solid ${selectedDuration === index
-                                        ? 'var(--primary-start)'
-                                        : 'var(--glass-border)'
+                                    ? 'var(--primary-start)'
+                                    : 'var(--glass-border)'
                                     }`,
                                 background: selectedDuration === index
                                     ? 'rgba(139, 92, 246, 0.1)'
@@ -130,13 +145,29 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
                 </div>
             </div>
 
-            <button
-                className="btn btn-primary"
-                onClick={handlePurchase}
-                style={{ width: '100%', marginTop: 'auto' }}
-            >
-                Subscribe Now
-            </button>
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '1rem',
+                marginTop: 'auto'
+            }}>
+                <button
+                    className="btn btn-secondary"
+                    onClick={handleAddToCart}
+                    style={{
+                        padding: '0.75rem',
+                        border: '1px solid var(--primary-start)'
+                    }}
+                >
+                    Add to Cart
+                </button>
+                <button
+                    className="btn btn-primary"
+                    onClick={handlePurchase}
+                >
+                    Buy Now
+                </button>
+            </div>
         </div>
     );
 }

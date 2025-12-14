@@ -180,6 +180,30 @@ export default function HomePage() {
                         </div>
                     </div>
                 </section>
+
+                {/* Payment Methods Section */}
+                <section className="payment-methods" style={{ padding: '4rem 0', background: 'var(--bg-secondary)' }}>
+                    <div className="container" style={{ textAlign: 'center' }}>
+                        <h2 className="section-title" style={{ marginBottom: '1rem' }}>Secure Payments Accepted</h2>
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
+                            We accept all major UPI apps and Cards for a seamless checkout experience
+                        </p>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+                            <div style={{ width: '100px', height: '50px', position: 'relative', filter: 'grayscale(0)' }}>
+                                <Image src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" fill style={{ objectFit: 'contain' }} />
+                            </div>
+                            <div style={{ width: '80px', height: '40px', position: 'relative', filter: 'grayscale(100%)', opacity: 0.7 }}>
+                                <Image src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" fill style={{ objectFit: 'contain' }} />
+                            </div>
+                            <div style={{ width: '80px', height: '40px', position: 'relative', filter: 'grayscale(100%)', opacity: 0.7 }}>
+                                <Image src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" fill style={{ objectFit: 'contain' }} />
+                            </div>
+                            <div style={{ width: '80px', height: '40px', position: 'relative', filter: 'grayscale(100%)', opacity: 0.7 }}>
+                                <Image src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" fill style={{ objectFit: 'contain' }} />
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </main>
             <Footer />
         </>

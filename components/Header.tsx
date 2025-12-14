@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSession, signIn, signOut } from 'next-auth/react';
+import CartCount from './CartCount';
 
 export default function Header() {
     const { data: session } = useSession();
@@ -44,6 +45,21 @@ export default function Header() {
                         </Link>
                         <Link href="/products" className="nav-link" onClick={() => setMenuOpen(false)}>
                             Products
+                        </Link>
+
+                        <Link href="/cart" className="nav-link" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <span style={{ fontSize: '1.2rem' }}>🛒</span>
+                            <CartCount />
+                        </Link>
+
+                        <Link href="/cart" className="nav-link" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <span style={{ fontSize: '1.2rem' }}>🛒</span>
+                            <CartCount />
+                        </Link>
+
+                        <Link href="/cart" className="nav-link" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <span style={{ fontSize: '1.2rem' }}>🛒</span>
+                            <CartCount />
                         </Link>
 
                         {session ? (
