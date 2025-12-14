@@ -25,6 +25,28 @@ export default function AdminOrdersPage() {
         }
     };
 
+    const handleVerify = async (orderId: string, status: 'completed' | 'failed') => {
+        if (!confirm(`Are you sure you want to mark this order as ${status}?`)) return;
+
+        try {
+            const res = await fetch('/api/admin/orders/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, status })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message);
+                fetchOrders(); // Refresh list
+            } else {
+                alert(data.error);
+            }
+        } catch (error) {
+            console.error('Verification error:', error);
+            alert('Failed to update status');
+        }
+    };
+
     const filteredOrders = filter === 'all'
         ? orders
         : orders.filter(order => order.status === filter);
@@ -137,24 +159,10 @@ export default function AdminOrdersPage() {
                                         color: 'var(--text-secondary)',
                                         fontWeight: 600,
                                     }}>Amount</th>
-                                    <th style={{
-                                        padding: '1rem',
-                                        textAlign: 'left',
-                                        color: 'var(--text-secondary)',
-                                        fontWeight: 600,
-                                    }}>Payment ID</th>
-                                    <th style={{
-                                        padding: '1rem',
-                                        textAlign: 'left',
-                                        color: 'var(--text-secondary)',
-                                        fontWeight: 600,
-                                    }}>Date</th>
-                                    <th style={{
-                                        padding: '1rem',
-                                        textAlign: 'left',
-                                        color: 'var(--text-secondary)',
-                                        fontWeight: 600,
-                                    }}>Status</th>
+                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 600 }}>Payment Info</th>
+                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 600 }}>Date</th>
+                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 600 }}>Status</th>
+                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 600 }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -200,21 +208,61 @@ export default function AdminOrdersPage() {
                                             <td style={{
                                                 padding: '1rem',
                                                 fontSize: '0.875rem',
-                                                fontFamily: 'monospace',
                                                 color: 'var(--text-secondary)',
                                             }}>
-                                                {order.paymentId.slice(0, 12)}...
+                                                {order.paymentMethod === 'MANUAL_UPI' ? (
+                                                    <div>
+                                                        <span className="badge badge-warning">Manual</span>
+                                                        <div style={{ marginTop: '0.25rem', fontFamily: 'monospace' }}>
+                                                            UTR: {order.manualPaymentDetails?.utr}
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <span style={{ fontFamily: 'monospace' }}>
+                                                        {order.paymentId ? order.paymentId.slice(0, 12) + '...' : 'N/A'}
+                                                    </span>
+                                                )}
                                             </td>
                                             <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>
                                                 {new Date(order.purchaseDate).toLocaleDateString()}
                                             </td>
                                             <td style={{ padding: '1rem' }}>
                                                 <span className={`badge ${order.status === 'completed' ? 'badge-success' :
-                                                        order.status === 'pending' ? 'badge-warning' :
-                                                            'badge-danger'
+                                                        order.status === 'pending_verification' ? 'badge-warning' :
+                                                            order.status === 'pending' ? 'badge-warning' :
+                                                                'badge-danger'
                                                     }`}>
-                                                    {order.status}
+                                                    {order.status === 'pending_verification' ? 'To Verify' : order.status}
                                                 </span>
+                                            </td>
+                                            <td style={{ padding: '1rem' }}>
+                                                {order.status === 'pending_verification' && (
+                                                    <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                                                        {order.manualPaymentDetails?.screenshot && (
+                                                            <button
+                                                                className="btn btn-secondary btn-sm"
+                                                                onClick={() => window.open(order.manualPaymentDetails.screenshot, '_blank')}
+                                                            >
+                                                                View Proof
+                                                            </button>
+                                                        )}
+                                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                            <button
+                                                                className="btn btn-primary btn-sm"
+                                                                style={{ backgroundColor: '#10b981', borderColor: '#10b981' }}
+                                                                onClick={() => handleVerify(order._id, 'completed')}
+                                                            >
+                                                                Approve
+                                                            </button>
+                                                            <button
+                                                                className="btn btn-danger btn-sm"
+                                                                onClick={() => handleVerify(order._id, 'failed')}
+                                                            >
+                                                                Reject
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </td>
                                         </tr>
                                     ))
