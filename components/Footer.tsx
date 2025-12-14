@@ -75,10 +75,10 @@ export default function Footer() {
                     <div className="footer-links">
                         <h4>Support</h4>
                         <ul>
-                            <li>Contact Us</li>
-                            <li>FAQ</li>
-                            <li>Terms of Service</li>
-                            <li>Privacy Policy</li>
+                            <li><a href="mailto:batmanisaliveebro@gmail.com">Contact Us</a></li>
+                            <li><Link href="/terms">Terms & Conditions</Link></li>
+                            <li><Link href="/refund-policy">Refund Policy</Link></li>
+                            <li><Link href="/shipping-policy">Shipping Policy</Link></li>
                         </ul>
                     </div>
                 </div>
