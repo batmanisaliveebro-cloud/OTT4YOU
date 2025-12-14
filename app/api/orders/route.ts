@@ -5,9 +5,9 @@ import { auth } from '@/lib/auth';
 
 export async function GET() {
     try {
-        const session = await auth();
+        const session = await auth() as any;
 
-        if (!session) {
+        if (!session || !session.user) {
             return NextResponse.json(
                 { success: false, error: 'Unauthorized' },
                 { status: 401 }
@@ -17,7 +17,7 @@ export async function GET() {
         await connectDB();
 
         // If admin, return all orders, else return user's orders
-        const query = (session.user as any).role === 'admin' ? {} : { userId: (session.user as any).id };
+        const query = session.user.role === 'admin' ? {} : { userId: session.user.id };
         const orders = await Order.find(query).sort({ purchaseDate: -1 });
 
         return NextResponse.json({ success: true, orders });

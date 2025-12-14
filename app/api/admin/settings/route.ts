@@ -27,9 +27,9 @@ export async function GET() {
 
 export async function PUT(request: Request) {
     try {
-        const session = await auth();
+        const session = await auth() as any;
 
-        if (!session || (session.user as any).role !== 'admin') {
+        if (!session || !session.user || session.user.role !== 'admin') {
             return NextResponse.json(
                 { success: false, error: 'Unauthorized' },
                 { status: 401 }

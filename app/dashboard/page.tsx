@@ -6,9 +6,9 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export default async function DashboardPage() {
-    const session = await auth();
+    const session = await auth() as any;
 
-    if (!session) {
+    if (!session || !session.user) {
         redirect('/');
     }
 

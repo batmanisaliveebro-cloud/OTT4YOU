@@ -6,9 +6,9 @@ import { auth } from '@/lib/auth';
 
 export async function POST(request: Request) {
     try {
-        const session = await auth();
+        const session = await auth() as any;
 
-        if (!session) {
+        if (!session || !session.user) {
             return NextResponse.json(
                 { success: false, error: 'Unauthorized' },
                 { status: 401 }
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
         // Save order to database
         await connectDB();
         const order = await Order.create({
-            userId: (session.user as any).id,
+            userId: session.user.id,
             productId,
             productName,
             platform,

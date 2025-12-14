@@ -1,11 +1,11 @@
-import { NextAuthOptions, getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth/next';
 import GoogleProvider from 'next-auth/providers/google';
 import connectDB from './mongodb';
 import User from '@/models/User';
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(',').map((email: string) => email.trim()) || [];
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
         signIn: '/',
     },
     session: {
-        strategy: 'jwt',
+        strategy: 'jwt' as const,
     },
     secret: process.env.NEXTAUTH_SECRET,
 };
