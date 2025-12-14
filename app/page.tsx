@@ -45,36 +45,36 @@ export default function HomePage() {
         }
     };
 
-    // Platform data with working CDN logo URLs
+    // Platform data with accurate brand logos
     const platforms = [
         {
             name: 'Prime Video',
-            logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/amazon-prime-video.png',
+            logo: 'https://cdn.simpleicons.org/primevideo/00A8E1',
             color: '#00A8E1'
         },
         {
             name: 'Spotify',
-            logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/spotify.png',
+            logo: 'https://cdn.simpleicons.org/spotify/1DB954',
             color: '#1DB954'
         },
         {
             name: 'YouTube',
-            logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/youtube.png',
+            logo: 'https://cdn.simpleicons.org/youtube/FF0000',
             color: '#FF0000'
         },
         {
-            name: 'Disney+',
-            logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/disney-plus.png',
-            color: '#0F79AF'
+            name: 'Hotstar',
+            logo: 'https://cdn.simpleicons.org/hotstar/1F80E0',
+            color: '#1F80E0'
         },
         {
-            name: 'Jio Saavn',
-            logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/navidrome.png',
+            name: 'JioSaavn',
+            logo: 'https://cdn.simpleicons.org/jiosaavn/2BC5B4',
             color: '#2BC5B4'
         },
         {
             name: 'SonyLIV',
-            logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/emby.png',
+            logo: 'https://cdn.simpleicons.org/sony/000000',
             color: '#E50914'
         },
     ];

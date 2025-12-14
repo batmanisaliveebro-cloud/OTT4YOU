@@ -13,14 +13,14 @@ export async function GET() {
         await connectDB();
         logs.push('2. DB connected');
 
-        // Just update existing products with new logos instead of delete/insert
+        // Update existing products with new accurate logos
         const updates = [
-            { platform: 'Prime Video', logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/amazon-prime-video.png' },
-            { platform: 'Spotify', logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/spotify.png' },
-            { platform: 'YouTube Premium', logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/youtube.png' },
-            { platform: 'JioHotstar', logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/disney-plus.png' },
-            { platform: 'Jio Saavn', logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/navidrome.png' },
-            { platform: 'SonyLIV', logo: 'https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/emby.png' },
+            { platform: 'Prime Video', logo: 'https://cdn.simpleicons.org/primevideo/00A8E1' },
+            { platform: 'Spotify', logo: 'https://cdn.simpleicons.org/spotify/1DB954' },
+            { platform: 'YouTube Premium', logo: 'https://cdn.simpleicons.org/youtube/FF0000' },
+            { platform: 'JioHotstar', logo: 'https://cdn.simpleicons.org/hotstar/1F80E0' },
+            { platform: 'Jio Saavn', logo: 'https://cdn.simpleicons.org/jiosaavn/2BC5B4' },
+            { platform: 'SonyLIV', logo: 'https://cdn.simpleicons.org/sony/E50914' },
         ];
 
         logs.push('3. Updating logos...');
@@ -36,7 +36,7 @@ export async function GET() {
 
         return NextResponse.json({
             success: true,
-            message: 'Logos updated!',
+            message: 'Logos updated with accurate brand icons!',
             logs,
         });
     } catch (error: any) {
