@@ -156,13 +156,6 @@ export default async function AdminLayout({
             }}>
                 {children}
             </main>
-
-            <style jsx global>{`
-        .admin-nav-link:hover {
-          background: var(--glass-bg);
-          border-left: 3px solid var(--primary-start);
-        }
-      `}</style>
         </div>
     );
 }
