@@ -3,12 +3,24 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
+    const clientId = process.env.GOOGLE_CLIENT_ID || '';
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET || '';
+
     return NextResponse.json({
-        NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'NOT SET',
-        NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET ? 'SET' : 'NOT SET',
-        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'NOT SET',
-        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'NOT SET',
-        MONGODB_URI: process.env.MONGODB_URI ? 'SET' : 'NOT SET',
-        NODE_ENV: process.env.NODE_ENV,
+        clientId: {
+            length: clientId.length,
+            starts: clientId.substring(0, 15) + '...',
+            ends: '...' + clientId.substring(clientId.length - 10),
+            containsSpaces: clientId.includes(' '),
+            containsNewlines: clientId.includes('\n'),
+        },
+        clientSecret: {
+            length: clientSecret.length,
+            starts: clientSecret.substring(0, 5) + '...',
+            containsSpaces: clientSecret.includes(' '),
+            containsNewlines: clientSecret.includes('\n'),
+        },
+        nextAuthUrl: process.env.NEXTAUTH_URL,
+        expectedCallbackUrl: process.env.NEXTAUTH_URL + '/api/auth/callback/google',
     });
 }
