@@ -1,52 +1,91 @@
+import Link from 'next/link';
+
 export default function Footer() {
     return (
-        <footer style={{
-            marginTop: '6rem',
-            padding: '3rem 0',
-            borderTop: '1px solid var(--glass-border)',
-            background: 'var(--glass-bg)',
-        }}>
+        <footer className="footer">
+            {/* Trust Badges Section */}
+            <div className="trust-section">
+                <div className="container">
+                    <div className="trust-badges">
+                        <div className="trust-badge">
+                            <div className="trust-icon">🔒</div>
+                            <div className="trust-text">
+                                <strong>100% Secure</strong>
+                                <span>Encrypted Payments</span>
+                            </div>
+                        </div>
+                        <div className="trust-badge">
+                            <div className="trust-icon">⚡</div>
+                            <div className="trust-text">
+                                <strong>Instant Delivery</strong>
+                                <span>Activated in Minutes</span>
+                            </div>
+                        </div>
+                        <div className="trust-badge">
+                            <div className="trust-icon">✅</div>
+                            <div className="trust-text">
+                                <strong>Trusted by 10K+</strong>
+                                <span>Happy Customers</span>
+                            </div>
+                        </div>
+                        <div className="trust-badge">
+                            <div className="trust-icon">💯</div>
+                            <div className="trust-text">
+                                <strong>Best Prices</strong>
+                                <span>Guaranteed Savings</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div className="container">
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                    gap: '2rem',
-                    marginBottom: '2rem',
-                }}>
-                    <div>
-                        <h3 style={{ marginBottom: '1rem', fontSize: '1.5rem' }} className="text-gradient">
-                            OTT4YOU
-                        </h3>
-                        <p style={{ color: 'var(--text-secondary)' }}>
-                            Your one-stop destination for premium OTT subscriptions at the best prices.
-                        </p>
+                <div className="footer-grid">
+                    <div className="footer-brand">
+                        <h3 className="text-gradient">OTT4YOU</h3>
+                        <p>Your one-stop destination for premium OTT subscriptions at the best prices.</p>
+                        <div className="social-links">
+                            <a href="#" className="social-link">📧</a>
+                            <a href="#" className="social-link">📱</a>
+                            <a href="#" className="social-link">💬</a>
+                        </div>
                     </div>
 
-                    <div>
-                        <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Quick Links</h4>
-                        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                            <li><a href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Home</a></li>
-                            <li><a href="/dashboard" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>Dashboard</a></li>
+                    <div className="footer-links">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><Link href="/">Home</Link></li>
+                            <li><Link href="/#products">Products</Link></li>
+                            <li><Link href="/dashboard">My Orders</Link></li>
                         </ul>
                     </div>
 
-                    <div>
-                        <h4 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>Platforms</h4>
-                        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                            <li style={{ color: 'var(--text-secondary)' }}>Prime Video</li>
-                            <li style={{ color: 'var(--text-secondary)' }}>Spotify</li>
-                            <li style={{ color: 'var(--text-secondary)' }}>YouTube Premium</li>
-                            <li style={{ color: 'var(--text-secondary)' }}>JioHotstar</li>
-                            <li style={{ color: 'var(--text-secondary)' }}>Jio Saavn</li>
-                            <li style={{ color: 'var(--text-secondary)' }}>SonyLIV</li>
+                    <div className="footer-links">
+                        <h4>Platforms</h4>
+                        <ul>
+                            <li>Prime Video</li>
+                            <li>Spotify Premium</li>
+                            <li>YouTube Premium</li>
+                            <li>JioHotstar</li>
+                            <li>Jio Saavn</li>
+                            <li>SonyLIV</li>
+                        </ul>
+                    </div>
+
+                    <div className="footer-links">
+                        <h4>Support</h4>
+                        <ul>
+                            <li>Contact Us</li>
+                            <li>FAQ</li>
+                            <li>Terms of Service</li>
+                            <li>Privacy Policy</li>
                         </ul>
                     </div>
                 </div>
 
-                <div className="divider" />
-
-                <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                <div className="footer-bottom">
                     <p>&copy; {new Date().getFullYear()} OTT4YOU. All rights reserved.</p>
+                    <p className="footer-tagline">Made with ❤️ in India</p>
                 </div>
             </div>
         </footer>
