@@ -14,33 +14,42 @@ export const authOptions = {
     ],
     callbacks: {
         async signIn({ user }: any) {
-            if (!user.email) return false;
+            try {
+                if (!user.email) return false;
 
-            await connectDB();
+                await connectDB();
 
-            let dbUser = await User.findOne({ email: user.email });
+                let dbUser = await User.findOne({ email: user.email });
 
-            if (!dbUser) {
-                const isAdmin = adminEmails.includes(user.email);
-                dbUser = await User.create({
-                    email: user.email,
-                    name: user.name || '',
-                    image: user.image || '',
-                    role: isAdmin ? 'admin' : 'user',
-                });
+                if (!dbUser) {
+                    const isAdmin = adminEmails.includes(user.email);
+                    dbUser = await User.create({
+                        email: user.email,
+                        name: user.name || '',
+                        image: user.image || '',
+                        role: isAdmin ? 'admin' : 'user',
+                    });
+                }
+
+                return true;
+            } catch (error) {
+                console.error('SignIn callback error:', error);
+                return true; // Still allow sign in even if DB fails
             }
-
-            return true;
         },
         async session({ session, token }: any) {
-            if (session.user && token.sub) {
-                await connectDB();
-                const dbUser = await User.findOne({ email: session.user.email });
+            try {
+                if (session.user && token.sub) {
+                    await connectDB();
+                    const dbUser = await User.findOne({ email: session.user.email });
 
-                if (dbUser) {
-                    session.user.id = dbUser._id.toString();
-                    session.user.role = dbUser.role;
+                    if (dbUser) {
+                        session.user.id = dbUser._id.toString();
+                        session.user.role = dbUser.role;
+                    }
                 }
+            } catch (error) {
+                console.error('Session callback error:', error);
             }
             return session;
         },
@@ -53,11 +62,13 @@ export const authOptions = {
     },
     pages: {
         signIn: '/',
+        error: '/',
     },
     session: {
         strategy: 'jwt' as const,
     },
     secret: process.env.NEXTAUTH_SECRET,
+    debug: process.env.NODE_ENV === 'development',
 };
 
 export const auth = () => getServerSession(authOptions);
