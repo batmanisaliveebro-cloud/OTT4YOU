@@ -76,6 +76,11 @@ export default function CheckoutPage() {
 
             } else {
                 // RAZORPAY FLOW
+                alert(`Online Payment is temporarily under maintenance. Please select "Pay via QR Code" to pay ₹${totalAmount} instantly.`);
+                setLoading(false);
+                return;
+
+                /* RAZORPAY CODE COMMENTED OUT FOR MAINTENANCE
                 const response = await fetch('/api/payment/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -88,6 +93,7 @@ export default function CheckoutPage() {
                         items: items
                     }),
                 });
+                */
 
                 const data = await response.json();
 
