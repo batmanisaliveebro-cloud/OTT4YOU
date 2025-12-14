@@ -145,14 +145,14 @@ p {
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
 }
 
 /* Glass Card */
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   padding: 2rem;
@@ -291,6 +291,24 @@ p {
 
 .grid-4 {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.duration-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .duration-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  .duration-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Flex Utilities */
@@ -432,6 +450,13 @@ p {
     padding: 0 1rem;
   }
 
+  .glass-card {
+    padding: 1.5rem;
+    backdrop-filter: blur(8px);
+    /* Reduce blur further on mobile for performance */
+    -webkit-backdrop-filter: blur(8px);
+  }
+
   .grid-2,
   .grid-3,
   .grid-4 {
@@ -439,7 +464,15 @@ p {
   }
 
   h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  .section {
+    padding: 3rem 0;
   }
 }
 

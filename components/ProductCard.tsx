@@ -183,70 +183,69 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
                             <h4 style={{ fontSize: '1rem', marginBottom: '0.75rem', color: 'var(--text-primary)' }}>
                                 Select Plan
                             </h4>
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(3, 1fr)',
-                                gap: '0.75rem',
-                            }}>
-                                {product.durations.map((duration, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => setSelectedDuration(index)}
-                                        style={{
-                                            padding: '0.75rem',
-                                            borderRadius: 'var(--radius-md)',
-                                            border: `2px solid ${selectedDuration === index
-                                                ? 'var(--primary-start)'
-                                                : 'var(--glass-border)'
-                                                }`,
-                                            background: selectedDuration === index
-                                                ? 'rgba(139, 92, 246, 0.1)'
-                                                : 'var(--bg-tertiary)',
-                                            color: 'var(--text-primary)',
-                                            cursor: 'pointer',
-                                            transition: 'all var(--transition-fast)',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            gap: '0.25rem',
-                                        }}
-                                    >
-                                        <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                                            {duration.months} {duration.months === 1 ? 'Month' : 'Months'}
-                                        </span>
-                                        <span style={{ fontSize: '1.125rem', fontWeight: 700 }}>
-                                            ₹{duration.price}
-                                        </span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: '1rem',
-                        }}>
-                            <button
-                                className="btn btn-secondary"
-                                onClick={handleAddToCart}
-                                style={{
-                                    padding: '0.75rem',
-                                    border: '1px solid var(--primary-start)'
-                                }}
-                            >
-                                Add to Cart
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                onClick={handlePurchase}
-                            >
-                                Buy Now
-                            </button>
+                            Select Plan
+                        </h4>
+                        <div className="duration-grid">
+                            {product.durations.map((duration, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setSelectedDuration(index)}
+                                    style={{
+                                        padding: '0.75rem',
+                                        borderRadius: 'var(--radius-md)',
+                                        border: `2px solid ${selectedDuration === index
+                                            ? 'var(--primary-start)'
+                                            : 'var(--glass-border)'
+                                            }`,
+                                        background: selectedDuration === index
+                                            ? 'rgba(139, 92, 246, 0.1)'
+                                            : 'var(--bg-tertiary)',
+                                        color: 'var(--text-primary)',
+                                        cursor: 'pointer',
+                                        transition: 'all var(--transition-fast)',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        gap: '0.25rem',
+                                    }}
+                                >
+                                    <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                                        {duration.months} {duration.months === 1 ? 'Month' : 'Months'}
+                                    </span>
+                                    <span style={{ fontSize: '1.125rem', fontWeight: 700 }}>
+                                        ₹{duration.price}
+                                    </span>
+                                </button>
+                            ))}
                         </div>
                     </div>
+
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '1rem',
+                    }}>
+                        <button
+                            className="btn btn-secondary"
+                            onClick={handleAddToCart}
+                            style={{
+                                padding: '0.75rem',
+                                border: '1px solid var(--primary-start)'
+                            }}
+                        >
+                            Add to Cart
+                        </button>
+                        <button
+                            className="btn btn-primary"
+                            onClick={handlePurchase}
+                        >
+                            Buy Now
+                        </button>
+                    </div>
                 </div>
-            )}
+                </div >
+            )
+}
         </>
     );
 }

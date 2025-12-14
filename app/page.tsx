@@ -142,7 +142,7 @@ export default function HomePage() {
                 )}
 
                 {/* Features Section */}
-                <section className="features-section" style={{ marginTop: '4rem' }}>
+                <section className="features-section section">
                     <div className="container">
                         <h2 className="section-title animate-slide-up">Why Choose <span className="text-gradient">OTT4YOU</span>?</h2>
                         <p className="section-subtitle animate-slide-up">We offer the best deals on premium streaming subscriptions</p>
@@ -182,7 +182,7 @@ export default function HomePage() {
                 </section>
 
                 {/* Payment Methods Section */}
-                <section className="payment-methods" style={{ padding: '4rem 0', background: 'var(--bg-secondary)' }}>
+                <section className="payment-methods section" style={{ background: 'var(--bg-secondary)' }}>
                     <div className="container" style={{ textAlign: 'center' }}>
                         <h2 className="section-title" style={{ marginBottom: '1rem' }}>Secure Payments Accepted</h2>
                         <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
