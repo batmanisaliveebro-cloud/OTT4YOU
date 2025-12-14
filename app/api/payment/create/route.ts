@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { NextResponse } from 'next/server';
 import { razorpay } from '@/lib/razorpay';
 import { auth } from '@/lib/auth';
