@@ -45,14 +45,14 @@ export default function HomePage() {
         }
     };
 
-    // Platform data with emoji icons
+    // Platform data with real logo images
     const platforms = [
-        { name: 'Prime Video', emoji: '🎬', color: '#00A8E1' },
-        { name: 'Spotify', emoji: '🎵', color: '#1DB954' },
-        { name: 'YouTube', emoji: '📺', color: '#FF0000' },
-        { name: 'Hotstar', emoji: '⭐', color: '#1F80E0' },
-        { name: 'JioSaavn', emoji: '🎧', color: '#2BC5B4' },
-        { name: 'SonyLIV', emoji: '🎥', color: '#E50914' },
+        { name: 'Prime Video', logo: '/logos/prime-video.jpg', color: '#00A8E1' },
+        { name: 'Spotify', logo: '/logos/spotify.png', color: '#1DB954' },
+        { name: 'YouTube Premium', logo: '/logos/youtube-premium.jpg', color: '#FF0000' },
+        { name: 'JioHotstar', logo: '/logos/jiohotstar.jpg', color: '#1F80E0' },
+        { name: 'JioSaavn', logo: '/logos/jiosaavn.png', color: '#2BC5B4' },
+        { name: 'SonyLIV', logo: '/logos/sonyliv.jpg', color: '#E50914' },
     ];
 
     return (
@@ -171,8 +171,14 @@ export default function HomePage() {
                             <div className="explore-logos">
                                 {platforms.map((platform, index) => (
                                     <Link href="/products" key={index} className="platform-logo-wrapper" title={platform.name}>
-                                        <div className="platform-logo-circle" style={{ background: `${platform.color}30`, borderColor: platform.color }}>
-                                            <span className="platform-emoji">{platform.emoji}</span>
+                                        <div className="platform-logo-circle" style={{ borderColor: platform.color }}>
+                                            <Image
+                                                src={platform.logo}
+                                                alt={platform.name}
+                                                width={80}
+                                                height={80}
+                                                className="platform-logo-img"
+                                            />
                                         </div>
                                         <span className="platform-label">{platform.name}</span>
                                     </Link>

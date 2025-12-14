@@ -13,14 +13,14 @@ export async function GET() {
         await connectDB();
         logs.push('2. DB connected');
 
-        // Update existing products with new accurate logos
+        // Update existing products with local logo paths
         const updates = [
-            { platform: 'Prime Video', logo: 'https://cdn.simpleicons.org/primevideo/00A8E1' },
-            { platform: 'Spotify', logo: 'https://cdn.simpleicons.org/spotify/1DB954' },
-            { platform: 'YouTube Premium', logo: 'https://cdn.simpleicons.org/youtube/FF0000' },
-            { platform: 'JioHotstar', logo: 'https://cdn.simpleicons.org/hotstar/1F80E0' },
-            { platform: 'Jio Saavn', logo: 'https://cdn.simpleicons.org/jiosaavn/2BC5B4' },
-            { platform: 'SonyLIV', logo: 'https://cdn.simpleicons.org/sony/E50914' },
+            { platform: 'Prime Video', logo: '/logos/prime-video.jpg' },
+            { platform: 'Spotify', logo: '/logos/spotify.png' },
+            { platform: 'YouTube Premium', logo: '/logos/youtube-premium.jpg' },
+            { platform: 'JioHotstar', logo: '/logos/jiohotstar.jpg' },
+            { platform: 'Jio Saavn', logo: '/logos/jiosaavn.png' },
+            { platform: 'SonyLIV', logo: '/logos/sonyliv.jpg' },
         ];
 
         logs.push('3. Updating logos...');
@@ -36,7 +36,7 @@ export async function GET() {
 
         return NextResponse.json({
             success: true,
-            message: 'Logos updated with accurate brand icons!',
+            message: 'Logos updated with local images!',
             logs,
         });
     } catch (error: any) {
