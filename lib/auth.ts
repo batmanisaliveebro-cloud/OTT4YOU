@@ -10,14 +10,28 @@ export const authOptions = {
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            authorization: {
+                params: {
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code"
+                }
+            }
         }),
     ],
     callbacks: {
-        async signIn({ user }: any) {
+        async signIn({ user, account, profile }: any) {
+            console.log('SignIn callback triggered');
+            console.log('User email:', user?.email);
+
             try {
-                if (!user.email) return false;
+                if (!user?.email) {
+                    console.log('No email found');
+                    return false;
+                }
 
                 await connectDB();
+                console.log('DB connected in signIn');
 
                 let dbUser = await User.findOne({ email: user.email });
 
@@ -29,17 +43,21 @@ export const authOptions = {
                         image: user.image || '',
                         role: isAdmin ? 'admin' : 'user',
                     });
+                    console.log('New user created:', user.email);
+                } else {
+                    console.log('Existing user found:', user.email);
                 }
 
                 return true;
-            } catch (error) {
-                console.error('SignIn callback error:', error);
-                return true; // Still allow sign in even if DB fails
+            } catch (error: any) {
+                console.error('SignIn callback error:', error.message);
+                // Return true anyway to avoid blocking sign-in
+                return true;
             }
         },
         async session({ session, token }: any) {
             try {
-                if (session.user && token.sub) {
+                if (session?.user?.email) {
                     await connectDB();
                     const dbUser = await User.findOne({ email: session.user.email });
 
@@ -48,14 +66,17 @@ export const authOptions = {
                         session.user.role = dbUser.role;
                     }
                 }
-            } catch (error) {
-                console.error('Session callback error:', error);
+            } catch (error: any) {
+                console.error('Session callback error:', error.message);
             }
             return session;
         },
-        async jwt({ token, user }: any) {
+        async jwt({ token, user, account }: any) {
             if (user) {
                 token.id = user.id;
+            }
+            if (account) {
+                token.accessToken = account.access_token;
             }
             return token;
         },
@@ -66,9 +87,10 @@ export const authOptions = {
     },
     session: {
         strategy: 'jwt' as const,
+        maxAge: 30 * 24 * 60 * 60, // 30 days
     },
     secret: process.env.NEXTAUTH_SECRET,
-    debug: process.env.NODE_ENV === 'development',
+    debug: true, // Enable debug mode
 };
 
 export const auth = () => getServerSession(authOptions);
