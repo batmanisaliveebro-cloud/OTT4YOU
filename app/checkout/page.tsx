@@ -78,6 +78,14 @@ export default function CheckoutPage() {
                     return;
                 }
 
+                // Validate UTR: Must be exactly 12 digits
+                const utrRegex = /^\d{12}$/;
+                if (!utrRegex.test(manualDetails.utr)) {
+                    alert('Invalid UTR. It must be exactly 12 digits.');
+                    setLoading(false);
+                    return;
+                }
+
                 const response = await fetch('/api/orders/manual', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -332,7 +340,11 @@ export default function CheckoutPage() {
                                         className="input"
                                         placeholder="e.g. 123456789012"
                                         value={manualDetails.utr}
-                                        onChange={(e) => setManualDetails({ ...manualDetails, utr: e.target.value })}
+                                        maxLength={12}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, ''); // Only allow numbers
+                                            setManualDetails({ ...manualDetails, utr: val });
+                                        }}
                                     />
                                 </div>
 
