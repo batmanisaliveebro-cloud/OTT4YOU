@@ -24,8 +24,8 @@ export default function Footer() {
                         <div className="trust-badge">
                             <div className="trust-icon">✅</div>
                             <div className="trust-text">
-                                <strong>Trusted by 10K+</strong>
-                                <span>Happy Customers</span>
+                                <strong>100% Trusted</strong>
+                                <span>Verified Sellers</span>
                             </div>
                         </div>
                         <div className="trust-badge">
