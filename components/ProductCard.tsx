@@ -242,9 +242,8 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
                             </button>
                         </div>
                     </div>
-                </div >
-            )
-            }
+                </div>
+            )}
         </>
     );
 }
