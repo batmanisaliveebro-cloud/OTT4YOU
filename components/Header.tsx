@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSession, signIn, signOut } from 'next-auth/react';
@@ -11,18 +11,40 @@ export default function Header() {
     const { data: session } = useSession();
     const [menuOpen, setMenuOpen] = useState(false);
     const { itemCount } = useCart();
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        if (menuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => { document.body.style.overflow = 'auto'; };
+    }, [menuOpen]);
+
+    const closeMenu = () => setMenuOpen(false);
 
     return (
         <>
-            {/* Top Contact Bar */}
-            <div className="contact-bar">
-                <div className="container contact-bar-content">
-                    <span>Need Help?</span>
-                    <a href="mailto:batmanisaliveebro@gmail.com" className="contact-email">
-                        📧 batmanisaliveebro@gmail.com
-                    </a>
+            {/* Top Contact Bar - Hidden on mobile */}
+            {!isMobile && (
+                <div className="contact-bar">
+                    <div className="container contact-bar-content">
+                        <span>Need Help?</span>
+                        <a href="mailto:batmanisaliveebro@gmail.com" className="contact-email">
+                            📧 batmanisaliveebro@gmail.com
+                        </a>
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Main Header */}
             <header className="header-glass">
@@ -31,84 +53,260 @@ export default function Header() {
                         OTT4YOU
                     </Link>
 
-                    {/* Mobile Menu Button */}
-                    <button
-                        className="mobile-menu-btn"
-                        onClick={() => setMenuOpen(!menuOpen)}
-                        aria-label="Toggle menu"
-                    >
-                        {menuOpen ? '✕' : '☰'}
-                    </button>
+                    {/* Desktop Navigation */}
+                    {!isMobile && (
+                        <nav className="nav-links">
+                            <Link href="/" className="nav-link">Home</Link>
+                            <Link href="/products" className="nav-link">Products</Link>
 
-                    {/* Navigation */}
-                    <nav className={`nav-links ${menuOpen ? 'nav-open' : ''}`}>
-                        <Link href="/" className="nav-link" onClick={() => setMenuOpen(false)}>
-                            Home
-                        </Link>
-                        <Link href="/products" className="nav-link" onClick={() => setMenuOpen(false)}>
-                            Products
-                        </Link>
-
-
-
-                        {itemCount > 0 && (
-                            <Link href="/cart" className="nav-link" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                                <span style={{ fontSize: '0.9rem', fontWeight: 600, letterSpacing: '1px' }}>CART</span>
-                                <CartCount />
-                            </Link>
-                        )}
-
-                        {session ? (
-                            <>
-                                <Link href="/dashboard" className="nav-link" onClick={() => setMenuOpen(false)}>
-                                    My Orders
+                            {itemCount > 0 && (
+                                <Link href="/cart" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                    <span>Cart</span>
+                                    <CartCount />
                                 </Link>
-                                <Link href="/profile" className="nav-link" onClick={() => setMenuOpen(false)}>
-                                    Profile
+                            )}
+
+                            {session ? (
+                                <>
+                                    <Link href="/dashboard" className="nav-link">My Orders</Link>
+                                    <Link href="/profile" className="nav-link">Profile</Link>
+                                    {(session.user as any)?.role === 'admin' && (
+                                        <Link href="/admin" className="nav-link admin-link">Admin</Link>
+                                    )}
+                                    <div className="user-section">
+                                        {session.user?.image && (
+                                            <Image
+                                                src={session.user.image}
+                                                alt={session.user.name || 'User'}
+                                                width={36}
+                                                height={36}
+                                                className="user-avatar"
+                                            />
+                                        )}
+                                        <span className="user-name">{session.user?.name?.split(' ')[0]}</span>
+                                        <button
+                                            onClick={() => signOut({ callbackUrl: '/' })}
+                                            className="btn btn-secondary btn-sm"
+                                        >
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <button
+                                    onClick={() => signIn('google', { callbackUrl: '/' })}
+                                    className="google-signin-btn"
+                                >
+                                    <span>Sign In</span>
+                                </button>
+                            )}
+                        </nav>
+                    )}
+
+                    {/* Mobile: Cart + Menu Button */}
+                    {isMobile && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            {itemCount > 0 && (
+                                <Link
+                                    href="/cart"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '0.25rem',
+                                        padding: '0.5rem 0.75rem',
+                                        background: 'rgba(139, 92, 246, 0.2)',
+                                        borderRadius: '8px',
+                                        color: '#fff',
+                                        textDecoration: 'none',
+                                        fontWeight: 600,
+                                        fontSize: '0.85rem',
+                                    }}
+                                >
+                                    🛒 <CartCount />
+                                </Link>
+                            )}
+                            <button
+                                className="mobile-menu-btn"
+                                onClick={() => setMenuOpen(!menuOpen)}
+                                aria-label="Toggle menu"
+                            >
+                                {menuOpen ? '✕' : '☰'}
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </header>
+
+            {/* Mobile Menu Overlay */}
+            {isMobile && menuOpen && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(180deg, rgba(15, 15, 30, 0.98), rgba(26, 26, 46, 0.98))',
+                    backdropFilter: 'blur(20px)',
+                    zIndex: 9998,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '80px 1.5rem 2rem',
+                    animation: 'fadeIn 0.2s ease',
+                    overflowY: 'auto',
+                }}>
+                    {/* User Section */}
+                    {session && (
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem',
+                            marginBottom: '1.5rem',
+                            padding: '1rem',
+                            background: 'rgba(139, 92, 246, 0.1)',
+                            borderRadius: '16px',
+                            border: '1px solid rgba(139, 92, 246, 0.2)',
+                        }}>
+                            {session.user?.image && (
+                                <Image
+                                    src={session.user.image}
+                                    alt={session.user.name || 'User'}
+                                    width={50}
+                                    height={50}
+                                    style={{ borderRadius: '50%' }}
+                                />
+                            )}
+                            <div>
+                                <div style={{ fontWeight: 600, fontSize: '1rem' }}>{session.user?.name}</div>
+                                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)' }}>{session.user?.email}</div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Navigation Buttons */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        <Link href="/" onClick={closeMenu} style={navButtonStyle}>
+                            <span style={{ fontSize: '1.25rem' }}>🏠</span>
+                            <span>Home</span>
+                        </Link>
+
+                        <Link href="/products" onClick={closeMenu} style={navButtonStyle}>
+                            <span style={{ fontSize: '1.25rem' }}>📦</span>
+                            <span>Products</span>
+                        </Link>
+
+                        {session && (
+                            <>
+                                <Link href="/dashboard" onClick={closeMenu} style={navButtonStyle}>
+                                    <span style={{ fontSize: '1.25rem' }}>📋</span>
+                                    <span>My Orders</span>
+                                </Link>
+
+                                <Link href="/profile" onClick={closeMenu} style={navButtonStyle}>
+                                    <span style={{ fontSize: '1.25rem' }}>👤</span>
+                                    <span>Profile</span>
                                 </Link>
 
                                 {(session.user as any)?.role === 'admin' && (
-                                    <Link href="/admin" className="nav-link admin-link" onClick={() => setMenuOpen(false)}>
-                                        Admin
+                                    <Link href="/admin" onClick={closeMenu} style={{
+                                        ...navButtonStyle,
+                                        background: 'rgba(239, 68, 68, 0.1)',
+                                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                                    }}>
+                                        <span style={{ fontSize: '1.25rem' }}>⚙️</span>
+                                        <span>Admin Panel</span>
                                     </Link>
                                 )}
-
-                                <div className="user-section">
-                                    {session.user?.image && (
-                                        <Image
-                                            src={session.user.image}
-                                            alt={session.user.name || 'User'}
-                                            width={36}
-                                            height={36}
-                                            className="user-avatar"
-                                        />
-                                    )}
-                                    <span className="user-name">{session.user?.name?.split(' ')[0]}</span>
-                                    <button
-                                        onClick={() => signOut({ callbackUrl: '/' })}
-                                        className="btn btn-secondary btn-sm"
-                                    >
-                                        Sign Out
-                                    </button>
-                                </div>
                             </>
+                        )}
+                    </div>
+
+                    {/* Divider */}
+                    <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', margin: '1.5rem 0' }} />
+
+                    {/* Quick Links Section */}
+                    <div style={{ marginBottom: '1rem' }}>
+                        <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                            Support
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <Link href="/terms" onClick={closeMenu} style={smallButtonStyle}>Terms</Link>
+                            <Link href="/refund-policy" onClick={closeMenu} style={smallButtonStyle}>Refund</Link>
+                            <Link href="/shipping-policy" onClick={closeMenu} style={smallButtonStyle}>Shipping</Link>
+                            <a href="mailto:batmanisaliveebro@gmail.com" onClick={closeMenu} style={smallButtonStyle}>Contact</a>
+                        </div>
+                    </div>
+
+                    {/* Auth Button */}
+                    <div style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+                        {session ? (
+                            <button
+                                onClick={() => { signOut({ callbackUrl: '/' }); closeMenu(); }}
+                                style={{
+                                    width: '100%',
+                                    padding: '1rem',
+                                    borderRadius: '12px',
+                                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                                    background: 'rgba(239, 68, 68, 0.1)',
+                                    color: '#ef4444',
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    fontSize: '1rem',
+                                }}
+                            >
+                                Sign Out
+                            </button>
                         ) : (
                             <button
-                                onClick={() => signIn('google', { callbackUrl: '/' })}
-                                className="google-signin-btn"
+                                onClick={() => { signIn('google', { callbackUrl: '/' }); closeMenu(); }}
+                                style={{
+                                    width: '100%',
+                                    padding: '1rem',
+                                    borderRadius: '12px',
+                                    border: 'none',
+                                    background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                                    color: '#fff',
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    fontSize: '1rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '0.5rem',
+                                }}
                             >
-                                <svg viewBox="0 0 24 24" width="20" height="20">
-                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                                </svg>
-                                <span>Sign in with Google</span>
+                                Sign in with Google
                             </button>
                         )}
-                    </nav>
+                    </div>
                 </div>
-            </header>
+            )}
         </>
     );
 }
+
+// Styles for navigation buttons
+const navButtonStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+    padding: '1rem 1.25rem',
+    background: 'rgba(255, 255, 255, 0.05)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius: '12px',
+    color: '#fff',
+    textDecoration: 'none',
+    fontWeight: 500,
+    fontSize: '1rem',
+    transition: 'all 0.2s',
+};
+
+const smallButtonStyle: React.CSSProperties = {
+    padding: '0.5rem 0.75rem',
+    background: 'rgba(255, 255, 255, 0.05)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius: '8px',
+    color: 'rgba(255, 255, 255, 0.7)',
+    textDecoration: 'none',
+    fontSize: '0.8rem',
+};
+
