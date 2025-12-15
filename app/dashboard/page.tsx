@@ -98,13 +98,60 @@ export default async function DashboardPage() {
                                                 ₹{order.amount}
                                             </div>
                                             <span className={`badge ${order.status === 'completed' ? 'badge-success' :
-                                                order.status === 'pending' ? 'badge-warning' :
+                                                order.status === 'pending' || order.status === 'pending_verification' ? 'badge-warning' :
                                                     'badge-danger'
                                                 }`}>
-                                                {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                                {order.status === 'pending_verification' ? 'Pending Verification' :
+                                                    order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                                             </span>
                                         </div>
                                     </div>
+
+                                    {/* Status-specific messages */}
+                                    {order.status === 'failed' && (
+                                        <div style={{
+                                            marginTop: '1rem',
+                                            padding: '0.75rem 1rem',
+                                            background: 'rgba(239, 68, 68, 0.1)',
+                                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                                            borderRadius: '8px',
+                                        }}>
+                                            <p style={{ color: '#ef4444', fontSize: '0.9rem', fontWeight: 500 }}>
+                                                ❌ Incorrect payment details. Please contact support if you believe this is an error.
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {order.status === 'completed' && (
+                                        <div style={{
+                                            marginTop: '1rem',
+                                            padding: '0.75rem 1rem',
+                                            background: 'rgba(16, 185, 129, 0.1)',
+                                            border: '1px solid rgba(16, 185, 129, 0.3)',
+                                            borderRadius: '8px',
+                                        }}>
+                                            <p style={{ color: '#10b981', fontSize: '0.9rem', fontWeight: 500, marginBottom: '0.5rem' }}>
+                                                ✅ Check your registered email for account credentials!
+                                            </p>
+                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                                Need help? Contact us on Telegram: <a href="https://t.me/BATMANISALIVEEBRO" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', fontWeight: 600 }}>@BATMANISALIVEEBRO</a>
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {(order.status === 'pending' || order.status === 'pending_verification') && (
+                                        <div style={{
+                                            marginTop: '1rem',
+                                            padding: '0.75rem 1rem',
+                                            background: 'rgba(245, 158, 11, 0.1)',
+                                            border: '1px solid rgba(245, 158, 11, 0.3)',
+                                            borderRadius: '8px',
+                                        }}>
+                                            <p style={{ color: '#f59e0b', fontSize: '0.9rem', fontWeight: 500 }}>
+                                                ⏳ Your payment is being verified. This usually takes 15-30 minutes.
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
