@@ -920,7 +920,7 @@ html {
 
 /* Homepage Hero */
 .hero-section {
-  padding: 8rem 0 6rem;
+  padding: 5rem 0 4rem;
   text-align: center;
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.1));
 }
@@ -1012,7 +1012,7 @@ html {
 
 /* Features Section */
 .features-section {
-  padding: 5rem 0;
+  padding: 3rem 0;
   background: var(--glass-bg);
 }
 
@@ -1166,7 +1166,7 @@ html {
 
 /* User Stats Section */
 .user-stats-section {
-  padding: 4rem 0;
+  padding: 2.5rem 0;
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
   border-bottom: 1px solid var(--glass-border);
 }

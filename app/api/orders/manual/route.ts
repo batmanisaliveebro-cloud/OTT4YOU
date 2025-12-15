@@ -26,6 +26,15 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, error: 'User not found' }, { status: 404 });
         }
 
+        // Check if UTR has already been used
+        const existingOrder = await Order.findOne({ 'manualPaymentDetails.utr': utr });
+        if (existingOrder) {
+            return NextResponse.json({
+                success: false,
+                error: 'UTR already submitted. This transaction ID has been used before.'
+            }, { status: 400 });
+        }
+
         const orders = [];
 
         // Create an order for each item in the cart
