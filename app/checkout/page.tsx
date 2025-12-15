@@ -210,7 +210,7 @@ export default function CheckoutPage() {
 
                         {/* Telegram Support Link */}
                         <a
-                            href="https://t.me/BATMANISALIVEEBRO"
+                            href="https://t.me/akhilescrow"
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{

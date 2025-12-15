@@ -134,7 +134,7 @@ export default async function DashboardPage() {
                                                 ✅ Check your registered email for account credentials!
                                             </p>
                                             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                                Need help? Contact us on Telegram: <a href="https://t.me/BATMANISALIVEEBRO" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', fontWeight: 600 }}>@BATMANISALIVEEBRO</a>
+                                                Need help? Contact us on Telegram: <a href="https://t.me/akhilescrow" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', fontWeight: 600 }}>@akhilescrow</a>
                                             </p>
                                         </div>
                                     )}
