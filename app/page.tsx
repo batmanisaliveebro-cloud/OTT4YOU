@@ -81,21 +81,21 @@ export default function HomePage() {
                     }} />
 
                     <div className="container" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
-                        {/* Trust Badge */}
+                        {/* Premium Badge */}
                         <div style={{
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '0.5rem',
                             padding: '0.5rem 1rem',
-                            background: 'rgba(16, 185, 129, 0.1)',
-                            border: '1px solid rgba(16, 185, 129, 0.3)',
+                            background: 'rgba(139, 92, 246, 0.1)',
+                            border: '1px solid rgba(139, 92, 246, 0.3)',
                             borderRadius: '50px',
                             marginBottom: '1.5rem',
                             fontSize: '0.85rem',
-                            color: '#10b981',
+                            color: '#a78bfa',
                         }}>
-                            <span>✓</span>
-                            <span>Trusted by 5000+ Customers</span>
+                            <span>⭐</span>
+                            <span>Premium OTT Subscriptions</span>
                         </div>
 
                         <h1 style={{
@@ -215,7 +215,7 @@ export default function HomePage() {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff' }}>
                                 <span style={{ fontSize: '1.25rem' }}>✅</span>
-                                <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>5000+ Happy Customers</span>
+                                <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Genuine Accounts</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff' }}>
                                 <span style={{ fontSize: '1.25rem' }}>🎧</span>
@@ -392,7 +392,80 @@ export default function HomePage() {
                         </p>
                     </div>
                 </section>
-            </main>
+
+                {/* Contact Support Section */}
+                <section style={{ padding: '3rem 0', background: 'var(--bg-secondary)' }}>
+                    <div className="container" style={{ textAlign: 'center' }}>
+                        <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '0.5rem' }}>
+                            Need <span style={{ color: '#8b5cf6' }}>Help?</span>
+                        </h2>
+                        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '2rem', maxWidth: '500px', margin: '0 auto 2rem' }}>
+                            Our support team is available 24/7. Reach out to us anytime!
+                        </p>
+
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            gap: '1.5rem',
+                            flexWrap: 'wrap',
+                        }}>
+                            {/* Telegram Button */}
+                            <a
+                                href="https://t.me/akhilescrow?text=Hi%2C%20I%20need%20help%20with%20my%20OTT4YOU%20order.%20Issue%3A%20"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '1rem',
+                                    padding: '1.25rem 2rem',
+                                    background: 'linear-gradient(135deg, #0088cc, #0077b5)',
+                                    borderRadius: '16px',
+                                    textDecoration: 'none',
+                                    color: '#fff',
+                                    fontWeight: 600,
+                                    fontSize: '1.1rem',
+                                    boxShadow: '0 4px 20px rgba(0, 136, 204, 0.3)',
+                                    transition: 'transform 0.2s',
+                                }}
+                            >
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                                </svg>
+                                <span>Chat on Telegram</span>
+                            </a>
+
+                            {/* Gmail Button */}
+                            <a
+                                href="mailto:batmanisaliveebro@gmail.com?subject=OTT4YOU%20Support%20-%20Need%20Help&body=Hi%20OTT4YOU%20Team%2C%0A%0AI%20need%20help%20with%20my%20order.%0A%0AIssue%3A%20%0A%0AOrder%20ID%20(if%20applicable)%3A%20%0A%0AThanks!"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '1rem',
+                                    padding: '1.25rem 2rem',
+                                    background: 'linear-gradient(135deg, #ea4335, #d93025)',
+                                    borderRadius: '16px',
+                                    textDecoration: 'none',
+                                    color: '#fff',
+                                    fontWeight: 600,
+                                    fontSize: '1.1rem',
+                                    boxShadow: '0 4px 20px rgba(234, 67, 53, 0.3)',
+                                    transition: 'transform 0.2s',
+                                }}
+                            >
+                                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                                </svg>
+                                <span>Email Support</span>
+                            </a>
+                        </div>
+
+                        <p style={{ marginTop: '1.5rem', color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>
+                            Average response time: 10-15 minutes
+                        </p>
+                    </div>
+                </section>
+            </main >
             <Footer />
         </>
     );
