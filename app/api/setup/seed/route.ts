@@ -15,6 +15,7 @@ export async function GET() {
                 durations: [
                     { months: 1, price: 49 },
                     { months: 3, price: 129 },
+                    { months: 6, price: 239 },
                     { months: 12, price: 399 }
                 ],
                 features: ["4K UHD Streaming", "Ad-free experience", "Offline Downloads", "Multiple Devices"],
@@ -28,6 +29,7 @@ export async function GET() {
                 durations: [
                     { months: 1, price: 29 },
                     { months: 3, price: 79 },
+                    { months: 6, price: 149 },
                     { months: 12, price: 249 }
                 ],
                 features: ["Ad-free music", "Download songs", "Unlimited skips", "High quality audio"],
@@ -41,6 +43,7 @@ export async function GET() {
                 durations: [
                     { months: 1, price: 39 },
                     { months: 3, price: 99 },
+                    { months: 6, price: 179 },
                     { months: 12, price: 299 }
                 ],
                 features: ["Ad-free videos", "Background play", "Downloads", "YouTube Music Premium"],
@@ -52,7 +55,9 @@ export async function GET() {
                 description: "Live sports, Hotstar Specials, movies, and more.",
                 logo: "/logos/jiohotstar.jpg",
                 durations: [
+                    { months: 1, price: 59 },
                     { months: 3, price: 149 },
+                    { months: 6, price: 279 },
                     { months: 12, price: 499 }
                 ],
                 features: ["Live Sports", "Hotstar Specials", "4K Quality", "Ad-free entertainment"],
@@ -65,9 +70,11 @@ export async function GET() {
                 logo: "/logos/jiosaavn.png",
                 durations: [
                     { months: 1, price: 19 },
-                    { months: 12, price: 99 }
+                    { months: 3, price: 49 },
+                    { months: 6, price: 89 },
+                    { months: 12, price: 149 }
                 ],
-                features: ["Ad-free music", "Unlimited Downloads", "High fidelity audio"],
+                features: ["Ad-free music", "Unlimited Downloads", "High fidelity audio", "Exclusive content"],
                 active: true
             },
             {
@@ -77,7 +84,9 @@ export async function GET() {
                 logo: "/logos/sonyliv.jpg",
                 durations: [
                     { months: 1, price: 59 },
-                    { months: 12, price: 399 }
+                    { months: 3, price: 149 },
+                    { months: 6, price: 269 },
+                    { months: 12, price: 449 }
                 ],
                 features: ["Live TV Channels", "SonyLIV Originals", "Live Sports", "Ad-free"],
                 active: true
