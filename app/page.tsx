@@ -51,12 +51,13 @@ export default function HomePage() {
             <main>
                 {/* Hero Section - Premium */}
                 <section style={{
-                    minHeight: '85vh',
+                    minHeight: 'min(85vh, 600px)',
                     display: 'flex',
                     alignItems: 'center',
                     background: 'linear-gradient(135deg, rgba(15, 15, 30, 1) 0%, rgba(26, 26, 46, 1) 50%, rgba(40, 20, 60, 1) 100%)',
                     position: 'relative',
                     overflow: 'hidden',
+                    padding: 'clamp(2rem, 5vw, 4rem) 0',
                 }}>
                     {/* Animated background elements */}
                     <div style={{
@@ -85,77 +86,59 @@ export default function HomePage() {
                         <div style={{
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '0.5rem',
-                            padding: '0.5rem 1rem',
+                            gap: '0.35rem',
+                            padding: '0.375rem 0.75rem',
                             background: 'rgba(139, 92, 246, 0.1)',
                             border: '1px solid rgba(139, 92, 246, 0.3)',
                             borderRadius: '50px',
-                            marginBottom: '1.5rem',
-                            fontSize: '0.85rem',
+                            marginBottom: '1rem',
+                            fontSize: 'clamp(0.7rem, 2.5vw, 0.85rem)',
                             color: '#a78bfa',
                         }}>
                             <span>⭐</span>
-                            <span>Premium OTT Subscriptions</span>
+                            <span>Premium OTT</span>
                         </div>
 
                         <h1 style={{
-                            fontSize: 'clamp(2rem, 6vw, 4rem)',
+                            fontSize: 'clamp(1.5rem, 5vw, 3rem)',
                             fontWeight: 800,
-                            lineHeight: 1.1,
-                            marginBottom: '1.5rem',
-                            maxWidth: '900px',
-                            margin: '0 auto 1.5rem',
+                            lineHeight: 1.15,
+                            marginBottom: '1rem',
+                            maxWidth: '700px',
+                            margin: '0 auto 1rem',
                         }}>
-                            Get Premium <span style={{
-                                background: 'linear-gradient(135deg, #8b5cf6, #7c3aed, #a78bfa)',
+                            Premium <span style={{
+                                background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
                                 WebkitBackgroundClip: 'text',
                                 WebkitTextFillColor: 'transparent',
-                            }}>OTT Subscriptions</span><br />
-                            at <span style={{ color: '#10b981' }}>50% OFF</span>
+                            }}>OTT</span> at <span style={{ color: '#10b981' }}>50% OFF</span>
                         </h1>
 
                         <p style={{
-                            fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+                            fontSize: 'clamp(0.85rem, 2.5vw, 1.1rem)',
                             color: 'rgba(255, 255, 255, 0.7)',
-                            maxWidth: '600px',
-                            margin: '0 auto 2rem',
-                            lineHeight: 1.6,
+                            maxWidth: '500px',
+                            margin: '0 auto 1.5rem',
+                            lineHeight: 1.5,
+                            padding: '0 0.5rem',
                         }}>
-                            Access Prime Video, Spotify, YouTube Premium & more at unbeatable prices. Instant delivery, genuine accounts!
+                            Prime Video, Spotify, YouTube Premium & more. Instant delivery!
                         </p>
 
-                        {/* CTA Buttons */}
-                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '3rem' }}>
+                        {/* CTA Button */}
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
                             <Link href="/products" style={{
-                                padding: '1rem 2.5rem',
+                                padding: 'clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2.5rem)',
                                 background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-                                borderRadius: '12px',
+                                borderRadius: '10px',
                                 color: '#fff',
                                 textDecoration: 'none',
                                 fontWeight: 600,
-                                fontSize: '1.1rem',
+                                fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
                                 boxShadow: '0 4px 20px rgba(139, 92, 246, 0.4)',
-                                transition: 'transform 0.2s, box-shadow 0.2s',
                             }}>
                                 Browse Subscriptions →
                             </Link>
-                            {!session && (
-                                <button
-                                    onClick={() => signIn('google', { callbackUrl: '/' })}
-                                    style={{
-                                        padding: '1rem 2rem',
-                                        background: 'rgba(255, 255, 255, 0.05)',
-                                        border: '1px solid rgba(255, 255, 255, 0.2)',
-                                        borderRadius: '12px',
-                                        color: '#fff',
-                                        fontWeight: 600,
-                                        fontSize: '1rem',
-                                        cursor: 'pointer',
-                                    }}
-                                >
-                                    Sign In
-                                </button>
-                            )}
                         </div>
 
                         {/* Payment Partners Badge */}

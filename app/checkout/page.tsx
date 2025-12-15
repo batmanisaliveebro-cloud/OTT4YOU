@@ -36,7 +36,6 @@ export default function CheckoutPage() {
         setLoading(true);
 
         try {
-            // Step 1: Create order in backend
             const orderResponse = await fetch('/api/cashfree/order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -54,17 +53,15 @@ export default function CheckoutPage() {
                 return;
             }
 
-            // Step 2: Initialize Cashfree checkout
             const cashfree = window.Cashfree({
-                mode: 'production', // or 'sandbox' for testing
+                mode: 'production',
             });
 
             const checkoutOptions = {
                 paymentSessionId: orderData.paymentSessionId,
-                redirectTarget: '_modal', // Opens popup
+                redirectTarget: '_modal',
             };
 
-            // Step 3: Open payment popup
             cashfree.checkout(checkoutOptions).then((result: any) => {
                 if (result.error) {
                     console.error('Payment error:', result.error);
@@ -74,12 +71,10 @@ export default function CheckoutPage() {
                 }
 
                 if (result.redirect) {
-                    // Payment is being processed
                     console.log('Redirecting...');
                 }
 
                 if (result.paymentDetails) {
-                    // Payment successful - verify on backend
                     verifyPayment(orderData.orderId);
                 }
             });
@@ -109,7 +104,6 @@ export default function CheckoutPage() {
                 setLoading(false);
                 setShowSuccess(true);
 
-                // Redirect to home after 5 seconds
                 setTimeout(() => {
                     router.push('/');
                 }, 5000);
@@ -124,13 +118,23 @@ export default function CheckoutPage() {
         }
     };
 
+    // Empty cart state
     if ((!session || items.length === 0) && !showSuccess) {
         return (
             <>
                 <Header />
-                <main className="container" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-                    <h1>Cart is empty</h1>
-                    <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>
+                <main style={{
+                    padding: '3rem 1rem',
+                    textAlign: 'center',
+                    minHeight: '60vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🛒</div>
+                    <h1 style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)', marginBottom: '0.5rem' }}>Cart is empty</h1>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                         Add items to your cart before checkout.
                     </p>
                 </main>
@@ -138,7 +142,7 @@ export default function CheckoutPage() {
         );
     }
 
-    // Show success overlay
+    // Success state
     if (showSuccess) {
         return (
             <>
@@ -155,28 +159,27 @@ export default function CheckoutPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    animation: 'fadeIn 0.4s ease'
+                    padding: '1rem',
                 }}>
-                    <div style={{ textAlign: 'center', padding: '2rem' }}>
-                        {/* Checkmark Circle */}
+                    <div style={{ textAlign: 'center', maxWidth: '100%' }}>
                         <div style={{
-                            width: '120px',
-                            height: '120px',
+                            width: 'clamp(80px, 20vw, 120px)',
+                            height: 'clamp(80px, 20vw, 120px)',
                             borderRadius: '50%',
                             background: 'linear-gradient(135deg, #10b981, #059669)',
-                            margin: '0 auto 2rem',
+                            margin: '0 auto 1.5rem',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            boxShadow: '0 0 60px rgba(16, 185, 129, 0.6)',
+                            boxShadow: '0 0 40px rgba(16, 185, 129, 0.5)',
                         }}>
-                            <span style={{ fontSize: '4rem', color: 'white' }}>✓</span>
+                            <span style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', color: 'white' }}>✓</span>
                         </div>
 
                         <h1 style={{
-                            fontSize: 'clamp(2rem, 5vw, 3rem)',
+                            fontSize: 'clamp(1.5rem, 5vw, 2.5rem)',
                             fontWeight: 800,
-                            marginBottom: '1rem',
+                            marginBottom: '0.75rem',
                             background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
@@ -185,26 +188,25 @@ export default function CheckoutPage() {
                         </h1>
 
                         <p style={{
-                            fontSize: '1.25rem',
+                            fontSize: 'clamp(0.9rem, 3vw, 1.1rem)',
                             color: 'var(--text-secondary)',
-                            marginBottom: '2rem',
+                            marginBottom: '1.5rem',
                         }}>
-                            Your order has been placed successfully.
+                            Your order has been placed.
                         </p>
 
                         <div style={{
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '0.75rem',
-                            padding: '1rem 2rem',
+                            gap: '0.5rem',
+                            padding: '0.75rem 1.25rem',
                             background: 'rgba(139, 92, 246, 0.1)',
-                            borderRadius: '12px',
+                            borderRadius: '10px',
                             border: '1px solid rgba(139, 92, 246, 0.3)',
+                            fontSize: '0.85rem',
                         }}>
-                            <div className="spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }}></div>
-                            <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                                Redirecting to home...
-                            </span>
+                            <div className="spinner" style={{ width: '16px', height: '16px', borderWidth: '2px' }}></div>
+                            <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Redirecting...</span>
                         </div>
                     </div>
                 </div>
@@ -212,80 +214,122 @@ export default function CheckoutPage() {
         );
     }
 
+    // Main checkout
     return (
         <>
-            {/* Cashfree SDK */}
             <Script
                 src="https://sdk.cashfree.com/js/v3/cashfree.js"
                 onLoad={() => setSdkLoaded(true)}
             />
 
             <Header />
-            <main className="container" style={{ padding: '2rem 1rem', maxWidth: '600px', margin: '0 auto' }}>
-                <h1 className="section-title" style={{ marginBottom: '1.5rem' }}>Checkout</h1>
+            <main style={{
+                padding: 'clamp(1rem, 3vw, 2rem) clamp(0.75rem, 2vw, 1rem)',
+                maxWidth: '500px',
+                margin: '0 auto',
+                minHeight: '70vh',
+            }}>
+                <h1 style={{
+                    fontSize: 'clamp(1.25rem, 4vw, 1.5rem)',
+                    marginBottom: '1rem',
+                    textAlign: 'center',
+                }}>Checkout</h1>
 
-                {/* Order Summary */}
-                <div className="glass-card" style={{ marginBottom: '1.5rem' }}>
-                    <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Order Summary</h3>
+                {/* Order Summary - Compact */}
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    padding: 'clamp(0.75rem, 2vw, 1rem)',
+                    marginBottom: '1rem',
+                }}>
+                    <h3 style={{ fontSize: '0.9rem', marginBottom: '0.75rem', color: 'rgba(255,255,255,0.8)' }}>
+                        Order Summary
+                    </h3>
 
                     {items.map((item, index) => (
                         <div key={index} style={{
                             display: 'flex',
                             justifyContent: 'space-between',
-                            padding: '0.75rem 0',
-                            borderBottom: index < items.length - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none',
+                            alignItems: 'center',
+                            padding: '0.5rem 0',
+                            borderBottom: index < items.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
                         }}>
                             <div>
-                                <div style={{ fontWeight: 500 }}>{item.productName}</div>
-                                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>{item.productName}</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                                     {item.duration} month{item.duration > 1 ? 's' : ''}
                                 </div>
                             </div>
-                            <div style={{ fontWeight: 600, color: '#10b981' }}>₹{item.price}</div>
+                            <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#10b981' }}>
+                                ₹{item.price}
+                            </div>
                         </div>
                     ))}
 
                     <div style={{
-                        borderTop: '2px solid rgba(139, 92, 246, 0.3)',
-                        marginTop: '1rem',
-                        paddingTop: '1rem',
+                        borderTop: '1px solid rgba(139, 92, 246, 0.3)',
+                        marginTop: '0.75rem',
+                        paddingTop: '0.75rem',
                         display: 'flex',
                         justifyContent: 'space-between',
                         fontWeight: 'bold',
-                        fontSize: '1.25rem'
+                        fontSize: '1.1rem',
                     }}>
                         <span>Total</span>
                         <span style={{ color: '#10b981' }}>₹{totalAmount}</span>
                     </div>
                 </div>
 
-                {/* Payment Info */}
-                <div className="glass-card" style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
-                    <div style={{ marginBottom: '1rem' }}>
-                        <span style={{ fontSize: '2rem' }}>🔒</span>
-                    </div>
-                    <h4 style={{ marginBottom: '0.5rem' }}>Secure Payment by Cashfree</h4>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                        Pay securely using UPI, Cards, Net Banking, or Wallets
-                    </p>
+                {/* Secure Payment Badge - Compact */}
+                <div style={{
+                    background: 'rgba(139, 92, 246, 0.05)',
+                    border: '1px solid rgba(139, 92, 246, 0.15)',
+                    borderRadius: '10px',
+                    padding: '0.75rem',
+                    marginBottom: '1rem',
+                    textAlign: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                }}>
+                    <span style={{ fontSize: '1.25rem' }}>🔒</span>
+                    <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>
+                        Secure payment via Cashfree
+                    </span>
                 </div>
 
                 {/* Pay Button */}
                 <button
                     onClick={handlePayment}
                     disabled={loading || !sdkLoaded}
-                    className="btn btn-primary full-width btn-lg btn-glow"
                     style={{
-                        padding: '1.25rem',
-                        fontSize: '1.1rem',
-                        opacity: loading || !sdkLoaded ? 0.7 : 1,
+                        width: '100%',
+                        padding: 'clamp(0.875rem, 3vw, 1.1rem)',
+                        borderRadius: '12px',
+                        border: 'none',
+                        background: loading || !sdkLoaded
+                            ? 'rgba(139, 92, 246, 0.5)'
+                            : 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                        color: '#fff',
+                        fontWeight: 700,
+                        fontSize: 'clamp(0.95rem, 3vw, 1.1rem)',
+                        cursor: loading || !sdkLoaded ? 'not-allowed' : 'pointer',
+                        boxShadow: loading || !sdkLoaded ? 'none' : '0 4px 20px rgba(139, 92, 246, 0.4)',
                     }}
                 >
                     {loading ? 'Processing...' : !sdkLoaded ? 'Loading...' : `Pay ₹${totalAmount}`}
                 </button>
 
-                <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.8rem', color: '#aaa' }}>
-                    Your credentials will be delivered to your registered email after payment.
+                <p style={{
+                    textAlign: 'center',
+                    marginTop: '0.75rem',
+                    fontSize: '0.7rem',
+                    color: 'rgba(255,255,255,0.4)',
+                    lineHeight: 1.4,
+                }}>
+                    Credentials delivered to your email after payment
                 </p>
             </main>
 
@@ -297,25 +341,26 @@ export default function CheckoutPage() {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: 'rgba(0,0,0,0.85)',
+                    background: 'rgba(0,0,0,0.9)',
                     backdropFilter: 'blur(5px)',
                     zIndex: 9999,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: 'white'
+                    color: 'white',
+                    padding: '1rem',
                 }}>
                     <div className="spinner" style={{
-                        width: '60px',
-                        height: '60px',
-                        borderWidth: '4px',
-                        marginBottom: '1.5rem',
+                        width: 'clamp(40px, 10vw, 60px)',
+                        height: 'clamp(40px, 10vw, 60px)',
+                        borderWidth: '3px',
+                        marginBottom: '1rem',
                     }} />
-                    <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                    <h2 style={{ fontSize: 'clamp(1.1rem, 4vw, 1.5rem)', fontWeight: 600, marginBottom: '0.5rem', textAlign: 'center' }}>
                         Processing Payment...
                     </h2>
-                    <p style={{ color: '#aaa' }}>Please do not close this window</p>
+                    <p style={{ color: '#888', fontSize: '0.85rem' }}>Please wait</p>
                 </div>
             )}
         </>
