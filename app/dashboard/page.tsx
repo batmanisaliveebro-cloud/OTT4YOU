@@ -158,30 +158,88 @@ export default async function DashboardPage() {
                     )}
                 </div>
 
-                {orders.length > 0 && (
-                    <div style={{
-                        marginTop: '2rem',
-                        padding: '2rem',
-                        background: 'var(--glass-bg)',
-                        borderRadius: 'var(--radius-lg)',
-                        border: '1px solid var(--glass-border)',
-                    }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                                <h3 style={{ marginBottom: '0.5rem' }}>Total Spent</h3>
-                                <p style={{ color: 'var(--text-secondary)' }}>
-                                    {orders.length} {orders.length === 1 ? 'purchase' : 'purchases'}
-                                </p>
+                {orders.length > 0 && (() => {
+                    const successfulOrders = orders.filter((o: any) => o.status === 'completed');
+                    const pendingOrders = orders.filter((o: any) => o.status === 'pending' || o.status === 'pending_verification');
+                    const failedOrders = orders.filter((o: any) => o.status === 'failed');
+                    const successfulAmount = successfulOrders.reduce((sum: number, o: any) => sum + o.amount, 0);
+                    const pendingAmount = pendingOrders.reduce((sum: number, o: any) => sum + o.amount, 0);
+                    const failedAmount = failedOrders.reduce((sum: number, o: any) => sum + o.amount, 0);
+
+                    return (
+                        <div style={{ marginTop: '2rem' }}>
+                            {/* Stats Grid */}
+                            <div className="dashboard-stats-grid" style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(3, 1fr)',
+                                gap: '1rem',
+                                marginBottom: '1.5rem',
+                            }}>
+                                {/* Successful */}
+                                <div style={{
+                                    padding: '1.25rem',
+                                    background: 'rgba(16, 185, 129, 0.1)',
+                                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                                    borderRadius: '12px',
+                                    textAlign: 'center',
+                                }}>
+                                    <div style={{ fontSize: '0.85rem', color: '#10b981', marginBottom: '0.5rem' }}>✅ Successful</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#10b981' }}>{successfulOrders.length}</div>
+                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>₹{successfulAmount}</div>
+                                </div>
+
+                                {/* Pending */}
+                                <div style={{
+                                    padding: '1.25rem',
+                                    background: 'rgba(245, 158, 11, 0.1)',
+                                    border: '1px solid rgba(245, 158, 11, 0.3)',
+                                    borderRadius: '12px',
+                                    textAlign: 'center',
+                                }}>
+                                    <div style={{ fontSize: '0.85rem', color: '#f59e0b', marginBottom: '0.5rem' }}>⏳ Pending</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f59e0b' }}>{pendingOrders.length}</div>
+                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>₹{pendingAmount}</div>
+                                </div>
+
+                                {/* Failed */}
+                                <div style={{
+                                    padding: '1.25rem',
+                                    background: 'rgba(239, 68, 68, 0.1)',
+                                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                                    borderRadius: '12px',
+                                    textAlign: 'center',
+                                }}>
+                                    <div style={{ fontSize: '0.85rem', color: '#ef4444', marginBottom: '0.5rem' }}>❌ Failed</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#ef4444' }}>{failedOrders.length}</div>
+                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>₹{failedAmount}</div>
+                                </div>
                             </div>
+
+                            {/* Total Section */}
                             <div style={{
-                                fontSize: '2rem',
-                                fontWeight: 700,
-                            }} className="text-gradient">
-                                ₹{orders.reduce((sum: number, order: any) => sum + order.amount, 0)}
+                                padding: '1.5rem',
+                                background: 'var(--glass-bg)',
+                                borderRadius: '12px',
+                                border: '1px solid var(--glass-border)',
+                            }}>
+                                <div className="total-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+                                    <div>
+                                        <h3 style={{ marginBottom: '0.25rem' }}>Total Orders</h3>
+                                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                                            {orders.length} {orders.length === 1 ? 'purchase' : 'purchases'}
+                                        </p>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: '1.75rem', fontWeight: 700 }} className="text-gradient">
+                                            ₹{orders.reduce((sum: number, order: any) => sum + order.amount, 0)}
+                                        </div>
+                                        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total Amount</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    );
+                })()}
             </main>
             <Footer />
         </>
