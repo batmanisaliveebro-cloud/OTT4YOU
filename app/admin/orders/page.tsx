@@ -186,6 +186,12 @@ export default function AdminOrdersPage() {
                                         textAlign: 'left',
                                         color: 'var(--text-secondary)',
                                         fontWeight: 600,
+                                    }}>User Email</th>
+                                    <th style={{
+                                        padding: '1rem',
+                                        textAlign: 'left',
+                                        color: 'var(--text-secondary)',
+                                        fontWeight: 600,
                                     }}>Product</th>
                                     <th style={{
                                         padding: '1rem',
@@ -227,6 +233,17 @@ export default function AdminOrdersPage() {
                                                 fontFamily: 'monospace',
                                             }}>
                                                 {order._id.slice(-8)}
+                                            </td>
+                                            <td style={{
+                                                padding: '1rem',
+                                                fontSize: '0.875rem',
+                                                color: '#3b82f6',
+                                                maxWidth: '180px',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                            }}>
+                                                {order.userEmail || 'N/A'}
                                             </td>
                                             <td style={{ padding: '1rem' }}>
                                                 <div>
