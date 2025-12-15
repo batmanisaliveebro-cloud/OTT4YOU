@@ -220,211 +220,205 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
                                 {product.description}
                             </p>
                         </div>
+                        Select Plan Duration
+                    </h4>
 
-                        {/* Duration Options */}
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Select Duration</h3>
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                                gap: '1rem'
-                            }}>
-                                {product.durations.map((duration, index) => (
-                                    <div
-                                        key={index}
-                                        onClick={() => setSelectedDuration(index)}
-                                        style={{
-                                            padding: '1.25rem',
-                                            border: `2px solid ${selectedDuration === index ? 'var(--primary-start)' : 'var(--glass-border)'}`,
-                                            borderRadius: 'var(--radius-md)',
-                                            cursor: 'pointer',
-                                            background: selectedDuration === index ? 'rgba(139, 92, 246, 0.1)' : 'var(--bg-tertiary)',
-                                            transition: 'all 0.2s',
-                                            textAlign: 'center'
-                                        }}
-                                    >
-                                        <div style={{
-                                            fontSize: '1.5rem',
-                                            fontWeight: 700,
-                                            color: selectedDuration === index ? 'var(--primary-start)' : 'inherit',
-                                            marginBottom: '0.5rem'
-                                        }}>
-                                            {duration.months}
-                                        </div>
-                                        <div style={{
-                                            fontSize: '0.85rem',
-                                            color: 'var(--text-secondary)',
-                                            marginBottom: '0.75rem'
-                                        }}>
-                                            Month{duration.months > 1 ? 's' : ''}
-                                        </div>
-                                        <div style={{
-                                            fontSize: '1.25rem',
-                                            fontWeight: 700,
-                                            color: selectedDuration === index ? 'var(--primary-start)' : 'var(--accent-green)'
-                                        }}>
-                                            ₹{duration.price}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Quantity Selector */}
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                                Quantity (Max 5)
-                            </label>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <button
-                                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                    className="btn"
-                                    style={{
-                                        padding: '0.75rem 1.25rem',
-                                        minWidth: '50px',
-                                        background: 'var(--bg-tertiary)'
-                                    }}
-                                >
-                                    −
-                                </button>
-                                <span style={{
-                                    fontSize: '1.5rem',
-                                    fontWeight: 700,
-                                    minWidth: '40px',
-                                    textAlign: 'center'
-                                }}>
-                                    {quantity}
-                                </span>
-                                <button
-                                    onClick={() => setQuantity(Math.min(5, quantity + 1))}
-                                    className="btn"
-                                    style={{
-                                        padding: '0.75rem 1.25rem',
-                                        minWidth: '50px',
-                                        background: 'var(--bg-tertiary)'
-                                    }}
-                                >
-                                    +
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Price Summary */}
-                        <div style={{
-                            background: 'rgba(139, 92, 246, 0.05)',
-                            borderRadius: 'var(--radius-md)',
-                            border: '1px solid var(--glass-border)'
-                        }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                                <span>Price per unit:</span>
-                                <span>₹{product.durations[selectedDuration]?.price}</span>
-                            </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                                <span>Quantity:</span>
-                                <span>×{quantity}</span>
-                            </div>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                paddingTop: '0.75rem',
-                                borderTop: '1px solid var(--glass-border)',
-                                fontWeight: 700,
-                                fontSize: '1.25rem'
-                            }}>
-                                <span>Total:</span>
-                                <span style={{ color: 'var(--primary-start)' }}>
-                                    ₹{(product.durations[selectedDuration]?.price || 0) * quantity}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: '1rem',
-                        }}>
-                            <button
-                                className="btn btn-secondary"
-                                onClick={handleAddToCart}
-                                disabled={product.stock < 1}
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                        gap: '1rem'
+                    }}>
+                        {product.durations.map((duration, index) => (
+                            <div
+                                key={index}
+                                onClick={() => setSelectedDuration(index)}
                                 style={{
-                                    padding: '0.75rem',
-                                    border: '1px solid var(--primary-start)'
+                                    padding: '1rem',
+                                    borderRadius: 'var(--radius-md)',
+                                    border: `2px solid ${selectedDuration === index
+                                        ? 'var(--primary-start)'
+                                        : 'var(--glass-border)'
+                                        }`,
+                                    background: selectedDuration === index
+                                        ? 'rgba(139, 92, 246, 0.1)'
+                                        : 'var(--bg-tertiary)',
+                                    cursor: 'pointer',
+                                    transition: 'all var(--transition-fast)',
+                                    textAlign: 'center'
                                 }}
                             >
-                                Add to Cart
-                            </button>
-                            <button
-                                className="btn btn-primary"
-                                onClick={handleBuyNow}
-                                disabled={product.stock < 1}
-                            >
-                                Buy Now
-                            </button>
-                        </div>
-
-                        {product.stock < 1 && (
-                            <p style={{ textAlign: 'center', marginTop: '1rem', color: '#ef4444', fontSize: '0.9rem' }}>
-                                Out of stock
-                            </p>
-                        )}
+                                <div style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.25rem', color: selectedDuration === index ? 'var(--primary-start)' : 'inherit' }}>
+                                    {duration.months}
+                                </div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                                    {duration.months === 1 ? 'Month' : 'Months'}
+                                </div>
+                                <div style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--accent-green)' }}>
+                                    ₹{duration.price}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
-            )}
 
-            {/* Success Animation Dialog */}
-            {showSuccess && (
+                        {/* Quantity Selector */}
+            <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+                    Quantity (Max 5)
+                </label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <button
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="btn"
+                        style={{
+                            padding: '0.75rem 1.25rem',
+                            minWidth: '50px',
+                            background: 'var(--bg-tertiary)'
+                        }}
+                    >
+                        −
+                    </button>
+                    <span style={{
+                        fontSize: '1.5rem',
+                        fontWeight: 700,
+                        minWidth: '40px',
+                        textAlign: 'center'
+                    }}>
+                        {quantity}
+                    </span>
+                    <button
+                        onClick={() => setQuantity(Math.min(5, quantity + 1))}
+                        className="btn"
+                        style={{
+                            padding: '0.75rem 1.25rem',
+                            minWidth: '50px',
+                            background: 'var(--bg-tertiary)'
+                        }}
+                    >
+                        +
+                    </button>
+                </div>
+            </div>
+
+            {/* Price Summary */}
+            <div style={{
+                background: 'rgba(139, 92, 246, 0.05)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--glass-border)'
+            }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                    <span>Price per unit:</span>
+                    <span>₹{product.durations[selectedDuration]?.price}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                    <span>Quantity:</span>
+                    <span>×{quantity}</span>
+                </div>
                 <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0, 0, 0, 0.8)',
-                    backdropFilter: 'blur(8px)',
-                    zIndex: 2000,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    paddingTop: '0.75rem',
+                    borderTop: '1px solid var(--glass-border)',
+                    fontWeight: 700,
+                    fontSize: '1.25rem'
+                }}>
+                    <span>Total:</span>
+                    <span style={{ color: 'var(--primary-start)' }}>
+                        ₹{(product.durations[selectedDuration]?.price || 0) * quantity}
+                    </span>
+                </div>
+            </div>
+
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '1rem',
+            }}>
+                <button
+                    className="btn btn-secondary"
+                    onClick={handleAddToCart}
+                    disabled={product.stock < 1}
+                    style={{
+                        padding: '0.75rem',
+                        border: '1px solid var(--primary-start)'
+                    }}
+                >
+                    Add to Cart
+                </button>
+                <button
+                    className="btn btn-primary"
+                    onClick={handleBuyNow}
+                    disabled={product.stock < 1}
+                >
+                    Buy Now
+                </button>
+            </div>
+
+            {product.stock < 1 && (
+                <p style={{ textAlign: 'center', marginTop: '1rem', color: '#ef4444', fontSize: '0.9rem' }}>
+                    Out of stock
+                </p>
+            )}
+        </div >
+                </div >
+            )
+}
+
+{/* Success Animation Dialog */ }
+{
+    showSuccess && (
+        <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.8)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 2000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            animation: 'fadeIn 0.3s ease'
+        }}>
+            <div style={{
+                background: 'linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary))',
+                padding: '3rem',
+                borderRadius: 'var(--radius-xl)',
+                border: '2px solid var(--primary-start)',
+                boxShadow: '0 0 50px rgba(139, 92, 246, 0.5)',
+                textAlign: 'center',
+                animation: 'scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            }}>
+                <div style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, var(--accent-green), #059669)',
+                    margin: '0 auto 1.5rem',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    animation: 'fadeIn 0.3s ease'
+                    animation: 'checkmarkPop 0.5s ease 0.2s both'
                 }}>
-                    <div style={{
-                        background: 'linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary))',
-                        padding: '3rem',
-                        borderRadius: 'var(--radius-xl)',
-                        border: '2px solid var(--primary-start)',
-                        boxShadow: '0 0 50px rgba(139, 92, 246, 0.5)',
-                        textAlign: 'center',
-                        animation: 'scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
-                    }}>
-                        <div style={{
-                            width: '80px',
-                            height: '80px',
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, var(--accent-green), #059669)',
-                            margin: '0 auto 1.5rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            animation: 'checkmarkPop 0.5s ease 0.2s both'
-                        }}>
-                            <span style={{ fontSize: '3rem', color: 'white' }}>✓</span>
-                        </div>
-                        <h2 style={{
-                            fontSize: '1.75rem',
-                            marginBottom: '0.5rem',
-                            background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent'
-                        }}>
-                            Added to Cart!
-                        </h2>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>
-                            Redirecting to checkout...
-                        </p>
-                    </div>
+                    <span style={{ fontSize: '3rem', color: 'white' }}>✓</span>
                 </div>
-            )}
+                <h2 style={{
+                    fontSize: '1.75rem',
+                    marginBottom: '0.5rem',
+                    background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                }}>
+                    Added to Cart!
+                </h2>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>
+                    Redirecting to checkout...
+                </p>
+            </div>
+        </div>
+    )
+}
         </>
     );
 }
