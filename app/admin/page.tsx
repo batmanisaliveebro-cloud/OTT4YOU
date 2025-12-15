@@ -5,7 +5,7 @@ import Product from '@/models/Product';
 
 export default async function AdminDashboard() {
   await connectDB();
-  
+
   const [totalOrders, totalUsers, totalProducts, orders] = await Promise.all([
     Order.countDocuments(),
     User.countDocuments(),
@@ -14,8 +14,8 @@ export default async function AdminDashboard() {
   ]);
 
   const totalRevenue = await Order.aggregate([
-    { $match: { status: 'completed' } },
-    { $group: { _id: null, total: { $sum: '$amount' } } },
+    { $match: { $or: [{ status: 'completed' }, { status: 'paid' }] } },
+    { $group: { _id: null, total: { $sum: '$totalAmount' } } },
   ]);
 
   const revenue = totalRevenue[0]?.total || 0;
@@ -117,13 +117,13 @@ export default async function AdminDashboard() {
                     textAlign: 'left',
                     color: 'var(--text-secondary)',
                     fontWeight: 600,
-                  }}>Product</th>
+                  }}>User</th>
                   <th style={{
                     padding: '1rem',
                     textAlign: 'left',
                     color: 'var(--text-secondary)',
                     fontWeight: 600,
-                  }}>Duration</th>
+                  }}>Product Summary</th>
                   <th style={{
                     padding: '1rem',
                     textAlign: 'left',
@@ -156,38 +156,45 @@ export default async function AdminDashboard() {
                     </td>
                   </tr>
                 ) : (
-                  orders.map((order: any) => (
-                    <tr key={order._id.toString()} style={{
-                      borderBottom: '1px solid var(--glass-border)',
-                    }}>
-                      <td style={{ padding: '1rem' }}>
-                        <div>
-                          <div style={{ fontWeight: 600 }}>{order.productName}</div>
-                          <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                            {order.platform}
+                  orders.map((order: any) => {
+                    // Logic to handle old vs new order structure
+                    const productName = order.items && order.items.length > 0
+                      ? (order.items.length === 1 ? order.items[0].productName : `${order.items.length} Items`)
+                      : (order.productName || 'Unknown Product');
+
+                    const amount = order.totalAmount || order.amount || 0;
+                    const userName = order.userName || order.userEmail?.split('@')[0] || 'User';
+
+                    return (
+                      <tr key={order._id.toString()} style={{
+                        borderBottom: '1px solid var(--glass-border)',
+                      }}>
+                        <td style={{ padding: '1rem' }}>
+                          <div style={{ fontWeight: 600 }}>{userName}</div>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                            {order.userEmail}
                           </div>
-                        </div>
-                      </td>
-                      <td style={{ padding: '1rem' }}>
-                        {order.duration} {order.duration === 1 ? 'Month' : 'Months'}
-                      </td>
-                      <td style={{ padding: '1rem', fontWeight: 600 }}>
-                        ₹{order.amount}
-                      </td>
-                      <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>
-                        {new Date(order.purchaseDate).toLocaleDateString()}
-                      </td>
-                      <td style={{ padding: '1rem' }}>
-                        <span className={`badge ${
-                          order.status === 'completed' ? 'badge-success' :
-                          order.status === 'pending' ? 'badge-warning' :
-                          'badge-danger'
-                        }`}>
-                          {order.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
+                        </td>
+                        <td style={{ padding: '1rem' }}>
+                          <span style={{ fontWeight: 500 }}>{productName}</span>
+                        </td>
+                        <td style={{ padding: '1rem', fontWeight: 600 }}>
+                          ₹{amount}
+                        </td>
+                        <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>
+                          {new Date(order.purchaseDate).toLocaleDateString()}
+                        </td>
+                        <td style={{ padding: '1rem' }}>
+                          <span className={`badge ${order.status === 'completed' || order.status === 'paid' ? 'badge-success' :
+                              order.status === 'pending' || order.status === 'pending_verification' ? 'badge-warning' :
+                                'badge-danger'
+                            }`}>
+                            {order.status}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
