@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { IProduct } from '@/models/Product';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
@@ -15,14 +16,22 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
     const [selectedDuration, setSelectedDuration] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const { addToCart } = useCart();
+    const router = useRouter();
 
-    const handlePurchase = () => {
-        if (onPurchase && product.durations[selectedDuration]) {
-            onPurchase(
-                product._id,
-                product.durations[selectedDuration].months,
-                product.durations[selectedDuration].price * quantity
-            );
+    const handleBuyNow = () => {
+        if (product.durations[selectedDuration]) {
+            // Add to cart
+            addToCart({
+                productId: product._id,
+                productName: product.name,
+                platform: product.platform,
+                logo: product.logo,
+                duration: product.durations[selectedDuration].months,
+                price: product.durations[selectedDuration].price
+            }, quantity);
+
+            // Redirect to checkout
+            router.push('/checkout');
             setIsModalOpen(false);
             setQuantity(1);
         }
@@ -316,7 +325,7 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
                             </button>
                             <button
                                 className="btn btn-primary"
-                                onClick={handlePurchase}
+                                onClick={handleBuyNow}
                                 disabled={product.stock < 1}
                             >
                                 Buy Now
