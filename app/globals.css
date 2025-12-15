@@ -3315,3 +3315,39 @@ main {
     height: 140px !important;
   }
 }
+
+/* ============================================
+   CHECKOUT PAGE - HIDE TRUST SECTION ON MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+
+  /* Add extra bottom padding on checkout to prevent footer overlap */
+  body:has([class*="checkout"]) main,
+  body main:has(img[alt="Payment QR"]) {
+    padding-bottom: 3rem !important;
+  }
+}
+
+/* Hide trust badges on checkout page to prevent overlap */
+body:has(img[alt="Payment QR"]) .trust-section,
+body:has([class*="checkout"]) .trust-section {
+  display: none !important;
+}
+
+/* Alternative: Make trust section have proper spacing */
+@media (max-width: 768px) {
+  .trust-section {
+    position: relative !important;
+    z-index: 1 !important;
+    background: var(--bg-secondary) !important;
+    margin-top: 0 !important;
+  }
+
+  /* Footer wrapper to prevent any overlap */
+  .footer {
+    position: relative !important;
+    z-index: 5 !important;
+    background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary)) !important;
+  }
+}

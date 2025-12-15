@@ -5,7 +5,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 declare global {
     interface Window {
@@ -140,7 +139,6 @@ export default function CheckoutPage() {
                         Add items to your cart before checkout.
                     </p>
                 </main>
-                <Footer />
             </>
         );
     }
@@ -248,7 +246,6 @@ export default function CheckoutPage() {
                         </div>
                     </div>
                 </div>
-                <Footer />
             </>
         );
     }
@@ -464,7 +461,6 @@ export default function CheckoutPage() {
                     )}
                 </div>
             </main>
-            <Footer />
 
             {/* Payment Processing Overlay */}
             {loading && (
