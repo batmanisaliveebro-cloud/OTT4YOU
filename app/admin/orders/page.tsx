@@ -99,33 +99,127 @@ export default function AdminOrdersPage() {
 
             <h1 style={{ marginBottom: '2rem' }}>Orders Management</h1>
 
-            {/* Stats */}
-            <div className="grid grid-3" style={{ marginBottom: '2rem' }}>
-                <div className="glass-card">
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                        Total Orders
-                    </p>
-                    <h2 style={{ fontSize: '2rem' }} className="text-gradient">
-                        {orders.length}
-                    </h2>
-                </div>
-                <div className="glass-card">
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                        Completed Orders
-                    </p>
-                    <h2 style={{ fontSize: '2rem' }} className="text-gradient">
-                        {orders.filter(o => o.status === 'completed').length}
-                    </h2>
-                </div>
-                <div className="glass-card">
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                        Total Revenue
-                    </p>
-                    <h2 style={{ fontSize: '2rem' }} className="text-gradient">
-                        ₹{totalRevenue.toLocaleString()}
-                    </h2>
-                </div>
-            </div>
+            {/* Time-Based Analytics */}
+            {(() => {
+                const now = new Date();
+                const startOfWeek = new Date(now);
+                startOfWeek.setDate(now.getDate() - now.getDay());
+                startOfWeek.setHours(0, 0, 0, 0);
+
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+                const completedOrders = orders.filter(o => o.status === 'completed');
+
+                const weeklyOrders = completedOrders.filter(o => new Date(o.purchaseDate) >= startOfWeek);
+                const monthlyOrders = completedOrders.filter(o => new Date(o.purchaseDate) >= startOfMonth);
+                const yearlyOrders = completedOrders.filter(o => new Date(o.purchaseDate) >= startOfYear);
+
+                const weeklyRevenue = weeklyOrders.reduce((sum, o) => sum + o.amount, 0);
+                const monthlyRevenue = monthlyOrders.reduce((sum, o) => sum + o.amount, 0);
+                const yearlyRevenue = yearlyOrders.reduce((sum, o) => sum + o.amount, 0);
+
+                return (
+                    <>
+                        {/* Overall Stats */}
+                        <div className="grid grid-3" style={{ marginBottom: '1.5rem' }}>
+                            <div className="glass-card">
+                                <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                                    Total Orders
+                                </p>
+                                <h2 style={{ fontSize: '2rem' }} className="text-gradient">
+                                    {orders.length}
+                                </h2>
+                            </div>
+                            <div className="glass-card">
+                                <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                                    Completed Orders
+                                </p>
+                                <h2 style={{ fontSize: '2rem' }} className="text-gradient">
+                                    {completedOrders.length}
+                                </h2>
+                            </div>
+                            <div className="glass-card">
+                                <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                                    Total Revenue
+                                </p>
+                                <h2 style={{ fontSize: '2rem' }} className="text-gradient">
+                                    ₹{totalRevenue.toLocaleString()}
+                                </h2>
+                            </div>
+                        </div>
+
+                        {/* Time-Based Revenue */}
+                        <div style={{
+                            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+                            borderRadius: '16px',
+                            padding: '1.5rem',
+                            marginBottom: '2rem',
+                            border: '1px solid rgba(139, 92, 246, 0.2)',
+                        }}>
+                            <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>📊 Revenue Analytics</h3>
+                            <div className="grid grid-3" style={{ gap: '1rem' }}>
+                                {/* This Week */}
+                                <div style={{
+                                    background: 'rgba(16, 185, 129, 0.1)',
+                                    borderRadius: '12px',
+                                    padding: '1.25rem',
+                                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                                    textAlign: 'center',
+                                }}>
+                                    <p style={{ color: '#10b981', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+                                        📅 This Week
+                                    </p>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#10b981', marginBottom: '0.25rem' }}>
+                                        ₹{weeklyRevenue.toLocaleString()}
+                                    </div>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                                        {weeklyOrders.length} orders
+                                    </p>
+                                </div>
+
+                                {/* This Month */}
+                                <div style={{
+                                    background: 'rgba(59, 130, 246, 0.1)',
+                                    borderRadius: '12px',
+                                    padding: '1.25rem',
+                                    border: '1px solid rgba(59, 130, 246, 0.3)',
+                                    textAlign: 'center',
+                                }}>
+                                    <p style={{ color: '#3b82f6', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+                                        📆 This Month
+                                    </p>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#3b82f6', marginBottom: '0.25rem' }}>
+                                        ₹{monthlyRevenue.toLocaleString()}
+                                    </div>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                                        {monthlyOrders.length} orders
+                                    </p>
+                                </div>
+
+                                {/* This Year */}
+                                <div style={{
+                                    background: 'rgba(139, 92, 246, 0.1)',
+                                    borderRadius: '12px',
+                                    padding: '1.25rem',
+                                    border: '1px solid rgba(139, 92, 246, 0.3)',
+                                    textAlign: 'center',
+                                }}>
+                                    <p style={{ color: '#8b5cf6', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 600 }}>
+                                        🗓️ This Year
+                                    </p>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#8b5cf6', marginBottom: '0.25rem' }}>
+                                        ₹{yearlyRevenue.toLocaleString()}
+                                    </div>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                                        {yearlyOrders.length} orders
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                );
+            })()}
 
             {/* Filters */}
             <div style={{
