@@ -130,7 +130,7 @@ export default function CheckoutPage() {
         }
     };
 
-    if (!session || items.length === 0) {
+    if ((!session || items.length === 0) && !showSuccess) {
         return (
             <>
                 <Header />
@@ -140,6 +140,91 @@ export default function CheckoutPage() {
                         Add items to your cart before checkout.
                     </p>
                 </main>
+                <Footer />
+            </>
+        );
+    }
+
+    // Show success overlay even if cart is empty (after successful payment)
+    if (showSuccess) {
+        return (
+            <>
+                <Header />
+                {/* Payment Success Animation */}
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(135deg, rgba(15, 15, 30, 0.98), rgba(26, 26, 46, 0.98))',
+                    backdropFilter: 'blur(10px)',
+                    zIndex: 10000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                    <div style={{ textAlign: 'center' }}>
+                        {/* Checkmark Circle */}
+                        <div style={{
+                            width: '120px',
+                            height: '120px',
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #10b981, #059669)',
+                            margin: '0 auto 2rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 0 60px rgba(16, 185, 129, 0.6)',
+                        }}>
+                            <span style={{ fontSize: '4rem', color: 'white' }}>✓</span>
+                        </div>
+
+                        {/* Success Text */}
+                        <h1 style={{
+                            fontSize: 'clamp(2rem, 5vw, 3rem)',
+                            fontWeight: 800,
+                            marginBottom: '1rem',
+                            background: 'linear-gradient(135deg, #8b5cf6, #a855f7)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                        }}>
+                            Payment Submitted!
+                        </h1>
+
+                        <p style={{
+                            fontSize: '1.25rem',
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            marginBottom: '1rem',
+                        }}>
+                            Your order has been received and will be verified shortly.
+                        </p>
+
+                        <p style={{
+                            fontSize: '1rem',
+                            color: '#10b981',
+                            marginBottom: '2rem',
+                        }}>
+                            📧 Account credentials will be sent to your Gmail or Telegram
+                        </p>
+
+                        {/* Redirect Message */}
+                        <div style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            padding: '1rem 2rem',
+                            background: 'rgba(139, 92, 246, 0.1)',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(139, 92, 246, 0.3)',
+                        }}>
+                            <div className="spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }}></div>
+                            <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                                Redirecting to home...
+                            </span>
+                        </div>
+                    </div>
+                </div>
                 <Footer />
             </>
         );
