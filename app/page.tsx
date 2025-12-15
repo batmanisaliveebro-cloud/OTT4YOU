@@ -45,163 +45,351 @@ export default function HomePage() {
         }
     };
 
-    // Platform data with real logo images
-    const platforms = [
-        { name: 'Prime Video', logo: '/logos/prime-video.jpg', color: '#00A8E1' },
-        { name: 'Spotify', logo: '/logos/spotify.png', color: '#1DB954' },
-        { name: 'YouTube Premium', logo: '/logos/youtube-premium.jpg', color: '#FF0000' },
-        { name: 'JioHotstar', logo: '/logos/jiohotstar.jpg', color: '#1F80E0' },
-        { name: 'JioSaavn', logo: '/logos/jiosaavn.png', color: '#2BC5B4' },
-        { name: 'SonyLIV', logo: '/logos/sonyliv.jpg', color: '#E50914' },
-    ];
-
     return (
         <>
             <Header />
             <main>
-                {/* Hero Section */}
-                <section className="hero-section">
-                    <div className="container">
-                        <div className="hero-content">
-                            <h1 className="hero-title animate-fade-in">
-                                Get Premium <span className="text-gradient">OTT Subscriptions</span> at Unbeatable Prices
-                            </h1>
-                            <p className="hero-subtitle animate-fade-in">
-                                Access your favorite streaming platforms – Prime Video, Spotify, YouTube Premium and more at prices you won't find anywhere else!
+                {/* Hero Section - Premium */}
+                <section style={{
+                    minHeight: '85vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    background: 'linear-gradient(135deg, rgba(15, 15, 30, 1) 0%, rgba(26, 26, 46, 1) 50%, rgba(40, 20, 60, 1) 100%)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                }}>
+                    {/* Animated background elements */}
+                    <div style={{
+                        position: 'absolute',
+                        top: '10%',
+                        right: '10%',
+                        width: '300px',
+                        height: '300px',
+                        background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)',
+                        borderRadius: '50%',
+                        filter: 'blur(40px)',
+                    }} />
+                    <div style={{
+                        position: 'absolute',
+                        bottom: '20%',
+                        left: '5%',
+                        width: '200px',
+                        height: '200px',
+                        background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)',
+                        borderRadius: '50%',
+                        filter: 'blur(30px)',
+                    }} />
+
+                    <div className="container" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
+                        {/* Trust Badge */}
+                        <div style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            padding: '0.5rem 1rem',
+                            background: 'rgba(16, 185, 129, 0.1)',
+                            border: '1px solid rgba(16, 185, 129, 0.3)',
+                            borderRadius: '50px',
+                            marginBottom: '1.5rem',
+                            fontSize: '0.85rem',
+                            color: '#10b981',
+                        }}>
+                            <span>✓</span>
+                            <span>Trusted by 5000+ Customers</span>
+                        </div>
+
+                        <h1 style={{
+                            fontSize: 'clamp(2rem, 6vw, 4rem)',
+                            fontWeight: 800,
+                            lineHeight: 1.1,
+                            marginBottom: '1.5rem',
+                            maxWidth: '900px',
+                            margin: '0 auto 1.5rem',
+                        }}>
+                            Get Premium <span style={{
+                                background: 'linear-gradient(135deg, #8b5cf6, #7c3aed, #a78bfa)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                            }}>OTT Subscriptions</span><br />
+                            at <span style={{ color: '#10b981' }}>50% OFF</span>
+                        </h1>
+
+                        <p style={{
+                            fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+                            color: 'rgba(255, 255, 255, 0.7)',
+                            maxWidth: '600px',
+                            margin: '0 auto 2rem',
+                            lineHeight: 1.6,
+                        }}>
+                            Access Prime Video, Spotify, YouTube Premium & more at unbeatable prices. Instant delivery, genuine accounts!
+                        </p>
+
+                        {/* CTA Buttons */}
+                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '3rem' }}>
+                            <Link href="/products" style={{
+                                padding: '1rem 2.5rem',
+                                background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                                borderRadius: '12px',
+                                color: '#fff',
+                                textDecoration: 'none',
+                                fontWeight: 600,
+                                fontSize: '1.1rem',
+                                boxShadow: '0 4px 20px rgba(139, 92, 246, 0.4)',
+                                transition: 'transform 0.2s, box-shadow 0.2s',
+                            }}>
+                                Browse Subscriptions →
+                            </Link>
+                            {!session && (
+                                <button
+                                    onClick={() => signIn('google', { callbackUrl: '/' })}
+                                    style={{
+                                        padding: '1rem 2rem',
+                                        background: 'rgba(255, 255, 255, 0.05)',
+                                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                                        borderRadius: '12px',
+                                        color: '#fff',
+                                        fontWeight: 600,
+                                        fontSize: '1rem',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    Sign In
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Payment Partners Badge */}
+                        <div style={{
+                            background: 'rgba(255, 255, 255, 0.03)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '16px',
+                            padding: '1.5rem 2rem',
+                            display: 'inline-block',
+                        }}>
+                            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                Secure Payments Powered By
                             </p>
-                            <div className="hero-buttons animate-fade-in">
-                                <Link href="/products" className="btn btn-primary btn-lg btn-glow">
-                                    Browse Subscriptions
-                                </Link>
-                                {session ? (
-                                    <Link href="/dashboard" className="btn btn-secondary btn-lg">
-                                        View My Orders
-                                    </Link>
-                                ) : (
-                                    <button
-                                        onClick={() => signIn('google', { callbackUrl: '/' })}
-                                        className="btn btn-secondary btn-lg"
-                                    >
-                                        Sign In / Sign Up
-                                    </button>
-                                )}
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+                                {/* Cashfree Logo */}
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    padding: '0.5rem 1rem',
+                                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                                    borderRadius: '8px',
+                                }}>
+                                    <span style={{ fontSize: '1.25rem' }}>💳</span>
+                                    <span style={{ fontWeight: 700, fontSize: '1rem' }}>Cashfree</span>
+                                </div>
+                                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem' }}>UPI</span>
+                                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem' }}>Cards</span>
+                                    <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem' }}>NetBanking</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* User Stats Section (Only for logged in users) */}
-                {session && (
-                    <section className="user-stats-section">
-                        <div className="container">
-                            <div className="stats-header">
-                                <h2>Welcome back, {session.user?.name?.split(' ')[0]}! 👋</h2>
-                                <p>Here's your account overview</p>
+                {/* Trust Indicators Strip */}
+                <section style={{
+                    background: 'linear-gradient(90deg, #8b5cf6, #7c3aed)',
+                    padding: '1rem 0',
+                }}>
+                    <div className="container">
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: '3rem',
+                            flexWrap: 'wrap',
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff' }}>
+                                <span style={{ fontSize: '1.25rem' }}>🔒</span>
+                                <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>100% Secure</span>
                             </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff' }}>
+                                <span style={{ fontSize: '1.25rem' }}>⚡</span>
+                                <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>Instant Delivery</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff' }}>
+                                <span style={{ fontSize: '1.25rem' }}>✅</span>
+                                <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>5000+ Happy Customers</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff' }}>
+                                <span style={{ fontSize: '1.25rem' }}>🎧</span>
+                                <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>24/7 Support</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-                            {loading ? (
-                                <div className="loading-stats">
-                                    <div className="spinner" />
+                {/* User Welcome Section */}
+                {session && (
+                    <section style={{ padding: '3rem 0', background: 'var(--bg-secondary)' }}>
+                        <div className="container">
+                            <div style={{
+                                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.05))',
+                                border: '1px solid rgba(139, 92, 246, 0.2)',
+                                borderRadius: '20px',
+                                padding: '2rem',
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                                    {session.user?.image && (
+                                        <Image
+                                            src={session.user.image}
+                                            alt={session.user.name || 'User'}
+                                            width={60}
+                                            height={60}
+                                            style={{ borderRadius: '50%', border: '3px solid #8b5cf6' }}
+                                        />
+                                    )}
+                                    <div>
+                                        <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>
+                                            Welcome back, {session.user?.name?.split(' ')[0]}! 👋
+                                        </h2>
+                                        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem' }}>
+                                            {session.user?.email}
+                                        </p>
+                                    </div>
                                 </div>
-                            ) : stats ? (
-                                <>
-                                    <div className="stats-grid">
-                                        <div className="stat-card">
-                                            <div className="stat-icon">🛒</div>
-                                            <div className="stat-info">
-                                                <span className="stat-value">{stats.totalOrders}</span>
-                                                <span className="stat-label">Total Purchases</span>
-                                            </div>
+
+                                {stats && (
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+                                        <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#8b5cf6' }}>{stats.totalOrders}</div>
+                                            <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Orders</div>
                                         </div>
-                                        <div className="stat-card">
-                                            <div className="stat-icon">💰</div>
-                                            <div className="stat-info">
-                                                <span className="stat-value">₹{stats.totalSpent}</span>
-                                                <span className="stat-label">Total Spent</span>
-                                            </div>
+                                        <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#10b981' }}>₹{stats.totalSpent}</div>
+                                            <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Saved</div>
                                         </div>
-                                        <div className="stat-card">
-                                            <div className="stat-icon">🎬</div>
-                                            <div className="stat-info">
-                                                <span className="stat-value">{stats.totalOrders > 0 ? 'Active' : 'None'}</span>
-                                                <span className="stat-label">Subscriptions</span>
-                                            </div>
+                                        <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '1rem', textAlign: 'center' }}>
+                                            <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+                                                <div style={{ fontSize: '1.5rem' }}>📋</div>
+                                                <div style={{ fontSize: '0.85rem', color: '#8b5cf6', fontWeight: 600 }}>View Orders</div>
+                                            </Link>
                                         </div>
                                     </div>
-                                </>
-                            ) : (
-                                <div className="no-orders-message">
-                                    <p>You haven't made any purchases yet.</p>
-                                    <Link href="/products" className="btn btn-primary">
-                                        Browse Subscriptions
-                                    </Link>
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
                     </section>
                 )}
 
                 {/* Features Section */}
-                <section className="features-section section">
+                <section style={{ padding: '4rem 0' }}>
                     <div className="container">
-                        <h2 className="section-title animate-slide-up">Why Choose <span className="text-gradient">OTT4YOU</span>?</h2>
-                        <p className="section-subtitle animate-slide-up">We offer the best deals on premium streaming subscriptions</p>
-                        <div className="features-grid">
-                            <div className="feature-card animate-pop-in" style={{ animationDelay: '0.1s' }}>
-                                <div className="feature-icon">💸</div>
-                                <h3>Half Prices</h3>
-                                <p>Get premium OTT subscriptions at almost 50% less than official prices. Save big on every purchase!</p>
-                            </div>
-                            <div className="feature-card animate-pop-in" style={{ animationDelay: '0.2s' }}>
-                                <div className="feature-icon">✨</div>
-                                <h3>Real Quality</h3>
-                                <p>100% genuine accounts with full HD/4K streaming quality. No compromises on your entertainment.</p>
-                            </div>
-                            <div className="feature-card animate-pop-in" style={{ animationDelay: '0.3s' }}>
-                                <div className="feature-icon">🆕</div>
-                                <h3>Fresh Accounts</h3>
-                                <p>Brand new, unused accounts every time. No shared access, fully dedicated to you!</p>
-                            </div>
-                            <div className="feature-card animate-pop-in" style={{ animationDelay: '0.4s' }}>
-                                <div className="feature-icon">⚡</div>
-                                <h3>Instant Delivery</h3>
-                                <p>Get your account credentials within minutes of payment. Start streaming right away!</p>
-                            </div>
-                            <div className="feature-card animate-pop-in" style={{ animationDelay: '0.5s' }}>
-                                <div className="feature-icon">🔒</div>
-                                <h3>Secure Payments</h3>
-                                <p>All transactions secured with Razorpay. 100% safe and encrypted payments.</p>
-                            </div>
-                            <div className="feature-card animate-pop-in" style={{ animationDelay: '0.6s' }}>
-                                <div className="feature-icon">🎧</div>
-                                <h3>24/7 Support</h3>
-                                <p>Our support team is always ready to help you with any issues. Email us anytime!</p>
-                            </div>
+                        <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', marginBottom: '0.5rem' }}>
+                            Why Choose <span style={{ color: '#8b5cf6' }}>OTT4YOU</span>?
+                        </h2>
+                        <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.6)', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem' }}>
+                            India's most trusted OTT subscription marketplace
+                        </p>
+
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                            gap: '1.5rem',
+                        }}>
+                            {[
+                                { icon: '💸', title: 'Save 50%', desc: 'Get premium subscriptions at half the official price. Best deals guaranteed!' },
+                                { icon: '✨', title: 'Genuine Accounts', desc: '100% authentic accounts with full HD/4K quality. No compromises.' },
+                                { icon: '⚡', title: 'Instant Delivery', desc: 'Get your credentials within minutes. Start streaming immediately!' },
+                                { icon: '🔒', title: 'Secure Payments', desc: 'Protected by Cashfree. UPI, Cards, NetBanking accepted.' },
+                                { icon: '🔄', title: 'Free Replacements', desc: 'Account issues? We provide free replacements within warranty.' },
+                                { icon: '🎧', title: '24/7 Support', desc: 'Round the clock support via Email & Telegram. We are always here!' },
+                            ].map((feature, index) => (
+                                <div key={index} style={{
+                                    background: 'rgba(255, 255, 255, 0.03)',
+                                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                                    borderRadius: '16px',
+                                    padding: '1.5rem',
+                                    transition: 'transform 0.2s, border-color 0.2s',
+                                }}>
+                                    <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>{feature.icon}</div>
+                                    <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', fontWeight: 600 }}>{feature.title}</h3>
+                                    <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.9rem', lineHeight: 1.6 }}>{feature.desc}</p>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </section>
 
-                {/* Payment Methods Section */}
-                <section className="payment-methods section" style={{ background: 'var(--bg-secondary)' }}>
+                {/* Available Platforms */}
+                <section style={{ padding: '4rem 0', background: 'var(--bg-secondary)' }}>
+                    <div className="container">
+                        <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '2rem' }}>
+                            Available Platforms
+                        </h2>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: '2rem',
+                            flexWrap: 'wrap',
+                        }}>
+                            {[
+                                { name: 'Prime Video', logo: '/logos/prime-video.jpg' },
+                                { name: 'Spotify', logo: '/logos/spotify.png' },
+                                { name: 'YouTube Premium', logo: '/logos/youtube-premium.jpg' },
+                                { name: 'JioHotstar', logo: '/logos/jiohotstar.jpg' },
+                                { name: 'JioSaavn', logo: '/logos/jiosaavn.png' },
+                                { name: 'SonyLIV', logo: '/logos/sonyliv.jpg' },
+                            ].map((platform, index) => (
+                                <Link href="/products" key={index} style={{
+                                    width: '80px',
+                                    height: '80px',
+                                    position: 'relative',
+                                    borderRadius: '16px',
+                                    overflow: 'hidden',
+                                    background: 'rgba(255,255,255,0.05)',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    transition: 'transform 0.2s',
+                                }}>
+                                    <Image src={platform.logo} alt={platform.name} fill style={{ objectFit: 'contain', padding: '0.5rem' }} />
+                                </Link>
+                            ))}
+                        </div>
+                        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+                            <Link href="/products" style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                color: '#8b5cf6',
+                                fontSize: '1rem',
+                                fontWeight: 600,
+                                textDecoration: 'none',
+                            }}>
+                                View All Subscriptions →
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Payment Partners Section */}
+                <section style={{ padding: '3rem 0' }}>
                     <div className="container" style={{ textAlign: 'center' }}>
-                        <h2 className="section-title" style={{ marginBottom: '1rem' }}>Secure Payments Accepted</h2>
-                        <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-                            We accept all major UPI apps and Cards for a seamless checkout experience
-                        </p>
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-                            <div style={{ width: '100px', height: '50px', position: 'relative', filter: 'grayscale(0)' }}>
-                                <Image src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" fill style={{ objectFit: 'contain' }} />
-                            </div>
-                            <div style={{ width: '80px', height: '40px', position: 'relative', filter: 'grayscale(100%)', opacity: 0.7 }}>
-                                <Image src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" fill style={{ objectFit: 'contain' }} />
-                            </div>
-                            <div style={{ width: '80px', height: '40px', position: 'relative', filter: 'grayscale(100%)', opacity: 0.7 }}>
-                                <Image src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" fill style={{ objectFit: 'contain' }} />
-                            </div>
-                            <div style={{ width: '80px', height: '40px', position: 'relative', filter: 'grayscale(100%)', opacity: 0.7 }}>
-                                <Image src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" fill style={{ objectFit: 'contain' }} />
+                        <h3 style={{ marginBottom: '1.5rem', color: 'rgba(255,255,255,0.8)' }}>Trusted Payment Partner</h3>
+                        <div style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '1rem',
+                            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1))',
+                            border: '1px solid rgba(139, 92, 246, 0.3)',
+                            borderRadius: '16px',
+                            padding: '1.5rem 3rem',
+                        }}>
+                            <span style={{ fontSize: '2.5rem' }}>💳</span>
+                            <div style={{ textAlign: 'left' }}>
+                                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#8b5cf6' }}>Cashfree Payments</div>
+                                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Secure • Fast • Reliable</div>
                             </div>
                         </div>
+                        <p style={{ marginTop: '1.5rem', color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
+                            All transactions are encrypted and protected. We never store your payment details.
+                        </p>
                     </div>
                 </section>
             </main>
