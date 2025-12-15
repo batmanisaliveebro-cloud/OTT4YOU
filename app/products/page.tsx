@@ -188,19 +188,20 @@ export default function ProductsPage() {
 
                 {/* Products Grid */}
                 <section className="section" style={{ padding: '4rem 0' }}>
-                    <div className="container">
+                    <div className="container products-grid-container">
                         {loading ? (
                             <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem 0' }}>
                                 <div className="spinner" />
                             </div>
-                        ) : products.length > 0 ? (
-                            <div className="grid grid-3">
+                        ) : filteredProducts.length > 0 ? (
+                            <div className="masonry-grid">
                                 {filteredProducts.map((product) => (
-                                    <ProductCard
-                                        key={product._id}
-                                        product={product}
-                                        onPurchase={handlePurchase}
-                                    />
+                                    <div key={product._id} className="masonry-item">
+                                        <ProductCard
+                                            product={product}
+                                            onPurchase={handlePurchase}
+                                        />
+                                    </div>
                                 ))}
                             </div>
                         ) : (

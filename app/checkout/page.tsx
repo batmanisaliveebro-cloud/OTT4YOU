@@ -186,28 +186,6 @@ export default function CheckoutPage() {
                     email: session?.user?.email,
                 },
                 theme: {
-                    color: '#8b5cf6',
-                },
-            };
-
-            const rzp = new window.Razorpay(options);
-            rzp.open();
-            */
-        }
-    } catch (error) {
-        console.error('Payment error:', error);
-        alert('Something went wrong');
-    } finally {
-        setLoading(false);
-    }
-};
-
-if (!session || items.length === 0) return null;
-
-return (
-    <>
-        <Header />
-        <main className="container" style={{ padding: '4rem 1rem', maxWidth: '800px' }}>
             <h1 className="section-title">Checkout</h1>
 
             <div className="glass-card">
@@ -245,163 +223,168 @@ return (
                     <h4>Select Payment Method</h4>
 
                     {/* Razorpay Option */}
-                    <div
-                        onClick={() => setPaymentMethod('RAZORPAY')}
-                        style={{
-                            padding: '1rem',
-                            background: paymentMethod === 'RAZORPAY' ? 'rgba(139, 92, 246, 0.1)' : 'var(--bg-tertiary)',
-                            border: paymentMethod === 'RAZORPAY' ? '1px solid var(--primary-start)' : '1px solid transparent',
-                            borderRadius: 'var(--radius-md)',
-                            marginTop: '1rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1rem',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        <div style={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            border: '2px solid' + (paymentMethod === 'RAZORPAY' ? ' var(--primary-start)' : ' #666'),
-                            display: 'flex', alignItems: 'center', justifyContent: 'center'
-                        }}>
-                            {paymentMethod === 'RAZORPAY' && <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--primary-start)' }} />}
-                        </div>
-                        <div>
-                            <div style={{ fontWeight: 500 }}>Pay Online (Instant)</div>
-                            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                Cards, UPI, NetBanking (Secured by Razorpay)
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Manual QR Option */}
-                    <div
-                        onClick={() => setPaymentMethod('MANUAL_UPI')}
-                        style={{
-                            padding: '1rem',
-                            background: paymentMethod === 'MANUAL_UPI' ? 'rgba(139, 92, 246, 0.1)' : 'var(--bg-tertiary)',
-                            border: paymentMethod === 'MANUAL_UPI' ? '1px solid var(--primary-start)' : '1px solid transparent',
-                            borderRadius: 'var(--radius-md)',
-                            marginTop: '1rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1rem',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s'
-                        }}
-                    >
-                        <div style={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            border: '2px solid' + (paymentMethod === 'MANUAL_UPI' ? ' var(--primary-start)' : ' #666'),
-                            display: 'flex', alignItems: 'center', justifyContent: 'center'
-                        }}>
-                            {paymentMethod === 'MANUAL_UPI' && <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--primary-start)' }} />}
-                        </div>
-                        <div>
-                            <div style={{ fontWeight: 500 }}>Pay via QR Code (Manual Verification)</div>
-                            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                Scan QR, Pay via any UPI App, and submit details.
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Manual Payment Form */}
-                    {paymentMethod === 'MANUAL_UPI' && (
-                        <div style={{
-                            marginTop: '1rem',
-                            padding: '1.5rem',
-                            background: 'rgba(0,0,0,0.2)',
-                            borderRadius: 'var(--radius-md)',
-                            border: '1px solid var(--glass-border)',
-                            animation: 'fadeIn 0.3s'
-                        }}>
-                            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                                <p style={{ marginBottom: '1rem', color: '#ffeb3b', fontSize: '0.9rem' }}>
-                                    Scan this QR to pay <strong>₹{totalAmount}</strong>
-                                </p>
-                                {qrCodeUrl ? (
-                                    <img
-                                        src={qrCodeUrl}
-                                        alt="Payment QR"
-                                        style={{
-                                            width: '200px',
-                                            height: '200px',
-                                            borderRadius: '8px',
-                                            border: '2px solid white'
-                                        }}
-                                    />
-                                ) : (
-                                    <div style={{ width: '200px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
-                                        Generating QR...
-                                    </div>
-                                )}
-                                <p style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: '#aaa' }}>
-                                    Accepts PhonePe, GPay, Paytm, etc.
-                                </p>
-                                <p style={{ fontSize: '0.75rem', color: '#888', marginTop: '0.25rem' }}>
-                                    Paying to: <strong>{UPI_VPA}</strong>
-                                </p>
-                            </div>
-
-                            <div className="form-group">
-                                <label>Enter UTR / Transaction ID <span style={{ color: 'red' }}>*</span></label>
-                                <input
-                                    type="text"
-                                    className="input"
-                                    placeholder="e.g. 123456789012"
-                                    value={manualDetails.utr}
-                                    maxLength={12}
-                                    onChange={(e) => {
-                                        const val = e.target.value.replace(/\D/g, ''); // Only allow numbers
-                                        setManualDetails({ ...manualDetails, utr: val });
-                                    }}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label>Upload Payment Screenshot <span style={{ color: 'red' }}>*</span></label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="input"
-                                    onChange={handleScreenshotChange}
-                                    style={{ padding: '0.5rem' }}
-                                />
-                                {fileError && <p style={{ color: 'red', fontSize: '0.8rem' }}>{fileError}</p>}
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                <button
-                    onClick={handlePayment}
-                    disabled={loading}
-                    className="btn btn-primary full-width btn-lg btn-glow"
-                >
-                    {loading
-                        ? 'Processing...'
-                        : paymentMethod === 'RAZORPAY'
-                            ? `Pay ₹${totalAmount} Now`
-                            : `Submit Payment Details`
-                    }
-                </button>
-
-                {paymentMethod === 'MANUAL_UPI' && (
-                    <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.85rem', color: '#aaa' }}>
-                        Your order will be verified within 15-30 mins manually.
-                    </p>
-                )}
+        <div
+            onClick={() => setPaymentMethod('RAZORPAY')}
+            style={{
+                padding: '1rem',
+                background: paymentMethod === 'RAZORPAY' ? 'rgba(139, 92, 246, 0.1)' : 'var(--bg-tertiary)',
+                border: paymentMethod === 'RAZORPAY' ? '1px solid var(--primary-start)' : '1px solid transparent',
+                borderRadius: 'var(--radius-md)',
+                marginTop: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+            }}
+        >
+            <div style={{
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                border: '2px solid' + (paymentMethod === 'RAZORPAY' ? ' var(--primary-start)' : ' #666'),
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+                {paymentMethod === 'RAZORPAY' && <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--primary-start)' }} />}
             </div>
-        </main>
+            <div>
+                <div style={{ fontWeight: 500 }}>Pay Online (Instant)</div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Cards, UPI, NetBanking (Secured by Razorpay)
+                </div>
+            </div>
+        </div>
+
+        {/* Manual QR Option */ }
+        <div
+            onClick={() => setPaymentMethod('MANUAL_UPI')}
+            style={{
+                padding: '1rem',
+                background: paymentMethod === 'MANUAL_UPI' ? 'rgba(139, 92, 246, 0.1)' : 'var(--bg-tertiary)',
+                border: paymentMethod === 'MANUAL_UPI' ? '1px solid var(--primary-start)' : '1px solid transparent',
+                borderRadius: 'var(--radius-md)',
+                marginTop: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+            }}
+        >
+            <div style={{
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                border: '2px solid' + (paymentMethod === 'MANUAL_UPI' ? ' var(--primary-start)' : ' #666'),
+                display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}>
+                {paymentMethod === 'MANUAL_UPI' && <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--primary-start)' }} />}
+            </div>
+            <div>
+                <div style={{ fontWeight: 500 }}>Pay via QR Code (Manual Verification)</div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Scan QR, Pay via any UPI App, and submit details.
+                </div>
+            </div>
+        </div>
+
+        {/* Manual Payment Form */ }
+        {
+            paymentMethod === 'MANUAL_UPI' && (
+                <div style={{
+                    marginTop: '1rem',
+                    padding: '1.5rem',
+                    background: 'rgba(0,0,0,0.2)',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--glass-border)',
+                    animation: 'fadeIn 0.3s'
+                }}>
+                    <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                        <p style={{ marginBottom: '1rem', color: '#ffeb3b', fontSize: '0.9rem' }}>
+                            Scan this QR to pay <strong>₹{totalAmount}</strong>
+                        </p>
+                        {qrCodeUrl ? (
+                            <img
+                                src={qrCodeUrl}
+                                alt="Payment QR"
+                                style={{
+                                    width: '200px',
+                                    height: '200px',
+                                    borderRadius: '8px',
+                                    border: '2px solid white'
+                                }}
+                            />
+                        ) : (
+                            <div style={{ width: '200px', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
+                                Generating QR...
+                            </div>
+                        )}
+                        <p style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: '#aaa' }}>
+                            Accepts PhonePe, GPay, Paytm, etc.
+                        </p>
+                        <p style={{ fontSize: '0.75rem', color: '#888', marginTop: '0.25rem' }}>
+                            Paying to: <strong>{UPI_VPA}</strong>
+                        </p>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Enter UTR / Transaction ID <span style={{ color: 'red' }}>*</span></label>
+                        <input
+                            type="text"
+                            className="input"
+                            placeholder="e.g. 123456789012"
+                            value={manualDetails.utr}
+                            maxLength={12}
+                            onChange={(e) => {
+                                const val = e.target.value.replace(/\D/g, ''); // Only allow numbers
+                                setManualDetails({ ...manualDetails, utr: val });
+                            }}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Upload Payment Screenshot <span style={{ color: 'red' }}>*</span></label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="input"
+                            onChange={handleScreenshotChange}
+                            style={{ padding: '0.5rem' }}
+                        />
+                        {fileError && <p style={{ color: 'red', fontSize: '0.8rem' }}>{fileError}</p>}
+                    </div>
+                </div>
+            )
+        }
+                </div >
+
+        <button
+            onClick={handlePayment}
+            disabled={loading}
+            className="btn btn-primary full-width btn-lg btn-glow"
+        >
+            {loading
+                ? 'Processing...'
+                : paymentMethod === 'RAZORPAY'
+                    ? `Pay ₹${totalAmount} Now`
+                    : `Submit Payment Details`
+            }
+        </button>
+
+    {
+        paymentMethod === 'MANUAL_UPI' && (
+            <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.85rem', color: '#aaa' }}>
+                Your order will be verified within 15-30 mins manually.
+            </p>
+        )
+    }
+            </div >
+        </main >
         <Footer />
 
-        {/* Payment Processing Overlay */}
-        {loading && (
+    {/* Payment Processing Overlay */ }
+    {
+        loading && (
             <div style={{
                 position: 'fixed',
                 top: 0,
@@ -437,10 +420,12 @@ return (
                 </h2>
                 <p style={{ color: '#aaa' }}>Please do not close this window</p>
             </div>
-        )}
+        )
+    }
 
-        {/* Payment Success Animation */}
-        {showSuccess && (
+    {/* Payment Success Animation */ }
+    {
+        showSuccess && (
             <div style={{
                 position: 'fixed',
                 top: 0,
@@ -534,7 +519,8 @@ return (
                     </div>
                 </div>
             </div>
-        )}
+        )
+    }
     </>
 );
 }
