@@ -2664,3 +2664,143 @@ body {
     gap: 1rem;
   }
 }
+
+/* ============================================
+   CHECKOUT PAGE MOBILE FIXES
+   ============================================ */
+
+/* Main container mobile */
+@media (max-width: 768px) {
+  main.container {
+    padding: 2rem 1rem !important;
+  }
+}
+
+/* Checkout items list mobile */
+@media (max-width: 600px) {
+  .section-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* Payment method options */
+  .glass-card>div[style*="display: flex"][style*="gap"] {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+  }
+}
+
+/* iPhone Mini and small devices */
+@media (max-width: 430px) {
+  main.container {
+    padding: 1.5rem 0.75rem !important;
+  }
+
+  .glass-card {
+    padding: 1rem !important;
+    margin: 0 !important;
+  }
+
+  /* QR code section */
+  .glass-card img[alt="Payment QR"] {
+    width: 160px !important;
+    height: 160px !important;
+  }
+
+  /* Payment options text */
+  .glass-card div[style*="fontWeight: 500"] {
+    font-size: 0.9rem !important;
+  }
+
+  .glass-card div[style*="fontSize: '0.85rem'"] {
+    font-size: 0.75rem !important;
+  }
+
+  /* Form inputs */
+  .form-group input,
+  .form-group select,
+  .input {
+    font-size: 16px !important;
+    padding: 0.75rem !important;
+  }
+
+  .form-group label {
+    font-size: 0.85rem !important;
+  }
+
+  /* Buttons */
+  .btn.btn-lg {
+    padding: 0.875rem 1rem !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* Cart items display */
+  .glass-card>div[style*="marginBottom: '0.5rem'"] {
+    flex-wrap: wrap;
+  }
+
+  /* Delivery info box */
+  .glass-card>div[style*="background: 'rgba(16, 185, 129"] {
+    padding: 0.75rem !important;
+  }
+
+  .glass-card>div[style*="background: 'rgba(16, 185, 129"] p {
+    font-size: 0.8rem !important;
+  }
+}
+
+/* Success overlay mobile */
+@media (max-width: 480px) {
+  div[style*="position: 'fixed'"][style*="zIndex: 10000"]>div {
+    padding: 1rem;
+  }
+
+  div[style*="position: 'fixed'"][style*="zIndex: 10000"] h1 {
+    font-size: 1.5rem !important;
+  }
+
+  div[style*="position: 'fixed'"][style*="zIndex: 10000"] p {
+    font-size: 0.9rem !important;
+  }
+
+  div[style*="position: 'fixed'"][style*="zIndex: 10000"] a {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  /* Checkmark circle smaller */
+  div[style*="width: '120px'"][style*="height: '120px'"][style*="borderRadius: '50%'"] {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  div[style*="width: '120px'"] span[style*="fontSize: '4rem'"] {
+    font-size: 2.5rem !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  main.container {
+    padding: 1rem 0.5rem !important;
+  }
+
+  .glass-card {
+    padding: 0.75rem !important;
+  }
+
+  h1,
+  .section-title {
+    font-size: 1.25rem !important;
+  }
+
+  h3,
+  h4 {
+    font-size: 1rem !important;
+  }
+
+  .btn {
+    font-size: 0.85rem !important;
+    padding: 0.75rem !important;
+  }
+}
