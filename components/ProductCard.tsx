@@ -15,6 +15,7 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedDuration, setSelectedDuration] = useState(0);
     const [quantity, setQuantity] = useState(1);
+    const [showSuccess, setShowSuccess] = useState(false);
     const { addToCart } = useCart();
     const router = useRouter();
 
@@ -30,10 +31,16 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
                 price: product.durations[selectedDuration].price
             }, quantity);
 
-            // Redirect to checkout
-            router.push('/checkout');
-            setIsModalOpen(false);
-            setQuantity(1);
+            // Show success animation
+            setShowSuccess(true);
+
+            // Redirect after 1.5 seconds
+            setTimeout(() => {
+                setShowSuccess(false);
+                setIsModalOpen(false);
+                setQuantity(1);
+                router.push('/checkout');
+            }, 1500);
         }
     };
 
@@ -337,6 +344,60 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
                                 Out of stock
                             </p>
                         )}
+                    </div>
+                </div>
+            )}
+
+            {/* Success Animation Dialog */}
+            {showSuccess && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.8)',
+                    backdropFilter: 'blur(8px)',
+                    zIndex: 2000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    animation: 'fadeIn 0.3s ease'
+                }}>
+                    <div style={{
+                        background: 'linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary))',
+                        padding: '3rem',
+                        borderRadius: 'var(--radius-xl)',
+                        border: '2px solid var(--primary-start)',
+                        boxShadow: '0 0 50px rgba(139, 92, 246, 0.5)',
+                        textAlign: 'center',
+                        animation: 'scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                    }}>
+                        <div style={{
+                            width: '80px',
+                            height: '80px',
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, var(--accent-green), #059669)',
+                            margin: '0 auto 1.5rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            animation: 'checkmarkPop 0.5s ease 0.2s both'
+                        }}>
+                            <span style={{ fontSize: '3rem', color: 'white' }}>✓</span>
+                        </div>
+                        <h2 style={{
+                            fontSize: '1.75rem',
+                            marginBottom: '0.5rem',
+                            background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent'
+                        }}>
+                            Added to Cart!
+                        </h2>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '1rem' }}>
+                            Redirecting to checkout...
+                        </p>
                     </div>
                 </div>
             )}

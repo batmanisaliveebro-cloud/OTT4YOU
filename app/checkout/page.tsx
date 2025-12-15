@@ -22,6 +22,7 @@ export default function CheckoutPage() {
     const { data: session } = useSession();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<'RAZORPAY' | 'MANUAL_UPI'>('RAZORPAY');
     const [manualDetails, setManualDetails] = useState({ utr: '', screenshot: '' });
     const [fileError, setFileError] = useState('');
@@ -103,9 +104,16 @@ export default function CheckoutPage() {
                 const data = await response.json();
                 if (data.success) {
                     clearCart();
-                    router.push('/dashboard?payment=manual_pending'); // Redirect to dashboard with message
+                    setLoading(false);
+                    setShowSuccess(true);
+
+                    // Redirect to home after 5 seconds
+                    setTimeout(() => {
+                        router.push('/');
+                    }, 5000);
                 } else {
                     alert(data.error || 'Failed to submit order');
+                    setLoading(false);
                 }
 
             } else {
@@ -424,6 +432,103 @@ export default function CheckoutPage() {
                         Processing...
                     </h2>
                     <p style={{ color: '#aaa' }}>Please do not close this window</p>
+                </div>
+            )}
+
+            {/* Payment Success Animation */}
+            {showSuccess && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(135deg, rgba(15, 15, 30, 0.98), rgba(26, 26, 46, 0.98))',
+                    backdropFilter: 'blur(10px)',
+                    zIndex: 10000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    animation: 'fadeIn 0.4s ease'
+                }}>
+                    <div style={{
+                        textAlign: 'center',
+                        animation: 'slideInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                    }}>
+                        {/* Checkmark Circle */}
+                        <div style={{
+                            width: '120px',
+                            height: '120px',
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, var(--accent-green), #059669)',
+                            margin: '0 auto 2rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 0 60px rgba(16, 185, 129, 0.6)',
+                            animation: 'checkmarkPop 0.6s ease 0.3s both',
+                            position: 'relative'
+                        }}>
+                            <span style={{
+                                fontSize: '4rem',
+                                color: 'white',
+                                animation: 'checkmarkRotate 0.8s ease 0.5s both'
+                            }}>✓</span>
+
+                            {/* Pulse rings */}
+                            <div style={{
+                                position: 'absolute',
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: '50%',
+                                border: '3px solid var(--accent-green)',
+                                animation: 'pulse 2s ease-out infinite'
+                            }}></div>
+                        </div>
+
+                        {/* Success Text */}
+                        <h1 style={{
+                            fontSize: 'clamp(2rem, 5vw, 3rem)',
+                            fontWeight: 800,
+                            marginBottom: '1rem',
+                            background: 'linear-gradient(135deg, var(--primary-start), var(--primary-end))',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            animation: 'fadeInUp 0.6s ease 0.6s both'
+                        }}>
+                            Payment Submitted!
+                        </h1>
+
+                        <p style={{
+                            fontSize: '1.25rem',
+                            color: 'var(--text-secondary)',
+                            marginBottom: '2rem',
+                            animation: 'fadeInUp 0.6s ease 0.8s both'
+                        }}>
+                            Your order has been received and will be verified shortly.
+                        </p>
+
+                        {/* Redirect Message */}
+                        <div style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            padding: '1rem 2rem',
+                            background: 'rgba(139, 92, 246, 0.1)',
+                            borderRadius: 'var(--radius-lg)',
+                            border: '1px solid var(--glass-border)',
+                            animation: 'fadeInUp 0.6s ease 1s both'
+                        }}>
+                            <div className="spinner" style={{
+                                width: '20px',
+                                height: '20px',
+                                borderWidth: '2px'
+                            }}></div>
+                            <span style={{ color: 'var(--text-secondary)' }}>
+                                Redirecting to home in 5 seconds...
+                            </span>
+                        </div>
+                    </div>
                 </div>
             )}
         </>
