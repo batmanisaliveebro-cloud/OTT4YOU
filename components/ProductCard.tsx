@@ -196,97 +196,121 @@ export default function ProductCard({ product, onPurchase }: ProductCardProps) {
 
                         <div style={{ marginBottom: '1.5rem' }}>
                             <h4 style={{ fontSize: '1rem', marginBottom: '0.75rem', color: 'var(--text-primary)' }}>
-                                Key Features
-                            </h4>
-                            <ul style={{
-                                listStyle: 'none',
-                                display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
-                                gap: '0.5rem',
+                                background: `${stockColor}15`,
+                                color: stockColor,
+                                borderRadius: '6px',
+                                fontWeight: 600,
+                                fontSize: '0.9rem'
                             }}>
-                                {product.features.map((feature, index) => (
-                                    <li key={index} style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.5rem',
-                                        color: 'var(--text-secondary)',
-                                        fontSize: '0.85rem',
-                                    }}>
-                                        <span style={{ color: 'var(--accent-green)' }}>✓</span>
-                                        {feature}
-                                    </li>
-                                ))}
-                            </ul>
+                                {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                            </span>
                         </div>
 
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <h4 style={{ fontSize: '1rem', marginBottom: '0.75rem', color: 'var(--text-primary)' }}>
-                                Select Plan
-                            </h4>
+                        {/* Product Details Section */}
+                        <div style={{
+                            background: 'var(--bg-tertiary)',
+                            padding: '1.25rem',
+                            borderRadius: 'var(--radius-md)',
+                            marginBottom: '1.5rem'
+                        }}>
+                            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <span>📋</span> Product Details
+                            </h3>
+                            <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                                {product.description}
+                            </p>
+                        </div>
 
-                            <div className="duration-grid">
+                        {/* Duration Options */}
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Select Duration</h3>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                                gap: '1rem'
+                            }}>
                                 {product.durations.map((duration, index) => (
-                                    <button
+                                    <div
                                         key={index}
                                         onClick={() => setSelectedDuration(index)}
                                         style={{
-                                            padding: '0.75rem',
+                                            padding: '1.25rem',
+                                            border: `2px solid ${selectedDuration === index ? 'var(--primary-start)' : 'var(--glass-border)'}`,
                                             borderRadius: 'var(--radius-md)',
-                                            border: `2px solid ${selectedDuration === index
-                                                ? 'var(--primary-start)'
-                                                : 'var(--glass-border)'
-                                                }`,
-                                            background: selectedDuration === index
-                                                ? 'rgba(139, 92, 246, 0.1)'
-                                                : 'var(--bg-tertiary)',
-                                            color: 'var(--text-primary)',
                                             cursor: 'pointer',
-                                            transition: 'all var(--transition-fast)',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            gap: '0.25rem',
+                                            background: selectedDuration === index ? 'rgba(139, 92, 246, 0.1)' : 'var(--bg-tertiary)',
+                                            transition: 'all 0.2s',
+                                            textAlign: 'center'
                                         }}
                                     >
-                                        <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                                            {duration.months} {duration.months === 1 ? 'Month' : 'Months'}
-                                        </span>
-                                        <span style={{ fontSize: '1.125rem', fontWeight: 700 }}>
+                                        <div style={{
+                                            fontSize: '1.5rem',
+                                            fontWeight: 700,
+                                            color: selectedDuration === index ? 'var(--primary-start)' : 'inherit',
+                                            marginBottom: '0.5rem'
+                                        }}>
+                                            {duration.months}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '0.85rem',
+                                            color: 'var(--text-secondary)',
+                                            marginBottom: '0.75rem'
+                                        }}>
+                                            Month{duration.months > 1 ? 's' : ''}
+                                        </div>
+                                        <div style={{
+                                            fontSize: '1.25rem',
+                                            fontWeight: 700,
+                                            color: selectedDuration === index ? 'var(--primary-start)' : 'var(--accent-green)'
+                                        }}>
                                             ₹{duration.price}
-                                        </span>
-                                    </button>
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
                         </div>
 
                         {/* Quantity Selector */}
                         <div style={{ marginBottom: '1.5rem' }}>
-                            <h4 style={{ fontSize: '1rem', marginBottom: '0.75rem', color: 'var(--text-primary)' }}>
-                                Quantity
-                            </h4>
-                            <select
-                                value={quantity}
-                                onChange={(e) => setQuantity(parseInt(e.target.value))}
-                                className="input"
-                                style={{
-                                    maxWidth: '150px',
-                                    padding: '0.75rem',
-                                    fontSize: '1rem',
-                                    fontWeight: 600
-                                }}
-                            >
-                                {[1, 2, 3, 4, 5].map(num => (
-                                    <option key={num} value={num}>
-                                        {num} {num === 1 ? 'Unit' : 'Units'}
-                                    </option>
-                                ))}
-                            </select>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
+                                Quantity (Max 5)
+                            </label>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <button
+                                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                    className="btn"
+                                    style={{
+                                        padding: '0.75rem 1.25rem',
+                                        minWidth: '50px',
+                                        background: 'var(--bg-tertiary)'
+                                    }}
+                                >
+                                    −
+                                </button>
+                                <span style={{
+                                    fontSize: '1.5rem',
+                                    fontWeight: 700,
+                                    minWidth: '40px',
+                                    textAlign: 'center'
+                                }}>
+                                    {quantity}
+                                </span>
+                                <button
+                                    onClick={() => setQuantity(Math.min(5, quantity + 1))}
+                                    className="btn"
+                                    style={{
+                                        padding: '0.75rem 1.25rem',
+                                        minWidth: '50px',
+                                        background: 'var(--bg-tertiary)'
+                                    }}
+                                >
+                                    +
+                                </button>
+                            </div>
                         </div>
 
                         {/* Price Summary */}
                         <div style={{
-                            marginBottom: '2rem',
-                            padding: '1rem',
                             background: 'rgba(139, 92, 246, 0.05)',
                             borderRadius: 'var(--radius-md)',
                             border: '1px solid var(--glass-border)'
