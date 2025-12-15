@@ -121,7 +121,6 @@ export default function CheckoutPage() {
             } catch (error) {
                 console.error('Payment error:', error);
                 alert('Something went wrong');
-                setLoading(false);
             }
 
         } else {
@@ -194,9 +193,7 @@ export default function CheckoutPage() {
             const rzp = new window.Razorpay(options);
             rzp.open();
             */
-
         }
-
     } catch (error) {
         console.error('Payment error:', error);
         alert('Something went wrong');
