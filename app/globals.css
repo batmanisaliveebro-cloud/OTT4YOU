@@ -2078,6 +2078,7 @@ html {
   border-color: var(--primary-start);
   background: rgba(139, 92, 246, 0.1);
 }
+
 /* ============================================
    PREMIUM SEARCH BAR & FILTERS
    ============================================ */
@@ -2183,7 +2184,7 @@ html {
   box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
 }
 
- /* Price Filter */
+/* Price Filter */
 .price-filter {
   display: flex;
   flex-direction: column;
@@ -2263,31 +2264,26 @@ html {
   .filter-chips {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
-  
+
   .price-inputs {
     flex-direction: column;
   }
-  
+
   .clear-filters-btn {
     width: 100%;
   }
 }
 
 /* ============================================
-   3D CARD EFFECTS & PREMIUM INTERACTIONS
+   SIMPLE CARD EFFECTS
    ============================================ */
 
 .glass-card {
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform-style: preserve-3d;
-  perspective: 1000px;
+  transition: box-shadow 0.2s ease;
 }
 
 .glass-card:hover {
-  transform: translateY(-10px) rotateX(2deg);
-  box-shadow: 
-    0 25px 50px rgba(139, 92, 246, 0.3),
-    0 0 0 1px rgba(139, 92, 246, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 /* Magnetic Button Effect */
@@ -2319,9 +2315,12 @@ html {
 }
 
 @keyframes glow-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
   }
+
   50% {
     box-shadow: 0 0 40px rgba(139, 92, 246, 0.8);
   }
@@ -2335,19 +2334,19 @@ html {
   position: relative;
 }
 
-.grid-3 > * {
+.grid-3>* {
   animation: fadeInUp 0.6s ease backwards;
 }
 
-.grid-3 > *:nth-child(3n+1) {
+.grid-3>*:nth-child(3n+1) {
   animation-delay: 0.1s;
 }
 
-.grid-3 > *:nth-child(3n+2) {
+.grid-3>*:nth-child(3n+2) {
   animation-delay: 0.2s;
 }
 
-.grid-3 > *:nth-child(3n+3) {
+.grid-3>*:nth-child(3n+3) {
   animation-delay: 0.3s;
 }
 
@@ -2364,18 +2363,16 @@ html {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(139, 92, 246, 0.15) 0%,
-    transparent 70%
-  );
-  animation: rotate-orb 20s linear infinite;
+  background: radial-gradient(circle,
+      rgba(139, 92, 246, 0.15) 0%,
+      transparent 70%);
 }
 
 @keyframes rotate-orb {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -2387,14 +2384,15 @@ html {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradient-shift 3s ease infinite;
-  background-size: 200% 200%;
 }
 
 @keyframes gradient-shift {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
@@ -2406,33 +2404,14 @@ html {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-/* Card Shine Effect */
-.glass-card::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.1) 50%,
-    transparent 70%
-  );
-  transform: translateX(-100%);
-  transition: transform 0.6s;
-}
-
-.glass-card:hover::after {
-  transform: translateX(100%);
-}
+/* Card shine effect removed for simplicity */
 
 /* Premium Badge Animations */
 .badge {
@@ -2440,9 +2419,12 @@ html {
 }
 
 @keyframes badge-float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-3px);
   }
@@ -2450,190 +2432,45 @@ html {
 
 
 /* ============================================
-   PREMIUM MASONRY BRICKS LAYOUT
+   SIMPLE PRODUCTS GRID LAYOUT
    ============================================ */
 
 .products-grid-container {
-  perspective: 2000px;
-  perspective-origin: center;
+  display: block;
 }
 
 .masonry-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  grid-auto-rows: 180px;
   gap: 1.5rem;
   padding: 2rem 0;
 }
 
-/* Masonry Item Variations - Creates Bricks Effect */
+/* Simple Item Styling - No Animations */
 .masonry-item {
   position: relative;
-  transform-style: preserve-3d;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Different Heights for Bricks Look */
-.masonry-item:nth-child(6n+1) {
-  grid-row: span 2;
-}
-
-.masonry-item:nth-child(6n+2) {
-  grid-row: span 3;
-}
-
-.masonry-item:nth-child(6n+3) {
-  grid-row: span 2;
-}
-
-.masonry-item:nth-child(6n+4) {
-  grid-row: span 3;
-}
-
-.masonry-item:nth-child(6n+5) {
-  grid-row: span 2;
-}
-
+/* Simple uniform grid items */
+.masonry-item:nth-child(6n+1),
+.masonry-item:nth-child(6n+2),
+.masonry-item:nth-child(6n+3),
+.masonry-item:nth-child(6n+4),
+.masonry-item:nth-child(6n+5),
 .masonry-item:nth-child(6n+6) {
-  grid-row: span 2;
+  display: block;
 }
 
-/* 3D Hover Effects */
+/* Simple Hover Effect */
 .masonry-item:hover {
-  transform: 
-    translateZ(50px) 
-    rotateX(5deg) 
-    rotateY(5deg)
-    scale(1.02);
   z-index: 10;
-  box-shadow: 
-    0 30px 60px rgba(139, 92, 246, 0.4),
-    0 0 0 2px rgba(139, 92, 246, 0.3),
-    inset 0 0 100px rgba(139, 92, 246, 0.1);
-}
-
-/* Magnetic Cursor Following Effect */
-.masonry-item::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;  
-  bottom: -2px;
-  background: linear-gradient(
-    45deg,
-    var(--primary-start),
-    var(--primary-end),
-    var(--accent-green)
-  );
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: -1;
-  filter: blur(20px);
-}
-
-.masonry-item:hover::before {
-  opacity: 0.6;
-  animation: rotate-gradient 3s linear infinite;
-}
-
-@keyframes rotate-gradient {
-  0% {
-    filter: blur(20px) hue-rotate(0deg);
-  }
-  100% {
-    filter: blur(20px) hue-rotate(360deg);
-  }
-}
-
-/* Stagger Animation on Load */
-.masonry-item {
-  animation: masonry-fade-in 0.8s ease backwards;
-}
-
-.masonry-item:nth-child(12n+1) { animation-delay: 0.05s; }
-.masonry-item:nth-child(12n+2) { animation-delay: 0.1s; }
-.masonry-item:nth-child(12n+3) { animation-delay: 0.15s; }
-.masonry-item:nth-child(12n+4) { animation-delay: 0.2s; }
-.masonry-item:nth-child(12n+5) { animation-delay: 0.25s; }
-.masonry-item:nth-child(12n+6) { animation-delay: 0.3s; }
-.masonry-item:nth-child(12n+7) { animation-delay: 0.35s; }
-.masonry-item:nth-child(12n+8) { animation-delay: 0.4s; }
-.masonry-item:nth-child(12n+9) { animation-delay: 0.45s; }
-.masonry-item:nth-child(12n+10) { animation-delay: 0.5s; }
-.masonry-item:nth-child(12n+11) { animation-delay: 0.55s; }
-.masonry-item:nth-child(12n+12) { animation-delay: 0.6s; }
-
-@keyframes masonry-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateY(40px) rotateX(-15deg);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) rotateX(0);
-  }
-}
-
-/* Floating Effect on Idle */
-@keyframes float-gentle {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-.masonry-item {
-  animation: 
-    masonry-fade-in 0.8s ease backwards,
-    float-gentle 6s ease-in-out infinite;
-}
-
-.masonry-item:nth-child(odd) {
-  animation-delay: 0s, 0s;
-}
-
-.masonry-item:nth-child(even) {
-  animation-delay: 0.1s, 3s;
-}
-
-/* Parallax Depth Layers */
-.masonry-item:nth-child(3n+1) {
-  transform: translateZ(10px);
-}
-
-.masonry-item:nth-child(3n+2) {
-  transform: translateZ(0px);
-}
-
-.masonry-item:nth-child(3n+3) {
-  transform: translateZ(-10px);
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .masonry-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-auto-rows: 200px;
     gap: 1rem;
-  }
-  
-  /* Simplify masonry on mobile */
-  .masonry-item:nth-child(6n+1),
-  .masonry-item:nth-child(6n+2),
-  .masonry-item:nth-child(6n+3),
-  .masonry-item:nth-child(6n+4),
-  .masonry-item:nth-child(6n+5),
-  .masonry-item:nth-child(6n+6) {
-    grid-row: span 2;
-  }
-  
-  /* Reduce 3D effects on mobile */
-  .masonry-item:hover {
-    transform: translateY(-5px) scale(1.02);
   }
 }
 
@@ -2642,4 +2479,3 @@ html {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
 }
-
