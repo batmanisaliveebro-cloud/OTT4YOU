@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import ProductCard from '@/components/ProductCard';
-import SearchBar from '@/components/SearchBar';
 import AnimatedBackground from '@/components/AnimatedBackground';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -152,16 +151,6 @@ export default function ProductsPage() {
                         <p className="animate-fade-in">
                             Choose from our wide range of OTT platforms at unbeatable prices
                         </p>
-                    </div>
-                </section>
-
-                {/* Search Section */}
-                <section className="search-section">
-                    <div className="container">
-                        <SearchBar
-                            products={products}
-                            onFilterChange={setFilteredProducts}
-                        />
                     </div>
                 </section>
 
