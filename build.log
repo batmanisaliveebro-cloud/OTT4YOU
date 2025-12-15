@@ -1,0 +1,105 @@
+
+> ott4you@1.0.0 build
+> next build
+
+  ▲ Next.js 14.2.35
+  - Environments: .env.production
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/21) ...
+   Generating static pages (5/21) 
+   Generating static pages (10/21) 
+   Generating static pages (15/21) 
+Seed error: Error: querySrv EBADNAME _mongodb._tcp.245sBFF%23
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:291:17)
+    at QueryReqWrap.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: undefined,
+  code: 'EBADNAME',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.245sBFF%23'
+}
+Error: querySrv EBADNAME _mongodb._tcp.245sBFF%23
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:291:17)
+    at QueryReqWrap.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: undefined,
+  code: 'EBADNAME',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.245sBFF%23',
+  digest: '2631051463'
+}
+Error: querySrv EBADNAME _mongodb._tcp.245sBFF%23
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:291:17)
+    at QueryReqWrap.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: undefined,
+  code: 'EBADNAME',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.245sBFF%23',
+  digest: '2631051463'
+}
+Error: querySrv EBADNAME _mongodb._tcp.245sBFF%23
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:291:17)
+    at QueryReqWrap.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: undefined,
+  code: 'EBADNAME',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.245sBFF%23',
+  digest: '2631051463'
+}
+Error: querySrv EBADNAME _mongodb._tcp.245sBFF%23
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:291:17)
+    at QueryReqWrap.callbackTrampoline (node:internal/async_hooks:130:17) {
+  errno: undefined,
+  code: 'EBADNAME',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.245sBFF%23',
+  digest: '2631051463'
+}
+ ✓ Generating static pages (21/21)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    2.31 kB         116 kB
+├ ○ /_not-found                          875 B          88.2 kB
+├ ƒ /admin                               142 B          87.5 kB
+├ ƒ /admin/orders                        2.07 kB        89.4 kB
+├ ƒ /admin/products                      2.36 kB          95 kB
+├ ƒ /admin/settings                      1.54 kB        88.9 kB
+├ ƒ /admin/users                         143 B          87.5 kB
+├ ƒ /api/admin/orders/verify             0 B                0 B
+├ ƒ /api/admin/settings                  0 B                0 B
+├ ƒ /api/auth/[...nextauth]              0 B                0 B
+├ ƒ /api/auth/debug                      0 B                0 B
+├ ƒ /api/debug                           0 B                0 B
+├ ƒ /api/orders                          0 B                0 B
+├ ƒ /api/orders/manual                   0 B                0 B
+├ ƒ /api/payment/create                  0 B                0 B
+├ ƒ /api/payment/verify                  0 B                0 B
+├ ƒ /api/products                        0 B                0 B
+├ ƒ /api/products/[id]                   0 B                0 B
+├ ƒ /api/seed                            0 B                0 B
+├ ƒ /api/setup/seed                      0 B                0 B
+├ ƒ /api/user/profile                    0 B                0 B
+├ ○ /cart                                1.59 kB         115 kB
+├ ○ /checkout                            3.4 kB          117 kB
+├ ƒ /dashboard                           2.15 kB         113 kB
+├ ƒ /maintenance                         143 B          87.5 kB
+├ ○ /products                            3.66 kB         117 kB
+├ ○ /profile                             2.17 kB         116 kB
+├ ○ /refund-policy                       1.19 kB         115 kB
+├ ○ /shipping-policy                     1.17 kB         115 kB
+└ ○ /terms                               1.34 kB         115 kB
++ First Load JS shared by all            87.4 kB
+  ├ chunks/117-de8b1aa7bffc7620.js       31.7 kB
+  ├ chunks/fd9d1056-0b9695e3ab5c31f0.js  53.7 kB
+  └ other shared chunks (total)          1.97 kB
+
+
+ƒ Middleware                             26.3 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
