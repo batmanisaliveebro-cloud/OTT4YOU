@@ -2804,3 +2804,159 @@ body {
     padding: 0.75rem !important;
   }
 }
+
+/* ============================================
+   ALL PAGES MOBILE OPTIMIZATION
+   ============================================ */
+
+/* Products Page Mobile */
+@media (max-width: 768px) {
+  .products-hero {
+    padding: 3rem 0 2rem !important;
+  }
+
+  .products-hero h1 {
+    font-size: 1.75rem !important;
+  }
+
+  .products-hero p {
+    font-size: 0.9rem !important;
+    padding: 0 1rem;
+  }
+
+  .masonry-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    padding: 1rem !important;
+  }
+}
+
+/* Product Details Page Mobile */
+@media (max-width: 768px) {
+  .product-details-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Cart Page Mobile */
+@media (max-width: 768px) {
+  .cart-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem !important;
+  }
+
+  .cart-item-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cart-summary {
+    position: relative !important;
+    margin-top: 1rem;
+  }
+}
+
+/* Dashboard Mobile */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Profile Page Mobile */
+@media (max-width: 600px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-avatar {
+    margin: 0 auto !important;
+  }
+}
+
+/* Admin Panel Mobile */
+@media (max-width: 768px) {
+  .grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Make admin tables scrollable */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  th,
+  td {
+    min-width: 100px;
+    padding: 0.75rem 0.5rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* Footer Mobile */
+@media (max-width: 600px) {
+  footer {
+    padding: 2rem 1rem !important;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+
+  .footer-links {
+    justify-content: center;
+  }
+}
+
+/* Global Mobile Fixes */
+@media (max-width: 768px) {
+
+  /* All images responsive */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Prevent text overflow */
+  p,
+  span,
+  div {
+    word-break: break-word;
+  }
+
+  /* All grids single column */
+  .grid,
+  [class*="grid-"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Reduce all paddings */
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Section spacing */
+  .section {
+    padding: 2rem 0 !important;
+  }
+}
+
+/* Safe Area for notch/punch-hole phones */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
