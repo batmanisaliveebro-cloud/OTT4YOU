@@ -317,56 +317,7 @@ export default function HomePage() {
                     </div>
                 </section>
 
-                {/* Available Platforms */}
-                <section style={{ padding: '4rem 0', background: 'var(--bg-secondary)' }}>
-                    <div className="container">
-                        <h2 style={{ textAlign: 'center', fontSize: 'clamp(1.5rem, 4vw, 2rem)', marginBottom: '2rem' }}>
-                            Available Platforms
-                        </h2>
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            gap: '2rem',
-                            flexWrap: 'wrap',
-                        }}>
-                            {[
-                                { name: 'Prime Video', logo: '/logos/prime-video.jpg' },
-                                { name: 'Spotify', logo: '/logos/spotify.png' },
-                                { name: 'YouTube Premium', logo: '/logos/youtube-premium.jpg' },
-                                { name: 'JioHotstar', logo: '/logos/jiohotstar.jpg' },
-                                { name: 'JioSaavn', logo: '/logos/jiosaavn.png' },
-                                { name: 'SonyLIV', logo: '/logos/sonyliv.jpg' },
-                            ].map((platform, index) => (
-                                <Link href="/products" key={index} style={{
-                                    width: '80px',
-                                    height: '80px',
-                                    position: 'relative',
-                                    borderRadius: '16px',
-                                    overflow: 'hidden',
-                                    background: 'rgba(255,255,255,0.05)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    transition: 'transform 0.2s',
-                                }}>
-                                    <Image src={platform.logo} alt={platform.name} fill style={{ objectFit: 'contain', padding: '0.5rem' }} />
-                                </Link>
-                            ))}
-                        </div>
-                        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-                            <Link href="/products" style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '0.5rem',
-                                color: '#8b5cf6',
-                                fontSize: '1rem',
-                                fontWeight: 600,
-                                textDecoration: 'none',
-                            }}>
-                                View All Subscriptions →
-                            </Link>
-                        </div>
-                    </div>
-                </section>
+
 
                 {/* Payment Partners Section */}
                 <section style={{ padding: '3rem 0' }}>
