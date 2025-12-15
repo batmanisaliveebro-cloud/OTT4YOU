@@ -214,7 +214,7 @@ export default function ProductDetailsPage({ params }: PageProps) {
                                 </h1>
                             </div>
 
-                            {/* Stock & Info */}
+                            {/* Availability Status */}
                             <div style={{ padding: '1.5rem' }}>
                                 <div style={{
                                     display: 'flex',
@@ -222,18 +222,17 @@ export default function ProductDetailsPage({ params }: PageProps) {
                                     justifyContent: 'center',
                                     gap: '0.5rem',
                                     padding: '0.75rem',
-                                    background: product.stock > 50 ? 'rgba(16, 185, 129, 0.1)' : product.stock > 10 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                    background: (product as any).unavailable ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
                                     borderRadius: '12px',
-                                    border: `1px solid ${product.stock > 50 ? 'rgba(16, 185, 129, 0.3)' : product.stock > 10 ? 'rgba(245, 158, 11, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
+                                    border: `1px solid ${(product as any).unavailable ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`,
                                 }}>
-                                    <span style={{ fontSize: '1.1rem' }}>📦</span>
+                                    <span style={{ fontSize: '1.1rem' }}>{(product as any).unavailable ? '❌' : '✅'}</span>
                                     <span style={{
-                                        color: product.stock > 50 ? '#10b981' : product.stock > 10 ? '#f59e0b' : '#ef4444',
+                                        color: (product as any).unavailable ? '#ef4444' : '#10b981',
                                         fontWeight: 600,
                                         fontSize: '0.9rem',
                                     }}>
-                                        {product.stock > 50 ? 'In Stock' : product.stock > 10 ? 'Limited Stock' : product.stock > 0 ? 'Low Stock' : 'Out of Stock'}
-                                        <span style={{ opacity: 0.7, marginLeft: '4px' }}>({product.stock} left)</span>
+                                        {(product as any).unavailable ? 'Currently Unavailable' : 'Available Now'}
                                     </span>
                                 </div>
                             </div>
@@ -309,53 +308,61 @@ export default function ProductDetailsPage({ params }: PageProps) {
                                     Choose Your Plan
                                 </h3>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.75rem' }}>
-                                    {product.durations.map((duration, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => setSelectedDuration(index)}
-                                            style={{
-                                                padding: '1rem 0.5rem',
-                                                borderRadius: '12px',
-                                                border: selectedDuration === index
-                                                    ? '2px solid #8b5cf6'
-                                                    : '2px solid rgba(255, 255, 255, 0.1)',
-                                                background: selectedDuration === index
-                                                    ? 'rgba(139, 92, 246, 0.2)'
-                                                    : 'rgba(255, 255, 255, 0.03)',
-                                                color: '#fff',
-                                                cursor: 'pointer',
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                alignItems: 'center',
-                                                gap: '4px',
-                                                transition: 'all 0.2s ease',
-                                            }}
-                                        >
-                                            <span style={{
-                                                fontSize: '0.75rem',
-                                                color: selectedDuration === index ? '#a78bfa' : 'rgba(255, 255, 255, 0.5)',
-                                                fontWeight: 500,
-                                            }}>
-                                                {duration.months} {duration.months === 1 ? 'Month' : 'Months'}
-                                            </span>
-                                            <span style={{
-                                                fontSize: '1.25rem',
-                                                fontWeight: 700,
-                                                color: selectedDuration === index ? '#fff' : 'rgba(255, 255, 255, 0.8)',
-                                            }}>
-                                                ₹{duration.price}
-                                            </span>
-                                            {duration.months >= 6 && (
+                                    {product.durations.map((duration: any, index: number) => {
+                                        const isAvailable = duration.available !== false;
+                                        return (
+                                            <button
+                                                key={index}
+                                                onClick={() => isAvailable && setSelectedDuration(index)}
+                                                disabled={!isAvailable}
+                                                style={{
+                                                    padding: '1rem 0.5rem',
+                                                    borderRadius: '12px',
+                                                    border: !isAvailable
+                                                        ? '2px solid rgba(239, 68, 68, 0.3)'
+                                                        : selectedDuration === index
+                                                            ? '2px solid #8b5cf6'
+                                                            : '2px solid rgba(255, 255, 255, 0.1)',
+                                                    background: !isAvailable
+                                                        ? 'rgba(239, 68, 68, 0.05)'
+                                                        : selectedDuration === index
+                                                            ? 'rgba(139, 92, 246, 0.2)'
+                                                            : 'rgba(255, 255, 255, 0.03)',
+                                                    color: !isAvailable ? '#ef4444' : '#fff',
+                                                    cursor: !isAvailable ? 'not-allowed' : 'pointer',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    gap: '4px',
+                                                    transition: 'all 0.2s ease',
+                                                    opacity: !isAvailable ? 0.6 : 1,
+                                                    textDecoration: !isAvailable ? 'line-through' : 'none',
+                                                }}
+                                            >
                                                 <span style={{
-                                                    fontSize: '0.65rem',
-                                                    color: '#10b981',
-                                                    fontWeight: 600,
+                                                    fontSize: '0.75rem',
+                                                    color: !isAvailable ? '#ef4444' : selectedDuration === index ? '#a78bfa' : 'rgba(255, 255, 255, 0.5)',
+                                                    fontWeight: 500,
                                                 }}>
-                                                    Save {Math.round((1 - (duration.price / (product.durations[0].price * duration.months))) * 100)}%
+                                                    {duration.months} {duration.months === 1 ? 'Month' : 'Months'}
                                                 </span>
-                                            )}
-                                        </button>
-                                    ))}
+                                                <span style={{
+                                                    fontSize: '1.25rem',
+                                                    fontWeight: 700,
+                                                    color: !isAvailable ? '#ef4444' : selectedDuration === index ? '#fff' : 'rgba(255, 255, 255, 0.8)',
+                                                }}>
+                                                    ₹{duration.price}
+                                                </span>
+                                                {!isAvailable ? (
+                                                    <span style={{ fontSize: '0.65rem', color: '#ef4444', fontWeight: 600 }}>Unavailable</span>
+                                                ) : duration.months >= 6 && (
+                                                    <span style={{ fontSize: '0.65rem', color: '#10b981', fontWeight: 600 }}>
+                                                        Save {Math.round((1 - (duration.price / (product.durations[0].price * duration.months))) * 100)}%
+                                                    </span>
+                                                )}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
@@ -438,48 +445,57 @@ export default function ProductDetailsPage({ params }: PageProps) {
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                                    <button
-                                        onClick={handleAddToCart}
-                                        disabled={product.stock < 1}
-                                        style={{
-                                            padding: '0.875rem',
-                                            borderRadius: '12px',
-                                            border: '2px solid #8b5cf6',
-                                            background: 'transparent',
-                                            color: '#a78bfa',
-                                            fontWeight: 600,
-                                            fontSize: '0.95rem',
-                                            cursor: product.stock < 1 ? 'not-allowed' : 'pointer',
-                                            opacity: product.stock < 1 ? 0.5 : 1,
-                                        }}
-                                    >
-                                        Add to Cart
-                                    </button>
-                                    <button
-                                        onClick={handleBuyNow}
-                                        disabled={product.stock < 1}
-                                        style={{
-                                            padding: '0.875rem',
-                                            borderRadius: '12px',
-                                            border: 'none',
-                                            background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-                                            color: '#fff',
-                                            fontWeight: 600,
-                                            fontSize: '0.95rem',
-                                            cursor: product.stock < 1 ? 'not-allowed' : 'pointer',
-                                            opacity: product.stock < 1 ? 0.5 : 1,
-                                        }}
-                                    >
-                                        Buy Now
-                                    </button>
-                                </div>
+                                {(() => {
+                                    const isProductUnavailable = (product as any).unavailable;
+                                    const selectedPlanAvailable = product.durations[selectedDuration]?.available !== false;
+                                    const canPurchase = !isProductUnavailable && selectedPlanAvailable;
+                                    return (
+                                        <>
+                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                                                <button
+                                                    onClick={handleAddToCart}
+                                                    disabled={!canPurchase}
+                                                    style={{
+                                                        padding: '0.875rem',
+                                                        borderRadius: '12px',
+                                                        border: '2px solid #8b5cf6',
+                                                        background: 'transparent',
+                                                        color: '#a78bfa',
+                                                        fontWeight: 600,
+                                                        fontSize: '0.95rem',
+                                                        cursor: !canPurchase ? 'not-allowed' : 'pointer',
+                                                        opacity: !canPurchase ? 0.5 : 1,
+                                                    }}
+                                                >
+                                                    Add to Cart
+                                                </button>
+                                                <button
+                                                    onClick={handleBuyNow}
+                                                    disabled={!canPurchase}
+                                                    style={{
+                                                        padding: '0.875rem',
+                                                        borderRadius: '12px',
+                                                        border: 'none',
+                                                        background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                                                        color: '#fff',
+                                                        fontWeight: 600,
+                                                        fontSize: '0.95rem',
+                                                        cursor: !canPurchase ? 'not-allowed' : 'pointer',
+                                                        opacity: !canPurchase ? 0.5 : 1,
+                                                    }}
+                                                >
+                                                    Buy Now
+                                                </button>
+                                            </div>
 
-                                {product.stock < 1 && (
-                                    <p style={{ textAlign: 'center', marginTop: '1rem', color: '#ef4444', fontSize: '0.875rem' }}>
-                                        This product is currently out of stock
-                                    </p>
-                                )}
+                                            {!canPurchase && (
+                                                <p style={{ textAlign: 'center', marginTop: '1rem', color: '#ef4444', fontSize: '0.875rem' }}>
+                                                    {isProductUnavailable ? 'This product is currently unavailable' : 'Selected plan is unavailable'}
+                                                </p>
+                                            )}
+                                        </>
+                                    );
+                                })()}
                             </div>
                         </div>
                     </div>

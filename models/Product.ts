@@ -3,6 +3,7 @@ import mongoose, { Schema, Model } from 'mongoose';
 export interface IDuration {
     months: number;
     price: number;
+    available: boolean; // Toggle for per-duration availability
 }
 
 export interface IProduct {
@@ -14,7 +15,7 @@ export interface IProduct {
     durations: IDuration[];
     features: string[];
     active: boolean;
-    stock: number;
+    unavailable: boolean; // Toggle for whole product unavailable
     createdAt: Date;
 }
 
@@ -45,16 +46,19 @@ const ProductSchema = new Schema<IProduct>({
             type: Number,
             required: true,
         },
+        available: {
+            type: Boolean,
+            default: true,
+        },
     }],
     features: [String],
     active: {
         type: Boolean,
         default: true,
     },
-    stock: {
-        type: Number,
-        default: 999,
-        required: true,
+    unavailable: {
+        type: Boolean,
+        default: false,
     },
     createdAt: {
         type: Date,
