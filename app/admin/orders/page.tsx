@@ -6,6 +6,7 @@ export default function AdminOrdersPage() {
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
+    const [updating, setUpdating] = useState<string | null>(null);
 
     useEffect(() => {
         fetchOrders();
@@ -25,9 +26,33 @@ export default function AdminOrdersPage() {
         }
     };
 
-    const handleVerify = async (orderId: string, status: 'completed' | 'failed') => {
-        if (!confirm(`Are you sure you want to mark this order as ${status}?`)) return;
+    const handleUpdateDelivery = async (orderId: string, deliveryStatus: string, deliveryNote?: string) => {
+        setUpdating(orderId);
+        try {
+            const res = await fetch('/api/admin/orders/delivery', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId, deliveryStatus, deliveryNote })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('Order updated successfully!');
+                fetchOrders();
+            } else {
+                alert(data.error || 'Failed to update');
+            }
+        } catch (error) {
+            console.error('Update error:', error);
+            alert('Failed to update order');
+        } finally {
+            setUpdating(null);
+        }
+    };
 
+    const handleVerify = async (orderId: string, status: 'completed' | 'failed') => {
+        if (!confirm(`Mark this order as ${status}?`)) return;
+
+        setUpdating(orderId);
         try {
             const res = await fetch('/api/admin/orders/verify', {
                 method: 'POST',
@@ -36,390 +61,224 @@ export default function AdminOrdersPage() {
             });
             const data = await res.json();
             if (data.success) {
-                alert(data.message);
-                fetchOrders(); // Refresh list
+                fetchOrders();
             } else {
                 alert(data.error);
             }
         } catch (error) {
             console.error('Verification error:', error);
-            alert('Failed to update status');
+        } finally {
+            setUpdating(null);
         }
     };
 
+    // Filter logic - includes 'paid' status
     const filteredOrders = filter === 'all'
         ? orders
-        : orders.filter(order => order.status === filter);
+        : filter === 'paid'
+            ? orders.filter(order => order.status === 'paid')
+            : filter === 'delivered'
+                ? orders.filter(order => order.deliveryStatus === 'delivered')
+                : filter === 'pending'
+                    ? orders.filter(order => order.deliveryStatus === 'pending' || !order.deliveryStatus)
+                    : orders.filter(order => order.status === filter);
 
-    const totalRevenue = orders
-        .filter(order => order.status === 'completed')
-        .reduce((sum, order) => sum + order.amount, 0);
-
-    const [viewScreenshot, setViewScreenshot] = useState<string | null>(null);
+    // Revenue calculations
+    const paidOrders = orders.filter(o => o.status === 'paid' || o.status === 'completed');
+    const totalRevenue = paidOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+    const deliveredCount = orders.filter(o => o.deliveryStatus === 'delivered').length;
+    const pendingDelivery = orders.filter(o => o.status === 'paid' && o.deliveryStatus !== 'delivered').length;
 
     return (
         <div>
-            {/* Screenshot Modal */}
-            {viewScreenshot && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'rgba(0,0,0,0.9)',
-                    zIndex: 2000,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '2rem'
-                }} onClick={() => setViewScreenshot(null)}>
-                    <div style={{ position: 'relative', maxWidth: '90%', maxHeight: '90%' }}>
-                        <button
-                            onClick={() => setViewScreenshot(null)}
-                            style={{
-                                position: 'absolute',
-                                top: '-2rem',
-                                right: '-2rem',
-                                background: 'none',
-                                border: 'none',
-                                color: 'white',
-                                fontSize: '2rem',
-                                cursor: 'pointer'
-                            }}
-                        >✕</button>
-                        <img
-                            src={viewScreenshot}
-                            alt="Payment Proof"
-                            style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px', border: '2px solid white' }}
-                        />
-                    </div>
+            <h1 style={{ marginBottom: '1.5rem' }}>Orders Management</h1>
+
+            {/* Stats */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div className="glass-card" style={{ textAlign: 'center', padding: '1rem' }}>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>Total Orders</div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#8b5cf6' }}>{orders.length}</div>
                 </div>
-            )}
-
-            <h1 style={{ marginBottom: '2rem' }}>Orders Management</h1>
-
-            {/* Time-Based Analytics */}
-            {(() => {
-                const now = new Date();
-                const startOfWeek = new Date(now);
-                startOfWeek.setDate(now.getDate() - now.getDay());
-                startOfWeek.setHours(0, 0, 0, 0);
-
-                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-                const startOfYear = new Date(now.getFullYear(), 0, 1);
-
-                const completedOrders = orders.filter(o => o.status === 'completed');
-
-                const weeklyOrders = completedOrders.filter(o => new Date(o.purchaseDate) >= startOfWeek);
-                const monthlyOrders = completedOrders.filter(o => new Date(o.purchaseDate) >= startOfMonth);
-                const yearlyOrders = completedOrders.filter(o => new Date(o.purchaseDate) >= startOfYear);
-
-                const weeklyRevenue = weeklyOrders.reduce((sum, o) => sum + o.amount, 0);
-                const monthlyRevenue = monthlyOrders.reduce((sum, o) => sum + o.amount, 0);
-                const yearlyRevenue = yearlyOrders.reduce((sum, o) => sum + o.amount, 0);
-
-                return (
-                    <>
-                        {/* Overall Stats */}
-                        <div className="grid grid-3" style={{ marginBottom: '1.5rem' }}>
-                            <div className="glass-card">
-                                <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                                    Total Orders
-                                </p>
-                                <h2 style={{ fontSize: '2rem' }} className="text-gradient">
-                                    {orders.length}
-                                </h2>
-                            </div>
-                            <div className="glass-card">
-                                <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                                    Completed Orders
-                                </p>
-                                <h2 style={{ fontSize: '2rem' }} className="text-gradient">
-                                    {completedOrders.length}
-                                </h2>
-                            </div>
-                            <div className="glass-card">
-                                <p style={{ color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                                    Total Revenue
-                                </p>
-                                <h2 style={{ fontSize: '2rem' }} className="text-gradient">
-                                    ₹{totalRevenue.toLocaleString()}
-                                </h2>
-                            </div>
-                        </div>
-
-                        {/* Time-Based Revenue */}
-                        <div style={{
-                            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
-                            borderRadius: '16px',
-                            padding: '1.5rem',
-                            marginBottom: '2rem',
-                            border: '1px solid rgba(139, 92, 246, 0.2)',
-                        }}>
-                            <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>📊 Revenue Analytics</h3>
-                            <div className="grid grid-3" style={{ gap: '1rem' }}>
-                                {/* This Week */}
-                                <div style={{
-                                    background: 'rgba(16, 185, 129, 0.1)',
-                                    borderRadius: '12px',
-                                    padding: '1.25rem',
-                                    border: '1px solid rgba(16, 185, 129, 0.3)',
-                                    textAlign: 'center',
-                                }}>
-                                    <p style={{ color: '#10b981', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 600 }}>
-                                        📅 This Week
-                                    </p>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#10b981', marginBottom: '0.25rem' }}>
-                                        ₹{weeklyRevenue.toLocaleString()}
-                                    </div>
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                                        {weeklyOrders.length} orders
-                                    </p>
-                                </div>
-
-                                {/* This Month */}
-                                <div style={{
-                                    background: 'rgba(59, 130, 246, 0.1)',
-                                    borderRadius: '12px',
-                                    padding: '1.25rem',
-                                    border: '1px solid rgba(59, 130, 246, 0.3)',
-                                    textAlign: 'center',
-                                }}>
-                                    <p style={{ color: '#3b82f6', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 600 }}>
-                                        📆 This Month
-                                    </p>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#3b82f6', marginBottom: '0.25rem' }}>
-                                        ₹{monthlyRevenue.toLocaleString()}
-                                    </div>
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                                        {monthlyOrders.length} orders
-                                    </p>
-                                </div>
-
-                                {/* This Year */}
-                                <div style={{
-                                    background: 'rgba(139, 92, 246, 0.1)',
-                                    borderRadius: '12px',
-                                    padding: '1.25rem',
-                                    border: '1px solid rgba(139, 92, 246, 0.3)',
-                                    textAlign: 'center',
-                                }}>
-                                    <p style={{ color: '#8b5cf6', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 600 }}>
-                                        🗓️ This Year
-                                    </p>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#8b5cf6', marginBottom: '0.25rem' }}>
-                                        ₹{yearlyRevenue.toLocaleString()}
-                                    </div>
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                                        {yearlyOrders.length} orders
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                );
-            })()}
-
-            {/* Filters */}
-            <div style={{
-                display: 'flex',
-                gap: '1rem',
-                marginBottom: '1.5rem',
-                flexWrap: 'wrap',
-            }}>
-                <button
-                    className={`btn ${filter === 'all' ? 'btn-primary' : 'btn-secondary'}`}
-                    onClick={() => setFilter('all')}
-                    style={{ padding: '0.5rem 1.5rem' }}
-                >
-                    All Orders
-                </button>
-                <button
-                    className={`btn ${filter === 'completed' ? 'btn-primary' : 'btn-secondary'}`}
-                    onClick={() => setFilter('completed')}
-                    style={{ padding: '0.5rem 1.5rem' }}
-                >
-                    Completed
-                </button>
-                <button
-                    className={`btn ${filter === 'pending' ? 'btn-primary' : 'btn-secondary'}`}
-                    onClick={() => setFilter('pending')}
-                    style={{ padding: '0.5rem 1.5rem' }}
-                >
-                    Pending
-                </button>
-                <button
-                    className={`btn ${filter === 'failed' ? 'btn-primary' : 'btn-secondary'}`}
-                    onClick={() => setFilter('failed')}
-                    style={{ padding: '0.5rem 1.5rem' }}
-                >
-                    Failed
-                </button>
+                <div className="glass-card" style={{ textAlign: 'center', padding: '1rem' }}>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>Paid Orders</div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#10b981' }}>{paidOrders.length}</div>
+                </div>
+                <div className="glass-card" style={{ textAlign: 'center', padding: '1rem' }}>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>Pending Delivery</div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f59e0b' }}>{pendingDelivery}</div>
+                </div>
+                <div className="glass-card" style={{ textAlign: 'center', padding: '1rem' }}>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>Delivered</div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#10b981' }}>{deliveredCount}</div>
+                </div>
+                <div className="glass-card" style={{ textAlign: 'center', padding: '1rem' }}>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>Total Revenue</div>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#10b981' }}>₹{totalRevenue.toLocaleString()}</div>
+                </div>
             </div>
 
-            {/* Orders Table */}
-            <div className="glass-card">
+            {/* Filters */}
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                {['all', 'paid', 'pending', 'delivered'].map(f => (
+                    <button
+                        key={f}
+                        onClick={() => setFilter(f)}
+                        style={{
+                            padding: '0.5rem 1rem',
+                            borderRadius: '8px',
+                            border: 'none',
+                            background: filter === f ? 'linear-gradient(135deg, #8b5cf6, #7c3aed)' : 'rgba(255,255,255,0.05)',
+                            color: '#fff',
+                            cursor: 'pointer',
+                            fontWeight: filter === f ? 600 : 400,
+                            fontSize: '0.85rem',
+                        }}
+                    >
+                        {f.charAt(0).toUpperCase() + f.slice(1)}
+                    </button>
+                ))}
+            </div>
+
+            {/* Orders List */}
+            <div className="glass-card" style={{ padding: '0.5rem' }}>
                 {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
                         <div className="spinner" />
                     </div>
+                ) : filteredOrders.length === 0 ? (
+                    <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                        No orders found
+                    </div>
                 ) : (
-                    <div style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr style={{ borderBottom: '1px solid var(--glass-border)' }}>
-                                    <th style={{
-                                        padding: '1rem',
-                                        textAlign: 'left',
-                                        color: 'var(--text-secondary)',
-                                        fontWeight: 600,
-                                    }}>Order ID</th>
-                                    <th style={{
-                                        padding: '1rem',
-                                        textAlign: 'left',
-                                        color: 'var(--text-secondary)',
-                                        fontWeight: 600,
-                                    }}>User Email</th>
-                                    <th style={{
-                                        padding: '1rem',
-                                        textAlign: 'left',
-                                        color: 'var(--text-secondary)',
-                                        fontWeight: 600,
-                                    }}>Product</th>
-                                    <th style={{
-                                        padding: '1rem',
-                                        textAlign: 'left',
-                                        color: 'var(--text-secondary)',
-                                        fontWeight: 600,
-                                    }}>Duration</th>
-                                    <th style={{
-                                        padding: '1rem',
-                                        textAlign: 'left',
-                                        color: 'var(--text-secondary)',
-                                        fontWeight: 600,
-                                    }}>Amount</th>
-                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 600 }}>Payment Info</th>
-                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 600 }}>Date</th>
-                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 600 }}>Status</th>
-                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-secondary)', fontWeight: 600 }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredOrders.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={7} style={{
-                                            padding: '2rem',
-                                            textAlign: 'center',
-                                            color: 'var(--text-secondary)',
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {filteredOrders.map((order) => (
+                            <div key={order._id} style={{
+                                background: 'rgba(255,255,255,0.02)',
+                                border: '1px solid rgba(255,255,255,0.05)',
+                                borderRadius: '10px',
+                                padding: '1rem',
+                            }}>
+                                {/* Order Header */}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                    <div>
+                                        <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>
+                                            {order.userName || order.userEmail?.split('@')[0] || 'Customer'}
+                                        </div>
+                                        <div style={{ fontSize: '0.75rem', color: '#3b82f6' }}>
+                                            {order.userEmail}
+                                        </div>
+                                        <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', marginTop: '0.25rem' }}>
+                                            {new Date(order.purchaseDate).toLocaleString('en-IN')} | #{order.paymentId?.slice(-10) || order._id.slice(-8)}
+                                        </div>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#10b981' }}>
+                                            ₹{order.totalAmount || 0}
+                                        </div>
+                                        <span style={{
+                                            display: 'inline-block',
+                                            padding: '0.2rem 0.5rem',
+                                            borderRadius: '6px',
+                                            fontSize: '0.65rem',
+                                            fontWeight: 600,
+                                            background: order.status === 'paid'
+                                                ? 'rgba(16, 185, 129, 0.2)'
+                                                : order.status === 'completed'
+                                                    ? 'rgba(16, 185, 129, 0.2)'
+                                                    : 'rgba(245, 158, 11, 0.2)',
+                                            color: order.status === 'paid' || order.status === 'completed' ? '#10b981' : '#f59e0b',
                                         }}>
-                                            No orders found
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    filteredOrders.map((order) => (
-                                        <tr key={order._id} style={{
-                                            borderBottom: '1px solid var(--glass-border)',
-                                        }}>
-                                            <td style={{
-                                                padding: '1rem',
-                                                fontSize: '0.875rem',
-                                                fontFamily: 'monospace',
+                                            {order.paymentMethod || 'CASHFREE'} - {order.status?.toUpperCase()}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Items */}
+                                {order.items && order.items.length > 0 && (
+                                    <div style={{ marginBottom: '0.75rem' }}>
+                                        {order.items.map((item: any, idx: number) => (
+                                            <div key={idx} style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                padding: '0.35rem 0',
+                                                fontSize: '0.85rem',
+                                                color: 'rgba(255,255,255,0.8)',
                                             }}>
-                                                {order._id.slice(-8)}
-                                            </td>
-                                            <td style={{
-                                                padding: '1rem',
-                                                fontSize: '0.875rem',
-                                                color: '#3b82f6',
-                                                maxWidth: '180px',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                            }}>
-                                                {order.userEmail || 'N/A'}
-                                            </td>
-                                            <td style={{ padding: '1rem' }}>
-                                                <div>
-                                                    <div style={{ fontWeight: 600 }}>{order.productName}</div>
-                                                    <div style={{
-                                                        fontSize: '0.875rem',
-                                                        color: 'var(--text-secondary)',
-                                                    }}>
-                                                        {order.platform}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td style={{ padding: '1rem' }}>
-                                                {order.duration} {order.duration === 1 ? 'Month' : 'Months'}
-                                            </td>
-                                            <td style={{ padding: '1rem', fontWeight: 600 }}>
-                                                ₹{order.amount}
-                                            </td>
-                                            <td style={{
-                                                padding: '1rem',
-                                                fontSize: '0.875rem',
-                                                color: 'var(--text-secondary)',
-                                            }}>
-                                                {order.paymentMethod === 'MANUAL_UPI' ? (
-                                                    <div>
-                                                        <span className="badge badge-warning">Manual</span>
-                                                        <div style={{ marginTop: '0.25rem', fontFamily: 'monospace' }}>
-                                                            UTR: {order.manualPaymentDetails?.utr}
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <span style={{ fontFamily: 'monospace' }}>
-                                                        {order.paymentId ? order.paymentId.slice(0, 12) + '...' : 'N/A'}
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>
-                                                {new Date(order.purchaseDate).toLocaleDateString()}
-                                            </td>
-                                            <td style={{ padding: '1rem' }}>
-                                                <span className={`badge ${order.status === 'completed' ? 'badge-success' :
-                                                    order.status === 'pending_verification' ? 'badge-warning' :
-                                                        order.status === 'pending' ? 'badge-warning' :
-                                                            'badge-danger'
-                                                    }`}>
-                                                    {order.status === 'pending_verification' ? 'To Verify' : order.status}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '1rem' }}>
-                                                {order.status === 'pending_verification' && (
-                                                    <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
-                                                        {order.manualPaymentDetails?.screenshot && (
-                                                            <button
-                                                                className="btn btn-secondary btn-sm"
-                                                                onClick={() => setViewScreenshot(order.manualPaymentDetails.screenshot)}
-                                                            >
-                                                                View Proof
-                                                            </button>
-                                                        )}
-                                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                                            <button
-                                                                className="btn btn-primary btn-sm"
-                                                                style={{ backgroundColor: '#10b981', borderColor: '#10b981' }}
-                                                                onClick={() => handleVerify(order._id, 'completed')}
-                                                            >
-                                                                Approve
-                                                            </button>
-                                                            <button
-                                                                className="btn btn-danger btn-sm"
-                                                                onClick={() => handleVerify(order._id, 'failed')}
-                                                            >
-                                                                Reject
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))
+                                                <span>{item.productName} ({item.duration}M)</span>
+                                                <span>₹{item.price}</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 )}
-                            </tbody>
-                        </table>
+
+                                {/* Delivery Status & Actions */}
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    paddingTop: '0.75rem',
+                                    borderTop: '1px solid rgba(255,255,255,0.05)',
+                                    flexWrap: 'wrap',
+                                    gap: '0.5rem',
+                                }}>
+                                    <div>
+                                        <span style={{
+                                            padding: '0.25rem 0.5rem',
+                                            borderRadius: '6px',
+                                            fontSize: '0.7rem',
+                                            fontWeight: 600,
+                                            background: order.deliveryStatus === 'delivered'
+                                                ? 'rgba(16, 185, 129, 0.2)'
+                                                : 'rgba(245, 158, 11, 0.2)',
+                                            color: order.deliveryStatus === 'delivered' ? '#10b981' : '#f59e0b',
+                                        }}>
+                                            📦 {order.deliveryStatus === 'delivered' ? 'DELIVERED' : 'PENDING DELIVERY'}
+                                        </span>
+                                    </div>
+
+                                    {/* Action Buttons */}
+                                    {order.status === 'paid' && order.deliveryStatus !== 'delivered' && (
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <button
+                                                onClick={() => handleUpdateDelivery(order._id, 'delivered', 'Credentials sent via email')}
+                                                disabled={updating === order._id}
+                                                style={{
+                                                    padding: '0.4rem 0.75rem',
+                                                    borderRadius: '6px',
+                                                    border: 'none',
+                                                    background: 'linear-gradient(135deg, #10b981, #059669)',
+                                                    color: '#fff',
+                                                    fontSize: '0.75rem',
+                                                    fontWeight: 600,
+                                                    cursor: 'pointer',
+                                                    opacity: updating === order._id ? 0.5 : 1,
+                                                }}
+                                            >
+                                                ✅ Mark Delivered
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {order.deliveryStatus === 'delivered' && (
+                                        <span style={{ fontSize: '0.75rem', color: '#10b981' }}>
+                                            ✓ Completed
+                                        </span>
+                                    )}
+                                </div>
+
+                                {/* Delivery Note */}
+                                {order.deliveryNote && (
+                                    <div style={{
+                                        marginTop: '0.5rem',
+                                        fontSize: '0.75rem',
+                                        color: 'rgba(255,255,255,0.5)',
+                                        fontStyle: 'italic',
+                                    }}>
+                                        Note: {order.deliveryNote}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>

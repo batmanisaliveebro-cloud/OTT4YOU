@@ -13,233 +13,282 @@ export default async function DashboardPage() {
     }
 
     await connectDB();
-    const orders = await Order.find({ userId: (session.user as any).id })
+
+    // Find orders by userId OR userEmail for flexibility
+    const orders = await Order.find({
+        $or: [
+            { userId: session.user.id },
+            { userId: session.user.email },
+            { userEmail: session.user.email }
+        ]
+    })
         .sort({ purchaseDate: -1 })
         .lean();
+
+    // Get status display helper
+    const getStatusBadge = (status: string, deliveryStatus: string) => {
+        if (status === 'paid' && deliveryStatus === 'pending') {
+            return { class: 'badge-warning', text: 'Processing' };
+        }
+        if (status === 'paid' && deliveryStatus === 'delivered') {
+            return { class: 'badge-success', text: 'Delivered' };
+        }
+        if (status === 'completed' || deliveryStatus === 'delivered') {
+            return { class: 'badge-success', text: 'Completed' };
+        }
+        if (status === 'failed') {
+            return { class: 'badge-danger', text: 'Failed' };
+        }
+        if (status === 'pending' || status === 'pending_verification') {
+            return { class: 'badge-warning', text: 'Pending' };
+        }
+        return { class: 'badge-warning', text: status };
+    };
 
     return (
         <>
             <Header />
-            <main className="container section">
-                <h1 style={{ marginBottom: '2rem' }}>My Dashboard</h1>
+            <main className="container" style={{ padding: 'clamp(1rem, 3vw, 2rem) clamp(0.75rem, 2vw, 1rem)', minHeight: '70vh' }}>
+                <h1 style={{ fontSize: 'clamp(1.25rem, 4vw, 1.75rem)', marginBottom: '1.5rem' }}>My Orders</h1>
 
-                <div style={{ marginBottom: '3rem' }}>
-                    <div className="glass-card">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '1.5rem' }}>
-                            {session.user.image && (
-                                <img
-                                    src={session.user.image}
-                                    alt={session.user.name || 'User'}
-                                    style={{
-                                        width: '80px',
-                                        height: '80px',
-                                        borderRadius: '50%',
-                                        border: '3px solid var(--primary-start)',
-                                    }}
-                                />
-                            )}
-                            <div>
-                                <h2 style={{ marginBottom: '0.5rem' }}>{session.user.name}</h2>
-                                <p style={{ color: 'var(--text-secondary)' }}>{session.user.email}</p>
-                                {session.user.role === 'admin' && (
-                                    <span className="badge badge-warning" style={{ marginTop: '0.5rem' }}>
-                                        Admin
-                                    </span>
-                                )}
-                            </div>
-                        </div>
+                {/* User Card */}
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '12px',
+                    padding: 'clamp(0.75rem, 2vw, 1.25rem)',
+                    marginBottom: '1.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '1rem',
+                }}>
+                    {session.user.image && (
+                        <img
+                            src={session.user.image}
+                            alt={session.user.name || 'User'}
+                            style={{
+                                width: '50px',
+                                height: '50px',
+                                borderRadius: '50%',
+                                border: '2px solid #8b5cf6',
+                            }}
+                        />
+                    )}
+                    <div>
+                        <div style={{ fontWeight: 600, fontSize: '1rem' }}>{session.user.name}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)' }}>{session.user.email}</div>
                     </div>
                 </div>
 
-                <div>
-                    <h2 style={{ marginBottom: '1.5rem' }}>Purchase History</h2>
+                {/* Orders List */}
+                {orders.length === 0 ? (
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        borderRadius: '12px',
+                        padding: '2rem',
+                        textAlign: 'center',
+                    }}>
+                        <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>📦</div>
+                        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '1rem' }}>
+                            No orders yet. Start shopping!
+                        </p>
+                        <a href="/products" style={{
+                            display: 'inline-block',
+                            padding: '0.75rem 1.5rem',
+                            background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                            borderRadius: '10px',
+                            color: '#fff',
+                            textDecoration: 'none',
+                            fontWeight: 600,
+                        }}>
+                            Browse Products
+                        </a>
+                    </div>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        {orders.map((order: any) => {
+                            const statusInfo = getStatusBadge(order.status, order.deliveryStatus || 'pending');
+                            const isProcessing = order.status === 'paid' && order.deliveryStatus !== 'delivered';
+                            const isDelivered = order.deliveryStatus === 'delivered' || order.status === 'completed';
 
-                    {orders.length === 0 ? (
-                        <div className="glass-card" style={{ textAlign: 'center', padding: '3rem' }}>
-                            <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                                No purchases yet. Browse our subscriptions to get started!
-                            </p>
-                            <a href="/#products" className="btn btn-primary">
-                                Browse Subscriptions
-                            </a>
-                        </div>
-                    ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            {orders.map((order: any) => (
-                                <div key={order._id.toString()} className="glass-card">
+                            return (
+                                <div key={order._id.toString()} style={{
+                                    background: 'rgba(255, 255, 255, 0.03)',
+                                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                                    borderRadius: '12px',
+                                    padding: 'clamp(0.75rem, 2vw, 1rem)',
+                                }}>
+                                    {/* Order Header */}
                                     <div style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         alignItems: 'start',
+                                        marginBottom: '0.75rem',
                                         flexWrap: 'wrap',
-                                        gap: '1rem',
+                                        gap: '0.5rem',
                                     }}>
                                         <div>
-                                            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>
-                                                {order.productName}
-                                            </h3>
-                                            <p style={{ color: 'var(--text-secondary)', marginBottom: '0.75rem' }}>
-                                                {order.platform} • {order.duration} {order.duration === 1 ? 'Month' : 'Months'}
-                                            </p>
-                                            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                                                Purchased on {new Date(order.purchaseDate).toLocaleDateString()}
-                                            </p>
-                                            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                                                Payment ID: {order.paymentId || 'Pending'}
-                                            </p>
-                                        </div>
-                                        <div style={{ textAlign: 'right' }}>
-                                            <div style={{
-                                                fontSize: '1.75rem',
-                                                fontWeight: 700,
-                                                color: 'var(--primary-start)',
-                                                marginBottom: '0.5rem',
-                                            }}>
-                                                ₹{order.amount}
+                                            <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)' }}>
+                                                {new Date(order.purchaseDate).toLocaleDateString('en-IN', {
+                                                    day: 'numeric',
+                                                    month: 'short',
+                                                    year: 'numeric',
+                                                })}
                                             </div>
-                                            <span className={`badge ${order.status === 'completed' ? 'badge-success' :
-                                                order.status === 'pending' || order.status === 'pending_verification' ? 'badge-warning' :
-                                                    'badge-danger'
-                                                }`}>
-                                                {order.status === 'pending_verification' ? 'Pending Verification' :
-                                                    order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                                            </span>
+                                            <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)' }}>
+                                                #{order.paymentId?.slice(-8) || order._id.toString().slice(-8)}
+                                            </div>
                                         </div>
+                                        <span style={{
+                                            padding: '0.25rem 0.5rem',
+                                            borderRadius: '6px',
+                                            fontSize: '0.7rem',
+                                            fontWeight: 600,
+                                            background: statusInfo.class === 'badge-success'
+                                                ? 'rgba(16, 185, 129, 0.2)'
+                                                : statusInfo.class === 'badge-warning'
+                                                    ? 'rgba(245, 158, 11, 0.2)'
+                                                    : 'rgba(239, 68, 68, 0.2)',
+                                            color: statusInfo.class === 'badge-success'
+                                                ? '#10b981'
+                                                : statusInfo.class === 'badge-warning'
+                                                    ? '#f59e0b'
+                                                    : '#ef4444',
+                                        }}>
+                                            {statusInfo.text}
+                                        </span>
                                     </div>
 
-                                    {/* Status-specific messages */}
-                                    {order.status === 'failed' && (
+                                    {/* Items */}
+                                    {order.items && order.items.length > 0 ? (
+                                        order.items.map((item: any, idx: number) => (
+                                            <div key={idx} style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                padding: '0.5rem 0',
+                                                borderBottom: idx < order.items.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                                            }}>
+                                                <div>
+                                                    <div style={{ fontWeight: 500, fontSize: '0.9rem' }}>{item.productName}</div>
+                                                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>
+                                                        {item.duration} month{item.duration > 1 ? 's' : ''}
+                                                    </div>
+                                                </div>
+                                                <div style={{ fontWeight: 600, color: '#10b981', fontSize: '0.9rem' }}>
+                                                    ₹{item.price}
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div style={{ padding: '0.5rem 0', color: 'rgba(255,255,255,0.5)' }}>
+                                            Order items
+                                        </div>
+                                    )}
+
+                                    {/* Total */}
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        marginTop: '0.75rem',
+                                        paddingTop: '0.75rem',
+                                        borderTop: '1px solid rgba(139, 92, 246, 0.2)',
+                                    }}>
+                                        <span style={{ fontWeight: 600 }}>Total</span>
+                                        <span style={{ fontWeight: 700, color: '#8b5cf6', fontSize: '1.1rem' }}>
+                                            ₹{order.totalAmount || order.items?.reduce((sum: number, i: any) => sum + (i.price || 0), 0) || 0}
+                                        </span>
+                                    </div>
+
+                                    {/* Processing Message */}
+                                    {isProcessing && (
                                         <div style={{
-                                            marginTop: '1rem',
-                                            padding: '0.75rem 1rem',
-                                            background: 'rgba(239, 68, 68, 0.1)',
-                                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                                            marginTop: '0.75rem',
+                                            padding: '0.75rem',
+                                            background: 'rgba(139, 92, 246, 0.1)',
+                                            border: '1px solid rgba(139, 92, 246, 0.2)',
                                             borderRadius: '8px',
+                                            textAlign: 'center',
                                         }}>
-                                            <p style={{ color: '#ef4444', fontSize: '0.9rem', fontWeight: 500 }}>
-                                                ❌ Incorrect payment details. Please contact support if you believe this is an error.
+                                            <p style={{ color: '#a78bfa', fontSize: '0.85rem', fontWeight: 500, marginBottom: '0.25rem' }}>
+                                                ⏳ Your order will be processed in 10-15 minutes
+                                            </p>
+                                            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem' }}>
+                                                Credentials will be sent to your email
                                             </p>
                                         </div>
                                     )}
 
-                                    {order.status === 'completed' && (
+                                    {/* Delivered Message */}
+                                    {isDelivered && (
                                         <div style={{
-                                            marginTop: '1rem',
-                                            padding: '0.75rem 1rem',
+                                            marginTop: '0.75rem',
+                                            padding: '0.75rem',
                                             background: 'rgba(16, 185, 129, 0.1)',
-                                            border: '1px solid rgba(16, 185, 129, 0.3)',
+                                            border: '1px solid rgba(16, 185, 129, 0.2)',
                                             borderRadius: '8px',
                                         }}>
-                                            <p style={{ color: '#10b981', fontSize: '0.9rem', fontWeight: 500, marginBottom: '0.5rem' }}>
-                                                ✅ Check your registered email for account credentials!
+                                            <p style={{ color: '#10b981', fontSize: '0.85rem', fontWeight: 500 }}>
+                                                ✅ Delivered! Check your email for credentials.
                                             </p>
-                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                                                Need help? Contact us on Telegram: <a href="https://t.me/akhilescrow" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', fontWeight: 600 }}>@akhilescrow</a>
-                                            </p>
-                                        </div>
-                                    )}
-
-                                    {(order.status === 'pending' || order.status === 'pending_verification') && (
-                                        <div style={{
-                                            marginTop: '1rem',
-                                            padding: '0.75rem 1rem',
-                                            background: 'rgba(245, 158, 11, 0.1)',
-                                            border: '1px solid rgba(245, 158, 11, 0.3)',
-                                            borderRadius: '8px',
-                                        }}>
-                                            <p style={{ color: '#f59e0b', fontSize: '0.9rem', fontWeight: 500 }}>
-                                                ⏳ Your payment is being verified. This usually takes 15-30 minutes.
-                                            </p>
+                                            {order.deliveryNote && (
+                                                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', marginTop: '0.25rem' }}>
+                                                    {order.deliveryNote}
+                                                </p>
+                                            )}
                                         </div>
                                     )}
                                 </div>
-                            ))}
-                        </div>
-                    )}
+                            );
+                        })}
+                    </div>
+                )}
+
+                {/* Support Section */}
+                <div style={{
+                    marginTop: '2rem',
+                    padding: '1rem',
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    borderRadius: '12px',
+                    textAlign: 'center',
+                }}>
+                    <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', marginBottom: '0.75rem' }}>
+                        Need help with your order?
+                    </p>
+                    <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <a
+                            href="https://t.me/akhilescrow?text=Hi%2C%20I%20need%20help%20with%20my%20OTT4YOU%20order."
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                padding: '0.5rem 1rem',
+                                background: 'linear-gradient(135deg, #0088cc, #0077b5)',
+                                borderRadius: '8px',
+                                color: '#fff',
+                                textDecoration: 'none',
+                                fontSize: '0.8rem',
+                                fontWeight: 600,
+                            }}
+                        >
+                            Telegram Support
+                        </a>
+                        <a
+                            href="mailto:batmanisaliveebro@gmail.com?subject=Order%20Help"
+                            style={{
+                                padding: '0.5rem 1rem',
+                                background: 'linear-gradient(135deg, #ea4335, #d93025)',
+                                borderRadius: '8px',
+                                color: '#fff',
+                                textDecoration: 'none',
+                                fontSize: '0.8rem',
+                                fontWeight: 600,
+                            }}
+                        >
+                            Email Support
+                        </a>
+                    </div>
                 </div>
-
-                {orders.length > 0 && (() => {
-                    const successfulOrders = orders.filter((o: any) => o.status === 'completed');
-                    const pendingOrders = orders.filter((o: any) => o.status === 'pending' || o.status === 'pending_verification');
-                    const failedOrders = orders.filter((o: any) => o.status === 'failed');
-                    const successfulAmount = successfulOrders.reduce((sum: number, o: any) => sum + o.amount, 0);
-                    const pendingAmount = pendingOrders.reduce((sum: number, o: any) => sum + o.amount, 0);
-                    const failedAmount = failedOrders.reduce((sum: number, o: any) => sum + o.amount, 0);
-
-                    return (
-                        <div style={{ marginTop: '2rem' }}>
-                            {/* Stats Grid */}
-                            <div className="dashboard-stats-grid" style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(3, 1fr)',
-                                gap: '1rem',
-                                marginBottom: '1.5rem',
-                            }}>
-                                {/* Successful */}
-                                <div style={{
-                                    padding: '1.25rem',
-                                    background: 'rgba(16, 185, 129, 0.1)',
-                                    border: '1px solid rgba(16, 185, 129, 0.3)',
-                                    borderRadius: '12px',
-                                    textAlign: 'center',
-                                }}>
-                                    <div style={{ fontSize: '0.85rem', color: '#10b981', marginBottom: '0.5rem' }}>✅ Successful</div>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#10b981' }}>{successfulOrders.length}</div>
-                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>₹{successfulAmount}</div>
-                                </div>
-
-                                {/* Pending */}
-                                <div style={{
-                                    padding: '1.25rem',
-                                    background: 'rgba(245, 158, 11, 0.1)',
-                                    border: '1px solid rgba(245, 158, 11, 0.3)',
-                                    borderRadius: '12px',
-                                    textAlign: 'center',
-                                }}>
-                                    <div style={{ fontSize: '0.85rem', color: '#f59e0b', marginBottom: '0.5rem' }}>⏳ Pending</div>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f59e0b' }}>{pendingOrders.length}</div>
-                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>₹{pendingAmount}</div>
-                                </div>
-
-                                {/* Failed */}
-                                <div style={{
-                                    padding: '1.25rem',
-                                    background: 'rgba(239, 68, 68, 0.1)',
-                                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                                    borderRadius: '12px',
-                                    textAlign: 'center',
-                                }}>
-                                    <div style={{ fontSize: '0.85rem', color: '#ef4444', marginBottom: '0.5rem' }}>❌ Failed</div>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#ef4444' }}>{failedOrders.length}</div>
-                                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>₹{failedAmount}</div>
-                                </div>
-                            </div>
-
-                            {/* Total Section */}
-                            <div style={{
-                                padding: '1.5rem',
-                                background: 'var(--glass-bg)',
-                                borderRadius: '12px',
-                                border: '1px solid var(--glass-border)',
-                            }}>
-                                <div className="total-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                                    <div>
-                                        <h3 style={{ marginBottom: '0.25rem' }}>Total Orders</h3>
-                                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                                            {orders.length} {orders.length === 1 ? 'purchase' : 'purchases'}
-                                        </p>
-                                    </div>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <div style={{ fontSize: '1.75rem', fontWeight: 700 }} className="text-gradient">
-                                            ₹{orders.reduce((sum: number, order: any) => sum + order.amount, 0)}
-                                        </div>
-                                        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total Amount</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })()}
             </main>
             <Footer />
         </>

@@ -11,7 +11,7 @@ export default async function AdminUsersPage() {
     // Calculate stats for each user
     const usersWithStats = users.map(user => {
         const userOrders = orders.filter(order => order.userId === user._id.toString());
-        const totalSpent = userOrders.reduce((sum, order) => sum + order.amount, 0);
+        const totalSpent = userOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
 
         return {
             ...user,

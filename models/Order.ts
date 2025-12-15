@@ -1,23 +1,38 @@
 import mongoose, { Schema, Model } from 'mongoose';
 
-export interface IOrder {
-    _id: string;
-    userId: string;
+export interface IOrderItem {
     productId: string;
     productName: string;
     platform: string;
     duration: number;
-    amount: number;
+    price: number;
+    logo?: string;
+}
+
+export interface IOrder {
+    _id: string;
+    userId: string;
+    userEmail?: string;
+    userName?: string;
+    items: IOrderItem[];
+    totalAmount: number;
     paymentId?: string;
-    razorpayOrderId?: string;
-    paymentMethod: 'RAZORPAY' | 'MANUAL_UPI';
-    manualPaymentDetails?: {
-        utr: string;
-        screenshot: string;
-    };
-    status: 'pending' | 'completed' | 'failed' | 'pending_verification';
+    transactionId?: string;
+    paymentMethod: 'CASHFREE' | 'RAZORPAY' | 'MANUAL_UPI';
+    status: 'pending' | 'processing' | 'paid' | 'completed' | 'failed' | 'pending_verification';
+    deliveryStatus: 'pending' | 'processing' | 'delivered';
+    deliveryNote?: string;
     purchaseDate: Date;
 }
+
+const OrderItemSchema = new Schema({
+    productId: { type: String, required: true },
+    productName: { type: String, required: true },
+    platform: { type: String, required: true },
+    duration: { type: Number, required: true },
+    price: { type: Number, required: true },
+    logo: { type: String },
+});
 
 const OrderSchema = new Schema<IOrder>({
     userId: {
@@ -25,47 +40,40 @@ const OrderSchema = new Schema<IOrder>({
         required: true,
         index: true,
     },
-    productId: {
+    userEmail: {
         type: String,
-        required: true,
     },
-    productName: {
+    userName: {
         type: String,
-        required: true,
     },
-    platform: {
-        type: String,
-        required: true,
-    },
-    duration: {
-        type: Number,
-        required: true,
-    },
-    amount: {
+    items: [OrderItemSchema],
+    totalAmount: {
         type: Number,
         required: true,
     },
     paymentId: {
         type: String,
-        required: false, // Changed to false for manual
     },
-    razorpayOrderId: {
+    transactionId: {
         type: String,
-        required: false, // Changed to false for manual
     },
     paymentMethod: {
         type: String,
-        enum: ['RAZORPAY', 'MANUAL_UPI'],
-        default: 'RAZORPAY',
-    },
-    manualPaymentDetails: {
-        utr: String,
-        screenshot: String,
+        enum: ['CASHFREE', 'RAZORPAY', 'MANUAL_UPI'],
+        default: 'CASHFREE',
     },
     status: {
         type: String,
-        enum: ['pending', 'completed', 'failed', 'pending_verification'],
+        enum: ['pending', 'processing', 'paid', 'completed', 'failed', 'pending_verification'],
         default: 'pending',
+    },
+    deliveryStatus: {
+        type: String,
+        enum: ['pending', 'processing', 'delivered'],
+        default: 'pending',
+    },
+    deliveryNote: {
+        type: String,
     },
     purchaseDate: {
         type: Date,
@@ -73,6 +81,11 @@ const OrderSchema = new Schema<IOrder>({
     },
 });
 
-const Order: Model<IOrder> = mongoose.models.Order || mongoose.model<IOrder>('Order', OrderSchema);
+// Delete the old model if it exists (for hot reload)
+if (mongoose.models.Order) {
+    delete mongoose.models.Order;
+}
+
+const Order: Model<IOrder> = mongoose.model<IOrder>('Order', OrderSchema);
 
 export default Order;
