@@ -333,9 +333,26 @@ export default function CheckoutPage() {
                     </button>
 
                     {paymentMethod === 'MANUAL_UPI' && (
-                        <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.85rem', color: '#aaa' }}>
-                            Your order will be verified within 15-30 mins manually.
-                        </p>
+                        <>
+                            <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.85rem', color: '#aaa' }}>
+                                Your order will be verified within 15-30 mins manually.
+                            </p>
+                            <div style={{
+                                marginTop: '1rem',
+                                padding: '1rem',
+                                background: 'rgba(16, 185, 129, 0.1)',
+                                border: '1px solid rgba(16, 185, 129, 0.3)',
+                                borderRadius: 'var(--radius-md)',
+                                textAlign: 'center'
+                            }}>
+                                <p style={{ color: '#10b981', fontWeight: 600, marginBottom: '0.5rem' }}>
+                                    📧 Delivery Information
+                                </p>
+                                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                                    After verification, your account credentials will be delivered to your <strong style={{ color: '#fff' }}>registered Gmail</strong> or via <strong style={{ color: '#fff' }}>Telegram</strong>.
+                                </p>
+                            </div>
+                        </>
                     )}
                 </div>
             </main>
