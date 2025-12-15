@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import ProductCard from '@/components/ProductCard';
+import SearchBar from '@/components/SearchBar';
+import AnimatedBackground from '@/components/AnimatedBackground';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { IProduct } from '@/models/Product';
@@ -16,6 +18,7 @@ declare global {
 export default function ProductsPage() {
     const { data: session, status } = useSession();
     const [products, setProducts] = useState<IProduct[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -28,6 +31,7 @@ export default function ProductsPage() {
             const data = await response.json();
             if (data.success) {
                 setProducts(data.products);
+                setFilteredProducts(data.products);
             }
         } catch (error) {
             console.error('Error fetching products:', error);
@@ -136,6 +140,7 @@ export default function ProductsPage() {
 
     return (
         <>
+            <AnimatedBackground />
             <Header />
             <main>
                 {/* Hero Section */}
@@ -147,6 +152,16 @@ export default function ProductsPage() {
                         <p className="animate-fade-in">
                             Choose from our wide range of OTT platforms at unbeatable prices
                         </p>
+                    </div>
+                </section>
+
+                {/* Search Section */}
+                <section className="search-section">
+                    <div className="container">
+                        <SearchBar
+                            products={products}
+                            onFilterChange={setFilteredProducts}
+                        />
                     </div>
                 </section>
 
@@ -180,7 +195,7 @@ export default function ProductsPage() {
                             </div>
                         ) : products.length > 0 ? (
                             <div className="grid grid-3">
-                                {products.map((product) => (
+                                {filteredProducts.map((product) => (
                                     <ProductCard
                                         key={product._id}
                                         product={product}
@@ -191,7 +206,7 @@ export default function ProductsPage() {
                         ) : (
                             <div style={{ textAlign: 'center', padding: '4rem 0' }}>
                                 <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)' }}>
-                                    No products available at the moment.
+                                    {products.length > 0 ? 'No products match your filters.' : 'No products available at the moment.'}
                                 </p>
                             </div>
                         )}
