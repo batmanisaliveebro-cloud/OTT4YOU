@@ -45,6 +45,7 @@ export async function POST(req: Request) {
                 platform: item.platform || item.productName || 'OTT',
                 duration: item.duration || 1,
                 price: item.price || 0,
+                quantity: item.quantity || 1,
                 logo: item.logo || '',
             })),
             totalAmount: amount,

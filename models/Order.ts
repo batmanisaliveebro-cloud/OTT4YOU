@@ -6,6 +6,7 @@ export interface IOrderItem {
     platform: string;
     duration: number;
     price: number;
+    quantity: number;
     logo?: string;
 }
 
@@ -31,6 +32,7 @@ const OrderItemSchema = new Schema({
     platform: { type: String, required: true },
     duration: { type: Number, required: true },
     price: { type: Number, required: true },
+    quantity: { type: Number, default: 1 },
     logo: { type: String },
 });
 

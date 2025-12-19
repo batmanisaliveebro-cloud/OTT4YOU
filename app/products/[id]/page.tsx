@@ -74,7 +74,8 @@ export default function ProductDetailsPage({ params }: PageProps) {
                             platform: product.platform,
                             logo: product.logo,
                             duration: selectedPlan.months,
-                            price: selectedPlan.price
+                            price: selectedPlan.price,
+                            quantity: quantity
                         }],
                     }),
                 });

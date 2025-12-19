@@ -204,8 +204,8 @@ export default function AdminOrdersPage() {
                                                 fontSize: '0.85rem',
                                                 color: 'rgba(255,255,255,0.8)',
                                             }}>
-                                                <span>{item.productName} ({item.duration}M)</span>
-                                                <span>₹{item.price}</span>
+                                                <span>{(item.quantity || 1) > 1 ? `${item.quantity}x ` : ''}{item.productName} ({item.duration}M)</span>
+                                                <span>₹{item.price * (item.quantity || 1)}</span>
                                             </div>
                                         ))}
                                     </div>
