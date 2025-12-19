@@ -23,31 +23,36 @@ export default function ProductCard({ product }: ProductCardProps) {
             display: 'flex',
             flexDirection: 'column',
         }}>
-            {/* Top Section with Logo */}
+            {/* Top Section with Full Image */}
             <div style={{
-                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.05))',
-                padding: '2rem',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                height: '200px',
+                width: '100%',
+                position: 'relative',
+                background: 'rgba(26, 26, 46, 0.8)',
                 borderBottom: '1px solid rgba(139, 92, 246, 0.1)',
+                overflow: 'hidden'
             }}>
+                <Image
+                    src={product.logo}
+                    alt={product.platform}
+                    fill
+                    style={{
+                        objectFit: 'cover',
+                        transition: 'transform 0.5s ease',
+                    }}
+                    className="product-img" // class for hover effect potentially
+                />
+
+                {/* Gradient Overlay for Readability if needed, or simple gloss */}
                 <div style={{
-                    width: '80px',
-                    height: '80px',
-                    position: 'relative',
-                    borderRadius: '16px',
-                    overflow: 'hidden',
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-                }}>
-                    <Image
-                        src={product.logo}
-                        alt={product.platform}
-                        fill
-                        style={{ objectFit: 'cover' }}
-                    />
-                </div>
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(to bottom, transparent 60%, rgba(15, 15, 30, 0.6))',
+                    pointerEvents: 'none'
+                }} />
             </div>
 
             {/* Content Section */}
