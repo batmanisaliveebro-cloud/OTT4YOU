@@ -56,7 +56,7 @@ export default function CartPage() {
                                             src={item.logo}
                                             alt={item.platform}
                                             fill
-                                            style={{ objectFit: 'contain', padding: '0.5rem' }}
+                                            style={{ objectFit: 'cover' }}
                                         />
                                     </div>
                                     <div style={{ flex: 1 }}>

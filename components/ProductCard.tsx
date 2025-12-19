@@ -39,14 +39,13 @@ export default function ProductCard({ product }: ProductCardProps) {
                     borderRadius: '16px',
                     overflow: 'hidden',
                     background: 'rgba(255, 255, 255, 0.05)',
-                    padding: '12px',
                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
                 }}>
                     <Image
                         src={product.logo}
                         alt={product.platform}
                         fill
-                        style={{ objectFit: 'contain' }}
+                        style={{ objectFit: 'cover' }}
                     />
                 </div>
             </div>

@@ -244,7 +244,6 @@ export default function ProductDetailsPage({ params }: PageProps) {
                                     borderRadius: '24px',
                                     overflow: 'hidden',
                                     background: 'rgba(255, 255, 255, 0.05)',
-                                    padding: '16px',
                                     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
                                     marginBottom: '1.5rem',
                                 }}>
@@ -252,7 +251,7 @@ export default function ProductDetailsPage({ params }: PageProps) {
                                         src={product.logo}
                                         alt={product.platform}
                                         fill
-                                        style={{ objectFit: 'contain' }}
+                                        style={{ objectFit: 'cover' }}
                                     />
                                 </div>
 
