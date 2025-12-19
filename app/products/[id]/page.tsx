@@ -8,18 +8,26 @@ import Footer from '@/components/Footer';
 import { IProduct } from '@/models/Product';
 import { useCart } from '@/context/CartContext';
 import { useSession, signIn } from 'next-auth/react';
+import Script from 'next/script';
 
 interface PageProps {
     params: { id: string };
 }
 
+declare global {
+    interface Window {
+        Cashfree: any;
+    }
+}
+
 export default function ProductDetailsPage({ params }: PageProps) {
     const [product, setProduct] = useState<IProduct | null>(null);
     const [loading, setLoading] = useState(true);
+    const [paymentLoading, setPaymentLoading] = useState(false);
     const [selectedDuration, setSelectedDuration] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
-    const { addToCart, clearCart } = useCart();
+    const { addToCart } = useCart();
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -41,30 +49,78 @@ export default function ProductDetailsPage({ params }: PageProps) {
         }
     };
 
-    const handleBuyNow = () => {
+    const handleBuyNow = async () => {
         if (!session) {
             signIn('google', { callbackUrl: `/products/${params.id}` });
             return;
         }
 
         if (product && product.durations[selectedDuration]) {
-            // Clear existing cart for "Buy Now" flow
-            clearCart();
+            setPaymentLoading(true);
+            try {
+                // Direct Buy - Open Payment Gateway directly
+                const selectedPlan = product.durations[selectedDuration];
+                const totalPrice = selectedPlan.price * quantity;
 
-            addToCart({
-                productId: product._id,
-                productName: product.name,
-                platform: product.platform,
-                logo: product.logo,
-                duration: product.durations[selectedDuration].months,
-                price: product.durations[selectedDuration].price
-            }, quantity);
+                // Create Order Session
+                const orderResponse = await fetch('/api/cashfree/order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: totalPrice,
+                        items: [{
+                            productId: product._id,
+                            productName: product.name,
+                            platform: product.platform,
+                            logo: product.logo,
+                            duration: selectedPlan.months,
+                            price: selectedPlan.price
+                        }],
+                    }),
+                });
 
-            setShowSuccess(true);
-            setTimeout(() => {
-                setShowSuccess(false);
-                router.push('/checkout');
-            }, 800); // Reduced delay for faster checkout
+                const orderData = await orderResponse.json();
+
+                if (!orderData.success) {
+                    alert(orderData.error || 'Failed to create order');
+                    setPaymentLoading(false);
+                    return;
+                }
+
+                if (!window.Cashfree) {
+                    alert('Payment SDK not loaded. Please refresh.');
+                    setPaymentLoading(false);
+                    return;
+                }
+
+                const cashfree = window.Cashfree({
+                    mode: 'production',
+                });
+
+                const checkoutOptions = {
+                    paymentSessionId: orderData.paymentSessionId,
+                    redirectTarget: '_modal',
+                };
+
+                cashfree.checkout(checkoutOptions).then((result: any) => {
+                    if (result.error) {
+                        console.error('Payment error:', result.error);
+                        alert('Payment failed. Please try again.');
+                    }
+                    if (result.paymentDetails) {
+                        // Redirect to dashboard or common success page
+                        // Verify API will handle status update via webhook or we can call verify here
+                        // For direct buy, better to redirect to dashboard to see status
+                        router.push(`/dashboard?order_id=${orderData.orderId}`);
+                    }
+                    setPaymentLoading(false);
+                });
+
+            } catch (error) {
+                console.error('Direct buy error:', error);
+                alert('An error occurred. Please try again.');
+                setPaymentLoading(false);
+            }
         }
     };
 
@@ -129,6 +185,10 @@ export default function ProductDetailsPage({ params }: PageProps) {
     return (
         <>
             <Header />
+            <Script
+                src="https://sdk.cashfree.com/js/v3/cashfree.js"
+                strategy="lazyOnload"
+            />
             <main style={{ padding: '2rem 0 4rem', minHeight: '80vh' }}>
                 <div className="container" style={{ maxWidth: '1100px' }}>
                     {/* Back Button */}
@@ -474,20 +534,38 @@ export default function ProductDetailsPage({ params }: PageProps) {
                                                 </button>
                                                 <button
                                                     onClick={handleBuyNow}
-                                                    disabled={!canPurchase}
+                                                    disabled={!canPurchase || paymentLoading}
                                                     style={{
                                                         padding: '0.875rem',
                                                         borderRadius: '12px',
                                                         border: 'none',
-                                                        background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                                                        background: paymentLoading
+                                                            ? 'rgba(139, 92, 246, 0.5)'
+                                                            : 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
                                                         color: '#fff',
                                                         fontWeight: 600,
                                                         fontSize: '0.95rem',
-                                                        cursor: !canPurchase ? 'not-allowed' : 'pointer',
-                                                        opacity: !canPurchase ? 0.5 : 1,
+                                                        cursor: (!canPurchase || paymentLoading) ? 'not-allowed' : 'pointer',
+                                                        opacity: (!canPurchase || paymentLoading) ? 0.5 : 1,
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        gap: '8px'
                                                     }}
                                                 >
-                                                    Buy Now
+                                                    {paymentLoading ? (
+                                                        <>
+                                                            <span className="spinner-small" style={{
+                                                                width: '16px',
+                                                                height: '16px',
+                                                                border: '2px solid rgba(255,255,255,0.3)',
+                                                                borderTopColor: '#fff',
+                                                                borderRadius: '50%',
+                                                                animation: 'spin 1s linear infinite'
+                                                            }}></span>
+                                                            Wait...
+                                                        </>
+                                                    ) : 'Buy Now'}
                                                 </button>
                                             </div>
 
@@ -544,9 +622,6 @@ export default function ProductDetailsPage({ params }: PageProps) {
                         <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: '#fff' }}>
                             Added to Cart!
                         </h2>
-                        <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.875rem' }}>
-                            Redirecting...
-                        </p>
                     </div>
                 </div>
             )}
@@ -564,6 +639,13 @@ export default function ProductDetailsPage({ params }: PageProps) {
                     .product-details-grid > div:last-child > div:nth-child(3) > div {
                         grid-template-columns: repeat(2, 1fr) !important;
                     }
+                }
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+                .spinner-small {
+                    display: inline-block;
+                    animation: spin 1s linear infinite;
                 }
             `}</style>
         </>

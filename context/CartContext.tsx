@@ -33,9 +33,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const savedCart = localStorage.getItem('ott4you_cart');
         if (savedCart) {
             try {
-                setItems(JSON.parse(savedCart));
+                const parsed = JSON.parse(savedCart);
+                // Ensure all items have valid IDs to prevent duplicates
+                const validated = parsed.map((item: CartItem) => ({
+                    ...item,
+                    id: item.id || `${item.productId}-${item.duration}`
+                }));
+                setItems(validated);
             } catch (e) {
                 console.error('Failed to parse cart', e);
+                localStorage.removeItem('ott4you_cart');
             }
         }
     }, []);
@@ -48,18 +55,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const addToCart = (newItem: Omit<CartItem, 'id' | 'quantity'>, quantity: number = 1) => {
         setItems(prev => {
             const id = `${newItem.productId}-${newItem.duration}`;
-            const existingItem = prev.find(item => item.id === id);
+            const existingIndex = prev.findIndex(item => item.id === id);
 
-            if (existingItem) {
+            if (existingIndex > -1) {
                 // Return new array with updated quantity
-                return prev.map(item =>
-                    item.id === id
-                        ? { ...item, quantity: Math.min(item.quantity + quantity, 5) }
-                        : item
-                );
+                const newItems = [...prev];
+                const item = newItems[existingIndex];
+                newItems[existingIndex] = {
+                    ...item,
+                    quantity: Math.min(item.quantity + quantity, 5)
+                };
+                return newItems;
             }
 
             // Add new item with specified quantity (max 5)
+            // Check if item with same productId and duration already exists even if ID is broken
+            const duplicateCheck = prev.findIndex(item =>
+                item.productId === newItem.productId && item.duration === newItem.duration
+            );
+
+            if (duplicateCheck > -1) {
+                const newItems = [...prev];
+                const item = newItems[duplicateCheck];
+                // Fix ID if missing
+                newItems[duplicateCheck] = {
+                    ...item,
+                    id: id,
+                    quantity: Math.min(item.quantity + quantity, 5)
+                };
+                return newItems;
+            }
+
             return [...prev, { ...newItem, id, quantity: Math.min(quantity, 5) }];
         });
         alert(`Added ${quantity} item(s) to cart!`);
