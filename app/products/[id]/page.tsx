@@ -229,39 +229,33 @@ export default function ProductDetailsPage({ params }: PageProps) {
                             top: '100px',
                         }}>
                             {/* Logo Section */}
-                            {/* Product Image Section */}
+                            {/* Logo Section */}
                             <div style={{
-                                width: '100%',
-                                height: '250px',
-                                position: 'relative',
-                                background: 'rgba(255, 255, 255, 0.05)',
-                                borderBottom: '1px solid rgba(139, 92, 246, 0.1)',
-                            }}>
-                                <Image
-                                    src={product.logo}
-                                    alt={product.platform}
-                                    fill
-                                    style={{ objectFit: 'cover' }}
-                                />
-                                <div style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    bottom: 0,
-                                    background: 'linear-gradient(to bottom, transparent 70%, rgba(15, 15, 30, 0.8))',
-                                    pointerEvents: 'none'
-                                }} />
-                            </div>
-
-                            {/* Product Title & Badge */}
-                            <div style={{
-                                padding: '1.5rem',
-                                textAlign: 'center',
+                                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.1))',
+                                padding: '3rem',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                alignItems: 'center'
+                                alignItems: 'center',
+                                borderBottom: '1px solid rgba(139, 92, 246, 0.1)',
                             }}>
+                                <div style={{
+                                    width: '120px',
+                                    height: '120px',
+                                    position: 'relative',
+                                    borderRadius: '24px',
+                                    overflow: 'hidden',
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
+                                    marginBottom: '1.5rem',
+                                }}>
+                                    <Image
+                                        src={product.logo}
+                                        alt={product.platform}
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                </div>
+
                                 <span style={{
                                     padding: '6px 16px',
                                     background: 'rgba(139, 92, 246, 0.2)',
@@ -275,9 +269,10 @@ export default function ProductDetailsPage({ params }: PageProps) {
                                 </span>
 
                                 <h1 style={{
-                                    fontSize: '1.75rem',
+                                    fontSize: '1.5rem',
                                     fontWeight: 700,
-                                    margin: 0,
+                                    textAlign: 'center',
+                                    marginBottom: '0.5rem',
                                 }}>
                                     {product.name}
                                 </h1>
