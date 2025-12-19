@@ -62,13 +62,13 @@ export default function HomePage() {
             <main>
                 {/* Hero Section - Premium */}
                 <section style={{
-                    minHeight: 'min(85vh, 600px)',
+                    minHeight: 'auto',
                     display: 'flex',
                     alignItems: 'center',
                     background: 'linear-gradient(135deg, rgba(15, 15, 30, 1) 0%, rgba(26, 26, 46, 1) 50%, rgba(40, 20, 60, 1) 100%)',
                     position: 'relative',
                     overflow: 'hidden',
-                    padding: 'clamp(2rem, 5vw, 4rem) 0',
+                    padding: 'clamp(6rem, 15vh, 8rem) 0 4rem',
                 }}>
                     {/* Animated background elements */}
                     <div style={{
@@ -111,12 +111,12 @@ export default function HomePage() {
                         </div>
 
                         <h1 style={{
-                            fontSize: 'clamp(1.5rem, 5vw, 3rem)',
+                            fontSize: 'clamp(1.75rem, 6vw, 3.5rem)',
                             fontWeight: 800,
                             lineHeight: 1.15,
                             marginBottom: '1rem',
                             maxWidth: '700px',
-                            margin: '0 auto 1rem',
+                            margin: '0 auto 1.5rem',
                         }}>
                             Premium <span style={{
                                 background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
@@ -126,27 +126,28 @@ export default function HomePage() {
                         </h1>
 
                         <p style={{
-                            fontSize: 'clamp(0.85rem, 2.5vw, 1.1rem)',
+                            fontSize: 'clamp(0.9rem, 3vw, 1.2rem)',
                             color: 'rgba(255, 255, 255, 0.7)',
                             maxWidth: '500px',
-                            margin: '0 auto 1.5rem',
-                            lineHeight: 1.5,
+                            margin: '0 auto 2rem',
+                            lineHeight: 1.6,
                             padding: '0 0.5rem',
                         }}>
                             Prime Video, Spotify, YouTube Premium & more. Instant delivery!
                         </p>
 
                         {/* CTA Button */}
-                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
                             <Link href="/products" style={{
-                                padding: 'clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2.5rem)',
+                                padding: 'clamp(0.8rem, 2.5vw, 1rem) clamp(2rem, 5vw, 3rem)',
                                 background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-                                borderRadius: '10px',
+                                borderRadius: '12px',
                                 color: '#fff',
                                 textDecoration: 'none',
                                 fontWeight: 600,
-                                fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
+                                fontSize: 'clamp(1rem, 2.5vw, 1.15rem)',
                                 boxShadow: '0 4px 20px rgba(139, 92, 246, 0.4)',
+                                transition: 'transform 0.2s',
                             }}>
                                 Browse Subscriptions →
                             </Link>
@@ -159,7 +160,7 @@ export default function HomePage() {
                                 flexWrap: 'wrap',
                                 justifyContent: 'center',
                                 gap: '1.5rem',
-                                marginBottom: '2rem',
+                                marginBottom: '2.5rem',
                                 background: 'rgba(255,255,255,0.03)',
                                 padding: '1rem 1.5rem',
                                 borderRadius: '16px',
@@ -190,8 +191,8 @@ export default function HomePage() {
                             padding: '1.5rem 2rem',
                             display: 'inline-block',
                         }}>
-                            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                Secure Payments Powered By
+                            <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>
+                                Official Payment Partners
                             </p>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
                                 {/* Cashfree Logo */}
@@ -206,7 +207,7 @@ export default function HomePage() {
                                     <span style={{ fontSize: '1.25rem' }}>💳</span>
                                     <span style={{ fontWeight: 700, fontSize: '1rem' }}>Cashfree</span>
                                 </div>
-                                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                                     <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem' }}>UPI</span>
                                     <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem' }}>Cards</span>
                                     <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem' }}>NetBanking</span>
