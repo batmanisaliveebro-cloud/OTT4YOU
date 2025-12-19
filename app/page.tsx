@@ -153,32 +153,24 @@ export default function HomePage() {
                             </Link>
                         </div>
 
-                        {/* Live Proof Stats */}
+                        {/* Live User Proof */}
                         {publicStats && (
                             <div style={{
-                                display: 'inline-flex',
-                                flexWrap: 'wrap',
-                                justifyContent: 'center',
-                                gap: '1.5rem',
-                                marginBottom: '2.5rem',
-                                background: 'rgba(255,255,255,0.03)',
-                                padding: '1rem 1.5rem',
-                                borderRadius: '16px',
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                backdropFilter: 'blur(5px)',
+                                marginTop: '0.5rem',
+                                marginBottom: '3rem',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                animation: 'fadeIn 1s ease-out'
                             }}>
-                                <div style={{ textAlign: 'center' }}>
-                                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff' }}>
-                                        {publicStats.totalUsers > 1 ? `${publicStats.totalUsers}+` : '100+'}
-                                    </div>
-                                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>Happy Users</div>
-                                </div>
-                                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }} />
-                                <div style={{ textAlign: 'center' }}>
-                                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#10b981' }}>
-                                        ₹{publicStats.totalRevenue > 0 ? (publicStats.totalRevenue).toLocaleString('en-IN') : '0'}
-                                    </div>
-                                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>Processed</div>
+                                <div style={{ color: '#f59e0b', fontSize: '1.1rem', letterSpacing: '2px' }}>★★★★★</div>
+                                <div style={{
+                                    color: 'rgba(255,255,255,0.7)',
+                                    fontSize: '0.95rem',
+                                    fontWeight: 500
+                                }}>
+                                    Trusted by <span style={{ color: '#fff', fontWeight: 700 }}>{publicStats.totalUsers > 1 ? `${publicStats.totalUsers}+` : '100+'}</span> happy subscribers
                                 </div>
                             </div>
                         )}
