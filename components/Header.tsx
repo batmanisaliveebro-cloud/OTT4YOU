@@ -49,15 +49,8 @@ export default function Header() {
             {/* Main Header */}
             <header className="header-glass">
                 <div className="header-container">
-                    <Link href="/" style={{ display: 'flex', alignItems: 'center' }}>
-                        <Image
-                            src="/logo.png"
-                            alt="OTT4YOU"
-                            width={140}
-                            height={45}
-                            style={{ objectFit: 'contain' }}
-                            priority
-                        />
+                    <Link href="/" className="logo-text">
+                        OTT4YOU
                     </Link>
 
                     {/* Desktop Navigation */}

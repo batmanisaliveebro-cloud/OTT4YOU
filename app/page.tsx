@@ -16,12 +16,23 @@ interface OrderStats {
 export default function HomePage() {
     const { data: session, status } = useSession();
     const [stats, setStats] = useState<OrderStats | null>(null);
+    const [publicStats, setPublicStats] = useState<{ totalRevenue: number, totalOrders: number, totalUsers: number } | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (session) {
             fetchUserStats();
         }
+        // Fetch global stats
+        fetch('/api/stats/public').then(res => res.json()).then(data => {
+            if (data.success) {
+                setPublicStats({
+                    totalRevenue: data.totalRevenue,
+                    totalOrders: data.totalOrders,
+                    totalUsers: data.totalUsers
+                });
+            }
+        });
     }, [session]);
 
     const fetchUserStats = async () => {
@@ -126,7 +137,7 @@ export default function HomePage() {
                         </p>
 
                         {/* CTA Button */}
-                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
                             <Link href="/products" style={{
                                 padding: 'clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2.5rem)',
                                 background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
@@ -140,6 +151,36 @@ export default function HomePage() {
                                 Browse Subscriptions →
                             </Link>
                         </div>
+
+                        {/* Live Proof Stats */}
+                        {publicStats && (
+                            <div style={{
+                                display: 'inline-flex',
+                                flexWrap: 'wrap',
+                                justifyContent: 'center',
+                                gap: '1.5rem',
+                                marginBottom: '2rem',
+                                background: 'rgba(255,255,255,0.03)',
+                                padding: '1rem 1.5rem',
+                                borderRadius: '16px',
+                                border: '1px solid rgba(255,255,255,0.05)',
+                                backdropFilter: 'blur(5px)',
+                            }}>
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff' }}>
+                                        {publicStats.totalUsers > 1 ? `${publicStats.totalUsers}+` : '100+'}
+                                    </div>
+                                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>Happy Users</div>
+                                </div>
+                                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }} />
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#10b981' }}>
+                                        ₹{publicStats.totalRevenue > 0 ? (publicStats.totalRevenue).toLocaleString('en-IN') : '0'}
+                                    </div>
+                                    <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>Processed</div>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Payment Partners Badge */}
                         <div style={{

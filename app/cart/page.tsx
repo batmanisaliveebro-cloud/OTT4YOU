@@ -159,6 +159,22 @@ export default function CartPage() {
                             >
                                 Proceed to Checkout
                             </button>
+                            <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center', gap: '1.5rem', opacity: 0.6 }}>
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>🔒</div>
+                                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>SSL Secure</div>
+                                </div>
+                                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }} />
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>⚡</div>
+                                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Instant</div>
+                                </div>
+                                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }} />
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>🛡️</div>
+                                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Protected</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

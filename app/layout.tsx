@@ -7,9 +7,6 @@ export const metadata: Metadata = {
     title: 'OTT4YOU - Premium OTT Subscriptions',
     description: 'Get the best deals on Prime Video, Spotify, YouTube Premium, JioHotstar, Jio Saavn, and SonyLIV subscriptions',
     keywords: 'OTT, streaming, subscriptions, Prime Video, Spotify, YouTube Premium, JioHotstar',
-    icons: {
-        icon: '/icon.png',
-    },
 };
 
 export default function RootLayout({
