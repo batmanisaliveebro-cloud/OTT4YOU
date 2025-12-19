@@ -19,7 +19,7 @@ export default function ProductDetailsPage({ params }: PageProps) {
     const [selectedDuration, setSelectedDuration] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
-    const { addToCart } = useCart();
+    const { addToCart, clearCart } = useCart();
     const router = useRouter();
     const { data: session } = useSession();
 
@@ -48,6 +48,9 @@ export default function ProductDetailsPage({ params }: PageProps) {
         }
 
         if (product && product.durations[selectedDuration]) {
+            // Clear existing cart for "Buy Now" flow
+            clearCart();
+
             addToCart({
                 productId: product._id,
                 productName: product.name,
@@ -61,7 +64,7 @@ export default function ProductDetailsPage({ params }: PageProps) {
             setTimeout(() => {
                 setShowSuccess(false);
                 router.push('/checkout');
-            }, 1200);
+            }, 800); // Reduced delay for faster checkout
         }
     };
 
