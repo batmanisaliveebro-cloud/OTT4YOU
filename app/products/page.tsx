@@ -5,7 +5,6 @@ import { useSession, signIn } from 'next-auth/react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import CurrencySelector from '@/components/CurrencySelector';
 import { IProduct } from '@/models/Product';
 
 declare global {
@@ -150,13 +149,6 @@ export default function ProductsPage() {
                         <p className="animate-fade-in">
                             Choose from our wide range of OTT platforms at unbeatable prices
                         </p>
-                    </div>
-                </section>
-
-                {/* Currency Selector */}
-                <section style={{ padding: '1rem 0', background: 'rgba(15, 15, 30, 0.5)' }}>
-                    <div className="container" style={{ display: 'flex', justifyContent: 'center' }}>
-                        <CurrencySelector />
                     </div>
                 </section>
 
