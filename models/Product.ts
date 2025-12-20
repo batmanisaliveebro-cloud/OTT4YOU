@@ -2,7 +2,8 @@ import mongoose, { Schema, Model } from 'mongoose';
 
 export interface IDuration {
     months: number;
-    price: number;
+    price: number; // INR price
+    priceUSD?: number; // USD price (optional, calculated if not set)
     available: boolean; // Toggle for per-duration availability
 }
 
@@ -45,6 +46,10 @@ const ProductSchema = new Schema<IProduct>({
         price: {
             type: Number,
             required: true,
+        },
+        priceUSD: {
+            type: Number,
+            required: false, // Optional, will be calculated from INR if not set
         },
         available: {
             type: Boolean,

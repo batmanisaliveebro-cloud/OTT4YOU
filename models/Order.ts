@@ -19,7 +19,11 @@ export interface IOrder {
     totalAmount: number;
     paymentId?: string;
     transactionId?: string;
-    paymentMethod: 'CASHFREE' | 'RAZORPAY' | 'MANUAL_UPI';
+    paymentMethod: 'CASHFREE' | 'RAZORPAY' | 'MANUAL_UPI' | 'CRYPTO';
+    paymentCurrency: 'INR' | 'USD'; // Track which currency was used
+    cryptoTransactionId?: string; // NOWPayments payment ID
+    cryptoCurrency?: string; // e.g., 'BTC', 'ETH', 'USDT'
+    cryptoAmount?: number; // Amount in crypto
     status: 'pending' | 'processing' | 'paid' | 'completed' | 'failed' | 'pending_verification';
     deliveryStatus: 'pending' | 'processing' | 'delivered';
     deliveryNote?: string;
@@ -61,8 +65,22 @@ const OrderSchema = new Schema<IOrder>({
     },
     paymentMethod: {
         type: String,
-        enum: ['CASHFREE', 'RAZORPAY', 'MANUAL_UPI'],
+        enum: ['CASHFREE', 'RAZORPAY', 'MANUAL_UPI', 'CRYPTO'],
         default: 'CASHFREE',
+    },
+    paymentCurrency: {
+        type: String,
+        enum: ['INR', 'USD'],
+        default: 'INR',
+    },
+    cryptoTransactionId: {
+        type: String,
+    },
+    cryptoCurrency: {
+        type: String,
+    },
+    cryptoAmount: {
+        type: Number,
     },
     status: {
         type: String,

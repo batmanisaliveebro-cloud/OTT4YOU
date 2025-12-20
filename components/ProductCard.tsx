@@ -3,6 +3,9 @@
 import Image from 'next/image';
 import { IProduct } from '@/models/Product';
 import Link from 'next/link';
+import { useCurrency } from '@/context/CurrencyContext';
+import { useEffect, useState } from 'react';
+import { convertPrice } from '@/lib/currency';
 
 interface ProductCardProps {
     product: IProduct;
@@ -10,13 +13,31 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-    const lowestPrice = Math.min(...product.durations.map(d => d.price));
-    const highestMonths = Math.max(...product.durations.map(d => d.months));
+    const { currency, formatPrice } = useCurrency();
+    const [displayPrice, setDisplayPrice] = useState(0);
+
+    const lowestPriceINR = Math.min(...product.durations.map(d => d.price));
+    const lowestPriceUSD = Math.min(...product.durations.map(d => d.priceUSD || 999));
+
+    useEffect(() => {
+        async function updatePrice() {
+            if (currency === 'USD') {
+                // Use USD price if available, otherwise convert
+                const usdPrice = product.durations[0].priceUSD
+                    ? lowestPriceUSD
+                    : await convertPrice(lowestPriceINR, 'INR', 'USD');
+                setDisplayPrice(usdPrice);
+            } else {
+                setDisplayPrice(lowestPriceINR);
+            }
+        }
+        updatePrice();
+    }, [currency, lowestPriceINR, lowestPriceUSD, product.durations]);
 
     return (
         <div className="product-card" style={{
             background: 'linear-gradient(145deg, rgba(26, 26, 46, 0.95), rgba(15, 15, 30, 0.98))',
-            borderRadius: '20px',
+            borderRadius: '16px',
             border: '1px solid rgba(139, 92, 246, 0.15)',
             overflow: 'hidden',
             height: '100%',
@@ -26,20 +47,20 @@ export default function ProductCard({ product }: ProductCardProps) {
             {/* Top Section with Small Square Logo */}
             <div style={{
                 background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.05))',
-                padding: '2rem',
+                padding: '1.25rem',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderBottom: '1px solid rgba(139, 92, 246, 0.1)',
             }}>
                 <div style={{
-                    width: '90px',
-                    height: '90px',
+                    width: '70px',
+                    height: '70px',
                     position: 'relative',
-                    borderRadius: '18px',
+                    borderRadius: '14px',
                     overflow: 'hidden',
                     background: 'rgba(255, 255, 255, 0.05)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                    boxShadow: '0 6px 24px rgba(0, 0, 0, 0.3)',
                 }}>
                     <Image
                         src={product.logo}
@@ -103,13 +124,13 @@ export default function ProductCard({ product }: ProductCardProps) {
                     marginBottom: '1rem',
                 }}>
                     <span style={{
-                        fontSize: '1.75rem',
+                        fontSize: '1.6rem',
                         fontWeight: 800,
                         background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                     }}>
-                        ₹{lowestPrice}
+                        {formatPrice(displayPrice)}
                     </span>
                     <span style={{
                         color: 'rgba(255, 255, 255, 0.5)',
