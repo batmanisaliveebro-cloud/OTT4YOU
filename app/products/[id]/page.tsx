@@ -7,8 +7,6 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { IProduct } from '@/models/Product';
 import { useCart } from '@/context/CartContext';
-import { useCurrency } from '@/context/CurrencyContext';
-import { convertPrice } from '@/lib/currency';
 import { useSession, signIn } from 'next-auth/react';
 import Script from 'next/script';
 
@@ -29,9 +27,7 @@ export default function ProductDetailsPage({ params }: PageProps) {
     const [selectedDuration, setSelectedDuration] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState<'cashfree' | 'crypto'>('cashfree');
     const { addToCart } = useCart();
-    const { currency, formatPrice } = useCurrency();
     const router = useRouter();
     const { data: session } = useSession();
 

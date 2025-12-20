@@ -3,9 +3,6 @@
 import Image from 'next/image';
 import { IProduct } from '@/models/Product';
 import Link from 'next/link';
-import { useCurrency } from '@/context/CurrencyContext';
-import { useEffect, useState } from 'react';
-import { convertPrice } from '@/lib/currency';
 
 interface ProductCardProps {
     product: IProduct;
@@ -13,26 +10,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-    const { currency, formatPrice } = useCurrency();
-    const [displayPrice, setDisplayPrice] = useState(0);
-
-    const lowestPriceINR = Math.min(...product.durations.map(d => d.price));
-    const lowestPriceUSD = Math.min(...product.durations.map(d => d.priceUSD || 999));
-
-    useEffect(() => {
-        async function updatePrice() {
-            if (currency === 'USD') {
-                // Use USD price if available, otherwise convert
-                const usdPrice = product.durations[0].priceUSD
-                    ? lowestPriceUSD
-                    : await convertPrice(lowestPriceINR, 'INR', 'USD');
-                setDisplayPrice(usdPrice);
-            } else {
-                setDisplayPrice(lowestPriceINR);
-            }
-        }
-        updatePrice();
-    }, [currency, lowestPriceINR, lowestPriceUSD, product.durations]);
+    const lowestPrice = Math.min(...product.durations.map(d => d.price));
 
     return (
         <div className="product-card" style={{
@@ -73,7 +51,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
             {/* Content Section */}
             <div style={{
-                padding: '1.5rem',
+                padding: '1.25rem',
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
@@ -81,13 +59,13 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {/* Platform Badge */}
                 <div style={{
                     display: 'inline-block',
-                    padding: '4px 12px',
+                    padding: '4px 10px',
                     background: 'rgba(139, 92, 246, 0.15)',
                     borderRadius: '20px',
-                    fontSize: '0.75rem',
+                    fontSize: '0.7rem',
                     color: 'rgba(139, 92, 246, 1)',
                     fontWeight: 600,
-                    marginBottom: '0.75rem',
+                    marginBottom: '0.5rem',
                     width: 'fit-content',
                 }}>
                     {product.platform}
@@ -95,9 +73,9 @@ export default function ProductCard({ product }: ProductCardProps) {
 
                 {/* Product Name */}
                 <h3 style={{
-                    fontSize: '1.25rem',
+                    fontSize: '1.1rem',
                     fontWeight: 700,
-                    marginBottom: '0.5rem',
+                    marginBottom: '0.4rem',
                     color: '#fff',
                 }}>
                     {product.name}
@@ -106,13 +84,13 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {/* Description */}
                 <p style={{
                     color: 'rgba(255, 255, 255, 0.6)',
-                    fontSize: '0.875rem',
-                    lineHeight: 1.5,
-                    marginBottom: '1rem',
+                    fontSize: '0.8rem',
+                    lineHeight: 1.4,
+                    marginBottom: '0.75rem',
                     flex: 1,
                 }}>
-                    {product.description.length > 80
-                        ? product.description.substring(0, 80) + '...'
+                    {product.description.length > 60
+                        ? product.description.substring(0, 60) + '...'
                         : product.description}
                 </p>
 
@@ -120,21 +98,21 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div style={{
                     display: 'flex',
                     alignItems: 'baseline',
-                    gap: '8px',
-                    marginBottom: '1rem',
+                    gap: '6px',
+                    marginBottom: '0.75rem',
                 }}>
                     <span style={{
-                        fontSize: '1.6rem',
+                        fontSize: '1.5rem',
                         fontWeight: 800,
                         background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                     }}>
-                        {formatPrice(displayPrice)}
+                        ₹{lowestPrice}
                     </span>
                     <span style={{
                         color: 'rgba(255, 255, 255, 0.5)',
-                        fontSize: '0.875rem',
+                        fontSize: '0.75rem',
                     }}>
                         /month
                     </span>
@@ -143,16 +121,16 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {/* Duration Pills */}
                 <div style={{
                     display: 'flex',
-                    gap: '6px',
+                    gap: '4px',
                     flexWrap: 'wrap',
-                    marginBottom: '1.25rem',
+                    marginBottom: '1rem',
                 }}>
                     {product.durations.map((d, i) => (
                         <span key={i} style={{
-                            padding: '4px 10px',
+                            padding: '3px 8px',
                             background: 'rgba(255, 255, 255, 0.05)',
                             borderRadius: '6px',
-                            fontSize: '0.75rem',
+                            fontSize: '0.7rem',
                             color: 'rgba(255, 255, 255, 0.7)',
                             border: '1px solid rgba(255, 255, 255, 0.1)',
                         }}>
@@ -167,12 +145,12 @@ export default function ProductCard({ product }: ProductCardProps) {
                     style={{
                         display: 'block',
                         width: '100%',
-                        padding: '12px 24px',
+                        padding: '10px 20px',
                         background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-                        borderRadius: '12px',
+                        borderRadius: '10px',
                         color: '#fff',
                         fontWeight: 600,
-                        fontSize: '0.95rem',
+                        fontSize: '0.9rem',
                         textAlign: 'center',
                         textDecoration: 'none',
                         transition: 'all 0.2s ease',
