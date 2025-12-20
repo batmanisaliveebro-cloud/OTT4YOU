@@ -323,23 +323,70 @@ export default function CheckoutPage() {
                     </div>
                 </div>
 
-                {/* Secure Payment Badge - Compact */}
+                {/* Payment Method Selector */}
                 <div style={{
-                    background: 'rgba(139, 92, 246, 0.05)',
-                    border: '1px solid rgba(139, 92, 246, 0.15)',
-                    borderRadius: '10px',
-                    padding: '0.75rem',
+                    background: 'rgba(26, 26, 46, 0.8)',
+                    border: '1px solid rgba(139, 92, 246, 0.2)',
+                    borderRadius: '12px',
+                    padding: '1rem',
                     marginBottom: '1rem',
-                    textAlign: 'center',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
                 }}>
-                    <span style={{ fontSize: '1.25rem' }}>🔒</span>
-                    <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>
-                        Secure payment via Cashfree
-                    </span>
+                    <h3 style={{ fontSize: '0.9rem', marginBottom: '0.75rem', color: 'rgba(255,255,255,0.8)' }}>
+                        Select Payment Method
+                    </h3>
+                    
+                    {/* Cashfree Option - Radio Style */}
+                    <label style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        padding: '0.875rem',
+                        background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(99, 102, 241, 0.1))',
+                        border: '2px solid #8b5cf6',
+                        borderRadius: '10px',
+                        cursor: 'pointer',
+                    }}>
+                        {/* Radio Button */}
+                        <div style={{
+                            width: '20px',
+                            height: '20px',
+                            borderRadius: '50%',
+                            border: '2px solid #8b5cf6',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: 'rgba(139, 92, 246, 0.2)',
+                        }}>
+                            <div style={{
+                                width: '10px',
+                                height: '10px',
+                                borderRadius: '50%',
+                                background: '#8b5cf6',
+                            }}></div>
+                        </div>
+                        
+                        {/* Payment Info */}
+                        <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff', marginBottom: '0.25rem' }}>
+                                💳 Cashfree Payments
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)' }}>
+                                UPI • Credit/Debit Card • Net Banking • Wallets
+                            </div>
+                        </div>
+                        
+                        {/* Secure Badge */}
+                        <div style={{
+                            padding: '0.25rem 0.5rem',
+                            background: 'rgba(16, 185, 129, 0.15)',
+                            borderRadius: '6px',
+                            fontSize: '0.7rem',
+                            color: '#10b981',
+                            fontWeight: 600,
+                        }}>
+                            🔒 Secure
+                        </div>
+                    </label>
                 </div>
 
                 {/* Pay Button */}
@@ -348,20 +395,30 @@ export default function CheckoutPage() {
                     disabled={loading || !sdkLoaded}
                     style={{
                         width: '100%',
-                        padding: 'clamp(0.875rem, 3vw, 1.1rem)',
+                        padding: 'clamp(1rem, 3vw, 1.25rem)',
                         borderRadius: '12px',
                         border: 'none',
                         background: loading || !sdkLoaded
                             ? 'rgba(139, 92, 246, 0.5)'
-                            : 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                            : 'linear-gradient(135deg, #10b981, #059669)',
                         color: '#fff',
                         fontWeight: 700,
-                        fontSize: 'clamp(0.95rem, 3vw, 1.1rem)',
+                        fontSize: 'clamp(1rem, 3vw, 1.15rem)',
                         cursor: loading || !sdkLoaded ? 'not-allowed' : 'pointer',
-                        boxShadow: loading || !sdkLoaded ? 'none' : '0 4px 20px rgba(139, 92, 246, 0.4)',
+                        boxShadow: loading || !sdkLoaded ? 'none' : '0 4px 20px rgba(16, 185, 129, 0.4)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.5rem',
                     }}
                 >
-                    {loading ? 'Processing...' : !sdkLoaded ? 'Loading...' : `Pay ₹${totalAmount}`}
+                    {loading ? (
+                        <>Processing Payment...</>
+                    ) : !sdkLoaded ? (
+                        <>Loading...</>
+                    ) : (
+                        <>Pay ₹{totalAmount}</>
+                    )}
                 </button>
 
                 <p style={{
