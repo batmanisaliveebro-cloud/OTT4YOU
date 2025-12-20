@@ -15,17 +15,29 @@ declare global {
 
 export default function CheckoutPage() {
     const { items, totalAmount, clearCart } = useCart();
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [sdkLoaded, setSdkLoaded] = useState(false);
+    const [pageLoading, setPageLoading] = useState(true);
+
+    // Wait for session and cart to load before showing content
+    useEffect(() => {
+        if (status !== 'loading') {
+            // Give cart context time to hydrate from localStorage
+            const timer = setTimeout(() => {
+                setPageLoading(false);
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [status]);
 
     useEffect(() => {
-        if (!session) {
+        if (!pageLoading && !session) {
             router.push('/cart');
         }
-    }, [session, router]);
+    }, [session, router, pageLoading]);
 
     const handlePayment = async () => {
         if (!sdkLoaded) {
@@ -118,7 +130,37 @@ export default function CheckoutPage() {
         }
     };
 
-    // Empty cart state
+    // Loading state while cart and session hydrate
+    if (pageLoading) {
+        return (
+            <>
+                <Header />
+                <main style={{
+                    padding: '3rem 1rem',
+                    textAlign: 'center',
+                    minHeight: '60vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                    <div style={{
+                        width: '50px',
+                        height: '50px',
+                        border: '3px solid rgba(139, 92, 246, 0.2)',
+                        borderTopColor: '#8b5cf6',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite',
+                        marginBottom: '1rem',
+                    }}></div>
+                    <p style={{ color: 'var(--text-secondary)' }}>Loading checkout...</p>
+                    <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+                </main>
+            </>
+        );
+    }
+
+    // Empty cart state (only show after page has loaded)
     if ((!session || items.length === 0) && !showSuccess) {
         return (
             <>
